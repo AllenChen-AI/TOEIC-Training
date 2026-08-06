@@ -51,101 +51,12 @@
                         <i class="fa-solid fa-headphones"></i>
                     </div>
                     <div>
-                        <div class="flex items-center gap-2">
-                            <h1 class="text-base sm:text-xl font-extrabold bg-gradient-to-r from-indigo-700 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
-                                TOEIC 1350 特訓台
-                            </h1>
-                            <span class="hidden sm:inline-block bg-purple-50 text-purple-700 text-[10px] font-black px-2 py-0.5 rounded-full border border-purple-100">
-                                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Gemini AI 語音版
-                            </span>
-                        </div>
-                        <p class="text-[11px] text-slate-500 font-medium">聽力．職場．差旅．商務全收錄</p>
-                    </div>
-                </div>
-
-                <!-- Navigation Tabs for Desktop/Tablet (Hidden on Mobile) -->
-                <nav class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold">
-                    <button @click="setMode('card')" :class="activeMode === 'card' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-clone"></i> 閃卡記憶
-                    </button>
-                    <button @click="setMode('quiz')" :class="activeMode === 'quiz' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-circle-question"></i> 4選1筆試
-                    </button>
-                    <button @click="setMode('listening')" :class="activeMode === 'listening' ? 'bg-white text-purple-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-headphones"></i> 聽力特訓
-                    </button>
-                    <button @click="setMode('spelling')" :class="activeMode === 'spelling' ? 'bg-white text-violet-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-keyboard"></i> 拼字挑戰
-                    </button>
-                    <button @click="setMode('list')" :class="activeMode === 'list' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
-                        <i class="fa-solid fa-list-check"></i> 單字總庫
-                    </button>
-                </nav>
-
-                <!-- Action Controls (AI Voice Toggle & Filter) -->
-                <div class="flex items-center gap-2">
-                    <!-- 原生語音 / 免費發音標籤 -->
-                    <div class="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200" title="使用系統免費高音質自然語音">
-                        <i class="fa-solid fa-volume-high text-indigo-600"></i>
-                        <span class="hidden sm:inline">真人自然語音 (免費)</span>
-                    </div>
-
-                    <!-- PC 鍵盤快捷鍵 Modal 鈕 -->
-                    <button @click="showShortcutModal = true" class="hidden lg:flex items-center gap-1 px-2.5 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold active:scale-95 transition" title="檢視電腦鍵盤快捷鍵">
-                        <i class="fa-solid fa-keyboard text-indigo-600"></i>
-                        <span>快捷鍵</span>
-                    </button>
-
-                    <!-- 篩選抽屜鈕 -->
-                    <button @click="showFilterDrawer = !showFilterDrawer" 
-                            class="px-3 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 active:scale-95 transition flex items-center gap-1.5 text-xs font-bold shrink-0">
-                        <i class="fa-solid fa-sliders text-indigo-600"></i>
-                        <span>篩選</span>
-                        <span v-if="selectedChapter > 0 || statusFilter !== 'all' || selectedEpisode > 0" class="w-2 h-2 rounded-full bg-indigo-600"></span>
-                    </button>
-                </div>
-            </div>
-
-            <transition enter-active-class="transition duration-200 ease-out" enter-from-class="transform -translate-y-2 opacity-0" enter-to-class="transform translate-y-0 opacity-100" leave-active-class="transition duration-150 ease-in" leave-from-class="transform translate-y-0 opacity-100" leave-to-class="transform -translate-y-2 opacity-0">
-                <div v-if="showFilterDrawer" class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-4 gap-2.5 text-xs">
-                    <div>
-                        <label class="block font-bold text-slate-500 mb-1">章節 (Chapter)</label>
-                        <select v-model="selectedChapter" @change="onFilterChange" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option :value="0">所有章節 (全 1,350 單字)</option>
-                            <option :value="1">Ch 1: 職場核心詞彙 (1-400)</option>
-                            <option :value="2">Ch 2: 出差與商務差旅 (401-700)</option>
-                            <option :value="3">Ch 3: 商業與管理實務 (701-1050)</option>
-                            <option :value="4">Ch 4: 熱門話題與科技 (1051-1350)</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-slate-500 mb-1">主題 (Episode)</label>
-                        <select v-model="selectedEpisode" @change="onFilterChange" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option :value="0">所有 Episode 主題</option>
-                            <option v-for="ep in currentAvailableEpisodes" :key="ep.id" :value="ep.id">
-                                Ep {{ ep.id }}: {{ ep.title }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-slate-500 mb-1">學習狀態</label>
-                        <select v-model="statusFilter" @change="onFilterChange" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="all">全部單字</option>
-                            <option value="starred">★ 星號標記 ({{ starredIds.length }})</option>
-                            <option value="unmastered">尚未熟練 ({{ filteredWords.length - masteredCountInFiltered }})</option>
-                            <option value="mastered">✓ 已熟練 ({{ masteredIds.length }})</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-purple-600 mb-1"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>AI 聲線風格</label>
+                        <label class="block font-bold text-purple-600 mb-1"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>自然聲線風格</label>
                         <select v-model="aiVoiceName" class="w-full bg-purple-50 border border-purple-200 rounded-xl px-2.5 py-2 font-bold text-purple-900 outline-none focus:ring-2 focus:ring-purple-500">
-                            <option value="Aoede">Aoede (清亮自然女音)</option>
-                            <option value="Zephyr">Zephyr (陽光明亮男音)</option>
-                            <option value="Puck">Puck (活力輕快聲音)</option>
-                            <option value="Kore">Kore (專業自信語調)</option>
+                            <option value="Aoede">Aoede (清亮高音女聲)</option>
+                            <option value="Zephyr">Zephyr (陽光低音男聲)</option>
+                            <option value="Puck">Puck (活力輕快語速)</option>
+                            <option value="Kore">Kore (專業沉穩慢讀)</option>
                         </select>
                     </div>
                 </div>
@@ -721,9 +632,11 @@
                     showFilterDrawer: false,
                     showShortcutModal: false,
 
-                    // Voice Engine Control (預設 100% 免費本機發音)
-                    voiceEngine: 'browser', // 'browser' as primary
+                    // Voice Engine Control (100% 免費本機發音與多風格調整)
+                    voiceEngine: 'browser',
                     englishVoice: null,
+                    englishVoices: [],
+                    aiVoiceName: 'Aoede',
 
                     // Flashcard state
                     currentCardIndex: 0,
@@ -815,16 +728,15 @@
                 initVoices() {
                     if ('speechSynthesis' in window) {
                         const voices = window.speechSynthesis.getVoices();
-                        // 優先選擇 Apple / Google 的高品質自然美聲
-                        this.englishVoice = voices.find(v => v.lang === 'en-US' && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('Alex') || v.name.includes('Siri'))) ||
-                                           voices.find(v => v.lang === 'en-US') || 
-                                           voices.find(v => v.lang.startsWith('en')) || null;
+                        // 篩選所有英文語音庫
+                        this.englishVoices = voices.filter(v => v.lang.startsWith('en'));
+                        this.englishVoice = this.englishVoices.find(v => v.lang === 'en-US' && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('Alex'))) ||
+                                           this.englishVoices[0] || null;
                     }
                 },
 
                 speak(text) {
                     if (!text) return;
-                    // 100% 免費瀏覽器原生發音，絕不產生費用
                     this.fallbackBrowserSpeak(text);
                 },
 
@@ -836,11 +748,45 @@
                             
                             const utterance = new SpeechSynthesisUtterance(text);
                             utterance.lang = 'en-US';
-                            utterance.rate = 0.88; // 最佳聽力練習語速
-                            utterance.pitch = 1.0;
                             
-                            if (this.englishVoice) {
-                                utterance.voice = this.englishVoice;
+                            let pitch = 1.0;
+                            let rate = 0.88;
+                            let targetGender = 'any';
+
+                            // 根據選擇的聲線設定不同的音調與語速
+                            if (this.aiVoiceName === 'Aoede') {
+                                pitch = 1.15; // 清亮女音高音
+                                rate = 0.90;
+                                targetGender = 'female';
+                            } else if (this.aiVoiceName === 'Zephyr') {
+                                pitch = 0.75; // 陽光低音男音
+                                rate = 0.90;
+                                targetGender = 'male';
+                            } else if (this.aiVoiceName === 'Puck') {
+                                pitch = 1.20; // 活力輕快
+                                rate = 1.0;
+                            } else if (this.aiVoiceName === 'Kore') {
+                                pitch = 0.88; // 專業沉穩
+                                rate = 0.82;
+                            }
+
+                            utterance.pitch = pitch;
+                            utterance.rate = rate;
+
+                            // 試圖從系統內建語音庫尋找符合男/女性別的美式語音
+                            if (this.englishVoices && this.englishVoices.length > 0) {
+                                let selectedVoice = null;
+                                if (targetGender === 'female') {
+                                    selectedVoice = this.englishVoices.find(v => 
+                                        v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('Victoria') || v.name.includes('Zira') || v.name.includes('Karen') || v.name.includes('Siri')
+                                    );
+                                } else if (targetGender === 'male') {
+                                    selectedVoice = this.englishVoices.find(v => 
+                                        v.name.includes('Male') || v.name.includes('Alex') || v.name.includes('Fred') || v.name.includes('David') || v.name.includes('Daniel')
+                                    );
+                                }
+                                
+                                utterance.voice = selectedVoice || this.englishVoice || this.englishVoices[0];
                             }
                             
                             window.speechSynthesis.speak(utterance);
