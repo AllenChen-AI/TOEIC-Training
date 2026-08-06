@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TOEIC 1350 多益單字聽力特訓台 (手機優化版)</title>
+    <title>TOEIC 1350 多益單字聽力特訓台 (全裝置相容版)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -29,59 +29,79 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         @keyframes pulse-ring {
-            0% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.6); }
-            70% { transform: scale(1.06); box-shadow: 0 0 0 16px rgba(79, 70, 229, 0); }
-            100% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+            0% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.6); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 18px rgba(124, 58, 237, 0); }
+            100% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(124, 58, 237, 0); }
         }
         .pulse-audio { animation: pulse-ring 2s infinite; }
 
-        /* Safe area padding for iPhones with notch */
         .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
         .pt-safe { padding-top: env(safe-area-inset-top, 0.5rem); }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-full flex flex-col antialiased selection:bg-indigo-500 selection:text-white pb-20 md:pb-6">
+<body class="bg-slate-100 text-slate-800 min-h-full flex flex-col antialiased selection:bg-indigo-500 selection:text-white pb-20 md:pb-8">
 
-    <div id="app" class="flex-1 flex flex-col max-w-2xl mx-auto w-full px-3 sm:px-4 pt-safe">
+    <div id="app" class="flex-1 flex flex-col max-w-4xl mx-auto w-full px-3 sm:px-6 pt-safe">
         
-        <!-- Header Zone -->
-        <header class="bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200/80 p-3.5 mb-3 sticky top-2 z-30">
-            <div class="flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-violet-600 text-white flex items-center justify-center text-lg font-bold shadow-md shadow-indigo-500/20 shrink-0">
+        <!-- Header Zone (Responsive Desktop & Mobile) -->
+        <header class="bg-white/95 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200/80 p-3.5 mb-3 sticky top-2 z-30">
+            <div class="flex items-center justify-between gap-3">
+                
+                <!-- Logo & Title -->
+                <div class="flex items-center gap-3 cursor-pointer" @click="setMode('card')">
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-violet-600 text-white flex items-center justify-center text-lg sm:text-xl font-bold shadow-md shadow-indigo-500/20 shrink-0">
                         <i class="fa-solid fa-headphones"></i>
                     </div>
                     <div>
-                        <h1 class="text-base sm:text-lg font-extrabold bg-gradient-to-r from-indigo-700 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
-                            TOEIC 1350 特訓台
-                        </h1>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-base sm:text-xl font-extrabold bg-gradient-to-r from-indigo-700 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
+                                TOEIC 1350 特訓台
+                            </h1>
+                            <span class="hidden sm:inline-block bg-indigo-50 text-indigo-700 text-[10px] font-black px-2 py-0.5 rounded-full border border-indigo-100">PC/平板/手機全支援</span>
+                        </div>
                         <p class="text-[11px] text-slate-500 font-medium">聽力．職場．差旅．商務全收錄</p>
                     </div>
                 </div>
 
-                <!-- Desktop Nav Pills (Hidden on Mobile) -->
-                <nav class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
-                    <button @click="setMode('card')" :class="activeMode === 'card' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600'" class="px-3 py-1.5 rounded-lg transition-all">閃卡記憶</button>
-                    <button @click="setMode('quiz')" :class="activeMode === 'quiz' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600'" class="px-3 py-1.5 rounded-lg transition-all">4選1測驗</button>
-                    <button @click="setMode('listening')" :class="activeMode === 'listening' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600'" class="px-3 py-1.5 rounded-lg transition-all">聽力挑戰</button>
-                    <button @click="setMode('spelling')" :class="activeMode === 'spelling' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600'" class="px-3 py-1.5 rounded-lg transition-all">拼字挑戰</button>
-                    <button @click="setMode('list')" :class="activeMode === 'list' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600'" class="px-3 py-1.5 rounded-lg transition-all">單字庫</button>
+                <!-- Navigation Tabs for Desktop/Tablet (Hidden on Mobile) -->
+                <nav class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+                    <button @click="setMode('card')" :class="activeMode === 'card' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-clone"></i> 閃卡記憶
+                    </button>
+                    <button @click="setMode('quiz')" :class="activeMode === 'quiz' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-question"></i> 4選1筆試
+                    </button>
+                    <button @click="setMode('listening')" :class="activeMode === 'listening' ? 'bg-white text-purple-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-headphones"></i> 聽力特訓
+                    </button>
+                    <button @click="setMode('spelling')" :class="activeMode === 'spelling' ? 'bg-white text-violet-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-keyboard"></i> 拼字挑戰
+                    </button>
+                    <button @click="setMode('list')" :class="activeMode === 'list' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-600 hover:text-slate-900'" class="px-3 py-2 rounded-lg transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-list-check"></i> 單字總庫
+                    </button>
                 </nav>
 
-                <!-- Filter Toggle Button for Mobile -->
-                <button @click="showFilterDrawer = !showFilterDrawer" 
-                        class="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 active:scale-95 transition flex items-center gap-1.5 text-xs font-bold shrink-0">
-                    <i class="fa-solid fa-sliders text-indigo-600"></i>
-                    <span>篩選</span>
-                    <span v-if="selectedChapter > 0 || statusFilter !== 'all'" class="w-2 h-2 rounded-full bg-indigo-600"></span>
-                </button>
+                <!-- Action Controls (PC Keyboard Shortcut Modal & Filter Toggle) -->
+                <div class="flex items-center gap-2">
+                    <button @click="showShortcutModal = true" class="hidden lg:flex items-center gap-1 px-2.5 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold active:scale-95 transition" title="檢視電腦鍵盤快捷鍵">
+                        <i class="fa-solid fa-keyboard text-indigo-600"></i>
+                        <span>快捷鍵</span>
+                    </button>
+
+                    <button @click="showFilterDrawer = !showFilterDrawer" 
+                            class="px-3 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 active:scale-95 transition flex items-center gap-1.5 text-xs font-bold shrink-0">
+                        <i class="fa-solid fa-sliders text-indigo-600"></i>
+                        <span>篩選</span>
+                        <span v-if="selectedChapter > 0 || statusFilter !== 'all' || selectedEpisode > 0" class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                    </button>
+                </div>
             </div>
 
-            <!-- Expandable Filter Drawer for Mobile -->
             <transition enter-active-class="transition duration-200 ease-out" enter-from-class="transform -translate-y-2 opacity-0" enter-to-class="transform translate-y-0 opacity-100" leave-active-class="transition duration-150 ease-in" leave-from-class="transform translate-y-0 opacity-100" leave-to-class="transform -translate-y-2 opacity-0">
-                <div v-if="showFilterDrawer" class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                <div v-if="showFilterDrawer" class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
                     <div>
-                        <label class="block font-bold text-slate-500 mb-1">選擇章節</label>
+                        <label class="block font-bold text-slate-500 mb-1">選擇章節 (Chapter)</label>
                         <select v-model="selectedChapter" @change="onFilterChange" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500">
                             <option :value="0">所有章節 (全 1,350 單字)</option>
                             <option :value="1">Ch 1: 職場核心詞彙 (1-400)</option>
@@ -105,38 +125,39 @@
                         <label class="block font-bold text-slate-500 mb-1">學習狀態過濾</label>
                         <select v-model="statusFilter" @change="onFilterChange" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500">
                             <option value="all">全部單字</option>
-                            <option value="starred">星號標記 ({{ starredIds.length }})</option>
-                            <option value="unmastered">尚未熟練 ({{ filteredWords.length - masteredIds.length }})</option>
-                            <option value="mastered">已熟練 ({{ masteredIds.length }})</option>
+                            <option value="starred">★ 星號標記 ({{ starredIds.length }})</option>
+                            <option value="unmastered">尚未熟練 ({{ filteredWords.length - masteredCountInFiltered }})</option>
+                            <option value="mastered">✓ 已熟練 ({{ masteredIds.length }})</option>
                         </select>
                     </div>
                 </div>
             </transition>
         </header>
 
-        <!-- Count Bar Pill -->
+        <!-- Dynamic Counter Bar -->
         <div class="flex items-center justify-between text-xs px-2 mb-2 text-slate-500 font-semibold">
             <span><i class="fa-solid fa-filter text-indigo-500 mr-1"></i>當前涵蓋範圍：<strong class="text-slate-800 font-extrabold">{{ filteredWords.length }}</strong> 字</span>
-            <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full text-[11px] font-bold">已熟練: {{ masteredCountInFiltered }}</span>
+            <div class="flex items-center gap-2">
+                <span class="bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full text-[11px] font-bold">已熟練: {{ masteredCountInFiltered }} / {{ filteredWords.length }}</span>
+            </div>
         </div>
 
-        <!-- MAIN CONTENT AREA -->
-        <main class="flex-1 flex flex-col justify-center">
+        <main class="flex-1 flex flex-col justify-center max-w-2xl mx-auto w-full">
 
-            <!-- 1. FLASHCARD MODE -->
+            <!-- 1. FLASHCARD MODE (閃卡記憶) -->
             <div v-if="activeMode === 'card'" class="flex flex-col items-center justify-center w-full my-auto">
                 
                 <div class="w-full flex items-center justify-between text-xs text-slate-500 font-bold mb-2 px-1">
                     <span>卡片 {{ currentCardIndex + 1 }} / {{ filteredWords.length }}</span>
                     <div class="flex items-center gap-3">
-                        <button @click="toggleStar(currentWord.id)" class="text-xl active:scale-125 transition-transform" :class="isStarred(currentWord.id) ? 'text-amber-400' : 'text-slate-300'">
+                        <button @click="toggleStar(currentWord.id)" class="text-xl active:scale-125 transition-transform" :class="isStarred(currentWord.id) ? 'text-amber-400' : 'text-slate-300 hover:text-slate-400'" title="按 S 鍵星號標記">
                             <i class="fa-solid fa-star"></i>
                         </button>
                         <span class="bg-slate-200 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-extrabold">#{{ currentWord.id }}</span>
                     </div>
                 </div>
 
-                <!-- Touch Friendly 3D Flip Card -->
+                <!-- Interactive 3D Flip Card -->
                 <div class="w-full h-80 sm:h-96 perspective-1000 cursor-pointer active:scale-[0.99] transition-transform" @click="isFlipped = !isFlipped">
                     <div class="w-full h-full transform-style-3d transition-transform duration-500 relative rounded-3xl shadow-lg border border-slate-200/80 bg-white" :class="{ 'rotate-y-180': isFlipped }">
                         
@@ -144,7 +165,7 @@
                         <div class="absolute inset-0 backface-hidden flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-white via-slate-50/50 to-indigo-50/20">
                             <div class="flex justify-between items-center">
                                 <span class="text-[11px] font-black tracking-wider uppercase text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">ENGLISH</span>
-                                <button @click.stop="speak(currentWord.word)" class="w-12 h-12 rounded-2xl bg-indigo-600 text-white active:scale-90 transition flex items-center justify-center shadow-md shadow-indigo-500/30 text-lg">
+                                <button @click.stop="speak(currentWord.word)" class="w-12 h-12 rounded-2xl bg-indigo-600 text-white hover:bg-indigo-700 active:scale-90 transition flex items-center justify-center shadow-md shadow-indigo-500/30 text-lg" title="發音">
                                     <i class="fa-solid fa-volume-high"></i>
                                 </button>
                             </div>
@@ -157,7 +178,7 @@
                             </div>
 
                             <div class="text-center text-[11px] font-bold text-slate-400 flex items-center justify-center gap-1">
-                                <i class="fa-solid fa-rotate text-indigo-500"></i> 點擊卡片任意處翻面查看中文釋義
+                                <i class="fa-solid fa-rotate text-indigo-500"></i> 點擊卡片翻面 (鍵盤：空白鍵翻面 / 左右方向鍵切換)
                             </div>
                         </div>
 
@@ -165,16 +186,16 @@
                         <div class="absolute inset-0 backface-hidden rotate-y-180 flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-slate-900 text-white shadow-xl">
                             <div class="flex justify-between items-center">
                                 <span class="text-[11px] font-bold tracking-wider uppercase text-emerald-400 bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700">CHINESE</span>
-                                <button @click.stop="speak(currentWord.enSentence)" class="w-11 h-11 rounded-xl bg-slate-800 text-emerald-400 hover:bg-emerald-500 hover:text-white transition flex items-center justify-center border border-slate-700 active:scale-90">
+                                <button @click.stop="speak(currentWord.enSentence)" class="w-11 h-11 rounded-xl bg-slate-800 text-emerald-400 hover:bg-emerald-500 hover:text-white transition flex items-center justify-center border border-slate-700 active:scale-90" title="朗讀例句">
                                     <i class="fa-solid fa-volume-high"></i>
                                 </button>
                             </div>
 
                             <div class="my-auto px-1">
                                 <h3 class="text-2xl sm:text-3xl font-extrabold text-emerald-400 text-center mb-3">{{ currentWord.chinese }}</h3>
-                                <div class="bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700/80 space-y-1.5 text-left max-h-40 overflow-y-auto no-scrollbar">
-                                    <p class="text-xs sm:text-sm text-slate-100 font-medium leading-relaxed">{{ currentWord.enSentence }}</p>
-                                    <p class="text-[11px] text-slate-400 border-t border-slate-700/80 pt-1.5 leading-normal">{{ currentWord.zhSentence }}</p>
+                                <div class="bg-slate-800/90 p-3.5 sm:p-4 rounded-2xl border border-slate-700/80 space-y-2 text-left max-h-40 overflow-y-auto no-scrollbar">
+                                    <p class="text-xs sm:text-sm text-slate-100 font-semibold leading-relaxed">{{ currentWord.enSentence }}</p>
+                                    <p class="text-[11px] sm:text-xs text-slate-400 border-t border-slate-700/80 pt-2 leading-normal">{{ currentWord.zhSentence }}</p>
                                 </div>
                             </div>
 
@@ -186,19 +207,19 @@
                     </div>
                 </div>
 
-                <!-- Controls -->
-                <div class="grid grid-cols-3 gap-2 w-full mt-4">
-                    <button @click="prevCard" class="py-3.5 rounded-2xl bg-white border border-slate-200 font-bold text-slate-700 active:scale-95 transition flex items-center justify-center gap-1.5 text-xs shadow-sm">
-                        <i class="fa-solid fa-arrow-left"></i> 上一個
+                <!-- Flashcard Controls -->
+                <div class="grid grid-cols-3 gap-2 sm:gap-3 w-full mt-4">
+                    <button @click="prevCard" class="py-3.5 rounded-2xl bg-white border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 active:scale-95 transition flex items-center justify-center gap-1.5 text-xs sm:text-sm shadow-sm">
+                        <i class="fa-solid fa-arrow-left"></i> <span class="hidden sm:inline">上一個</span> (←)
                     </button>
 
-                    <button @click="toggleMastered(currentWord.id)" :class="isMastered(currentWord.id) ? 'bg-emerald-600 text-white shadow-emerald-500/20' : 'bg-slate-200 text-slate-700'" class="py-3.5 rounded-2xl font-bold active:scale-95 transition flex items-center justify-center gap-1 text-xs shadow-sm">
+                    <button @click="toggleMastered(currentWord.id)" :class="isMastered(currentWord.id) ? 'bg-emerald-600 text-white shadow-emerald-500/20' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'" class="py-3.5 rounded-2xl font-bold active:scale-95 transition flex items-center justify-center gap-1 text-xs sm:text-sm shadow-sm" title="快捷鍵：按 M 鍵">
                         <i class="fa-solid" :class="isMastered(currentWord.id) ? 'fa-circle-check' : 'fa-check'"></i>
                         {{ isMastered(currentWord.id) ? '已熟練' : '標記熟練' }}
                     </button>
 
-                    <button @click="nextCard" class="py-3.5 rounded-2xl bg-indigo-600 font-bold text-white active:scale-95 transition flex items-center justify-center gap-1.5 text-xs shadow-lg shadow-indigo-500/25">
-                        下一個 <i class="fa-solid fa-arrow-right"></i>
+                    <button @click="nextCard" class="py-3.5 rounded-2xl bg-indigo-600 font-bold text-white hover:bg-indigo-700 active:scale-95 transition flex items-center justify-center gap-1.5 text-xs sm:text-sm shadow-lg shadow-indigo-500/25">
+                        <span class="hidden sm:inline">下一個</span> (→) <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
@@ -209,7 +230,7 @@
                     
                     <div class="flex justify-between items-center text-xs font-bold text-slate-400 mb-4 border-b border-slate-100 pb-2.5">
                         <span class="uppercase tracking-wider text-indigo-600 font-extrabold"><i class="fa-solid fa-circle-question mr-1"></i>筆試測驗 (4選1)</span>
-                        <div class="flex items-center gap-2.5">
+                        <div class="flex items-center gap-3">
                             <span class="text-emerald-600 font-extrabold"><i class="fa-solid fa-circle-check mr-1"></i>得分: {{ quizScore }}</span>
                             <span class="text-amber-500 font-extrabold"><i class="fa-solid fa-fire mr-1"></i>連對: {{ streak }}</span>
                         </div>
@@ -219,35 +240,38 @@
                         <span class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full mb-2 inline-block">請選擇正確中文釋義</span>
                         <div class="flex justify-center items-center gap-2 mb-1">
                             <h2 class="text-2xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ quizQuestion.word }}</h2>
-                            <button @click="speak(quizQuestion.word)" class="text-indigo-600 hover:text-indigo-800 text-lg p-1.5 active:scale-90">
+                            <button @click="speak(quizQuestion.word)" class="text-indigo-600 hover:text-indigo-800 text-lg p-1.5 active:scale-90" title="朗讀">
                                 <i class="fa-solid fa-volume-high"></i>
                             </button>
                         </div>
                         <p class="text-xs font-bold text-slate-500 bg-slate-100/80 inline-block px-2.5 py-1 rounded-lg">搭配詞: {{ quizQuestion.collocation }}</p>
                     </div>
 
-                    <!-- Options -->
-                    <div class="space-y-2.5 mb-5">
+                    <!-- Options Grid (1 Col Mobile, 2 Col Desktop) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-5">
                         <button v-for="(opt, idx) in quizOptions" :key="idx" 
                                 @click="selectQuizOption(opt)"
                                 :disabled="quizAnswered"
                                 :class="getQuizOptionClass(opt)"
-                                class="w-full text-left p-3.5 sm:p-4 rounded-2xl border-2 font-bold text-xs sm:text-sm transition-all flex items-center justify-between active:scale-[0.99] min-h-[50px]">
-                            <span>{{ opt.chinese }}</span>
-                            <i v-if="quizAnswered && opt.id === quizQuestion.id" class="fa-solid fa-circle-check text-emerald-600 text-lg shrink-0"></i>
-                            <i v-if="quizAnswered && selectedQuizOption === opt && opt.id !== quizQuestion.id" class="fa-solid fa-circle-xmark text-rose-600 text-lg shrink-0"></i>
+                                class="w-full text-left p-3.5 sm:p-4 rounded-2xl border-2 font-bold text-xs sm:text-sm transition-all flex items-center justify-between active:scale-[0.99] min-h-[52px]">
+                            <span class="flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-md bg-slate-200/80 text-slate-600 text-[10px] flex items-center justify-center font-extrabold shrink-0">{{ idx + 1 }}</span>
+                                <span>{{ opt.chinese }}</span>
+                            </span>
+                            <i v-if="quizAnswered && opt.id === quizQuestion.id" class="fa-solid fa-circle-check text-emerald-600 text-lg shrink-0 ml-1"></i>
+                            <i v-if="quizAnswered && selectedQuizOption === opt && opt.id !== quizQuestion.id" class="fa-solid fa-circle-xmark text-rose-600 text-lg shrink-0 ml-1"></i>
                         </button>
                     </div>
 
                     <!-- Explanation -->
-                    <div v-if="quizAnswered" class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 mb-4 text-xs space-y-1">
+                    <div v-if="quizAnswered" class="bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200 mb-4 text-xs space-y-1">
                         <p class="font-bold text-slate-700">完整例句解析：</p>
-                        <p class="text-slate-800 font-semibold">{{ quizQuestion.enSentence }}</p>
-                        <p class="text-slate-500">{{ quizQuestion.zhSentence }}</p>
+                        <p class="text-slate-800 font-semibold text-xs sm:text-sm">{{ quizQuestion.enSentence }}</p>
+                        <p class="text-slate-500 text-[11px] sm:text-xs">{{ quizQuestion.zhSentence }}</p>
                     </div>
 
-                    <button v-if="quizAnswered" @click="generateQuizQuestion" class="w-full py-3.5 bg-indigo-600 text-white font-extrabold rounded-2xl hover:bg-indigo-700 active:scale-98 transition shadow-lg shadow-indigo-500/25 text-sm">
-                        下一題 <i class="fa-solid fa-arrow-right ml-1"></i>
+                    <button v-if="quizAnswered" @click="generateQuizQuestion" class="w-full py-3.5 bg-indigo-600 text-white font-extrabold rounded-2xl hover:bg-indigo-700 active:scale-98 transition shadow-lg shadow-indigo-500/25 text-sm flex items-center justify-center gap-1">
+                        下一題 (Enter) <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
@@ -258,7 +282,7 @@
                     
                     <div class="flex justify-between items-center text-xs font-bold text-slate-400 mb-4 border-b border-slate-100 pb-2.5">
                         <span class="uppercase tracking-wider text-purple-600 font-extrabold"><i class="fa-solid fa-headphones mr-1"></i>聽音辨義 4選1</span>
-                        <div class="flex items-center gap-2.5">
+                        <div class="flex items-center gap-3">
                             <span class="text-emerald-600 font-extrabold"><i class="fa-solid fa-circle-check mr-1"></i>得分: {{ listeningScore }}</span>
                             <span class="text-purple-600 font-extrabold"><i class="fa-solid fa-fire mr-1"></i>連對: {{ listeningStreak }}</span>
                         </div>
@@ -268,46 +292,49 @@
                     <div class="text-center mb-6 flex flex-col items-center">
                         <span class="text-[11px] font-bold text-purple-600 bg-purple-50 px-2.5 py-0.5 rounded-full mb-3 inline-block">請聆聽發音並選擇正確中文釋義</span>
                         
-                        <button @click="speak(listeningQuestion.word)" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-indigo-600 to-purple-600 text-white text-3xl flex items-center justify-center shadow-lg shadow-indigo-500/30 active:scale-90 transition-all mb-3 pulse-audio">
+                        <button @click="speak(listeningQuestion.word)" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-600 to-violet-600 text-white text-3xl flex items-center justify-center shadow-lg shadow-purple-500/30 active:scale-90 hover:scale-105 transition-all mb-3 pulse-audio" title="播放語音">
                             <i class="fa-solid fa-volume-high"></i>
                         </button>
-                        <p class="text-[11px] text-slate-400 font-bold mb-2">點擊上方按鈕可重新播放發音</p>
+                        <p class="text-[11px] text-slate-400 font-bold mb-3">點擊上方按鈕可重新播放發音</p>
 
-                        <div class="h-8 flex items-center justify-center">
-                            <h2 v-if="listeningAnswered" class="text-xl sm:text-2xl font-black text-indigo-700 bg-indigo-50 px-3.5 py-1 rounded-xl">
+                        <div class="h-9 flex items-center justify-center">
+                            <h2 v-if="listeningAnswered" class="text-xl sm:text-2xl font-black text-purple-700 bg-purple-50 px-4 py-1.5 rounded-xl border border-purple-100">
                                 {{ listeningQuestion.word }}
                             </h2>
-                            <span v-else class="text-xs font-bold text-slate-400 bg-slate-100 px-4 py-1 rounded-full tracking-wider">
-                                🔊 [ 聽力測驗中 ]
+                            <span v-else class="text-xs font-bold text-slate-400 bg-slate-100 px-4 py-1.5 rounded-full tracking-wider">
+                                🔊 [ 聽力測驗中 題目隱藏 ]
                             </span>
                         </div>
                     </div>
 
-                    <!-- Options -->
-                    <div class="space-y-2.5 mb-5">
+                    <!-- Options Grid (1 Col Mobile, 2 Col Desktop) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-5">
                         <button v-for="(opt, idx) in listeningOptions" :key="idx" 
                                 @click="selectListeningOption(opt)"
                                 :disabled="listeningAnswered"
                                 :class="getListeningOptionClass(opt)"
-                                class="w-full text-left p-3.5 sm:p-4 rounded-2xl border-2 font-bold text-xs sm:text-sm transition-all flex items-center justify-between active:scale-[0.99] min-h-[50px]">
-                            <span>{{ opt.chinese }}</span>
-                            <i v-if="listeningAnswered && opt.id === listeningQuestion.id" class="fa-solid fa-circle-check text-emerald-600 text-lg shrink-0"></i>
-                            <i v-if="listeningAnswered && selectedListeningOption === opt && opt.id !== listeningQuestion.id" class="fa-solid fa-circle-xmark text-rose-600 text-lg shrink-0"></i>
+                                class="w-full text-left p-3.5 sm:p-4 rounded-2xl border-2 font-bold text-xs sm:text-sm transition-all flex items-center justify-between active:scale-[0.99] min-h-[52px]">
+                            <span class="flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-md bg-slate-200/80 text-slate-600 text-[10px] flex items-center justify-center font-extrabold shrink-0">{{ idx + 1 }}</span>
+                                <span>{{ opt.chinese }}</span>
+                            </span>
+                            <i v-if="listeningAnswered && opt.id === listeningQuestion.id" class="fa-solid fa-circle-check text-emerald-600 text-lg shrink-0 ml-1"></i>
+                            <i v-if="listeningAnswered && selectedListeningOption === opt && opt.id !== listeningQuestion.id" class="fa-solid fa-circle-xmark text-rose-600 text-lg shrink-0 ml-1"></i>
                         </button>
                     </div>
 
                     <!-- Explanation -->
-                    <div v-if="listeningAnswered" class="bg-purple-50/70 p-3.5 rounded-2xl border border-purple-100 mb-4 text-xs space-y-1">
-                        <div class="flex items-center gap-1.5 mb-1">
-                            <span class="font-extrabold text-purple-900 text-sm">{{ listeningQuestion.word }}</span>
+                    <div v-if="listeningAnswered" class="bg-purple-50/70 p-3.5 sm:p-4 rounded-2xl border border-purple-100 mb-4 text-xs space-y-1.5">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-black text-purple-900 text-sm sm:text-base">{{ listeningQuestion.word }}</span>
                             <span class="text-purple-700 font-bold bg-white px-2 py-0.5 rounded border border-purple-200 text-[10px]">{{ listeningQuestion.collocation }}</span>
                         </div>
-                        <p class="text-slate-800 font-medium">{{ listeningQuestion.enSentence }}</p>
-                        <p class="text-slate-500">{{ listeningQuestion.zhSentence }}</p>
+                        <p class="text-slate-800 font-semibold text-xs sm:text-sm">{{ listeningQuestion.enSentence }}</p>
+                        <p class="text-slate-500 text-[11px] sm:text-xs">{{ listeningQuestion.zhSentence }}</p>
                     </div>
 
-                    <button v-if="listeningAnswered" @click="generateListeningQuestion" class="w-full py-3.5 bg-purple-600 text-white font-extrabold rounded-2xl hover:bg-purple-700 active:scale-98 transition shadow-lg shadow-purple-500/25 text-sm">
-                        下一題 <i class="fa-solid fa-arrow-right ml-1"></i>
+                    <button v-if="listeningAnswered" @click="generateListeningQuestion" class="w-full py-3.5 bg-purple-600 text-white font-extrabold rounded-2xl hover:bg-purple-700 active:scale-98 transition shadow-lg shadow-purple-500/25 text-sm flex items-center justify-center gap-1">
+                        下一題 (Enter) <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
@@ -322,19 +349,19 @@
                     </div>
 
                     <div class="mb-4">
-                        <span class="text-[11px] font-bold text-violet-600 bg-violet-50 px-2.5 py-0.5 rounded-full mb-1.5 inline-block">請拼出正確英文單字</span>
+                        <span class="text-[11px] font-bold text-violet-600 bg-violet-50 px-2.5 py-0.5 rounded-full mb-2 inline-block">請拼出正確英文單字</span>
                         <h2 class="text-2xl sm:text-3xl font-black text-slate-800 mb-1">{{ spellingWord.chinese }}</h2>
                         <p class="text-xs font-bold text-slate-500">搭配詞提示: {{ spellingWord.collocation }}</p>
                     </div>
 
-                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 mb-4 text-left">
+                    <div class="bg-slate-50 p-3.5 sm:p-4 rounded-2xl border border-slate-200 mb-4 text-left">
                         <p class="text-[10px] text-slate-400 font-extrabold mb-1">例句填空提示：</p>
                         <p class="text-xs sm:text-sm text-slate-700 font-semibold leading-relaxed">
                             {{ spellingSentenceMasked }}
                         </p>
                     </div>
 
-                    <!-- Input form (Mobile Keyboard Friendly) -->
+                    <!-- Input form -->
                     <form @submit.prevent="checkSpelling" class="space-y-3">
                         <div class="relative">
                             <input v-model="spellingInput" 
@@ -346,23 +373,23 @@
                                    enterkeyhint="done"
                                    placeholder="輸入英文單字..."
                                    :disabled="spellingAnswered"
-                                   class="w-full text-center text-lg sm:text-xl font-extrabold tracking-wide py-3 px-4 border-2 border-slate-200 rounded-2xl focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none uppercase bg-white" />
-                            <button type="button" @click="speak(spellingWord.word)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 p-1">
+                                   class="w-full text-center text-lg sm:text-2xl font-extrabold tracking-wide py-3 px-4 border-2 border-slate-200 rounded-2xl focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none uppercase bg-white" />
+                            <button type="button" @click="speak(spellingWord.word)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 p-2" title="朗讀發音">
                                 <i class="fa-solid fa-volume-high text-lg"></i>
                             </button>
                         </div>
 
-                        <div v-if="spellingAnswered" class="p-3 rounded-xl text-xs font-bold text-left" :class="isSpellingCorrect ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'">
+                        <div v-if="spellingAnswered" class="p-3.5 rounded-2xl text-xs sm:text-sm font-bold text-left" :class="isSpellingCorrect ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'">
                             <span v-if="isSpellingCorrect"><i class="fa-solid fa-circle-check mr-1"></i>回答正確！非常棒！</span>
-                            <span v-else><i class="fa-solid fa-circle-xmark mr-1"></i>答錯囉！正確答案是: <strong class="underline font-black">{{ spellingWord.word }}</strong></span>
+                            <span v-else><i class="fa-solid fa-circle-xmark mr-1"></i>答錯囉！正確答案是: <strong class="underline font-black text-rose-800">{{ spellingWord.word }}</strong></span>
                         </div>
 
                         <div class="flex gap-2">
                             <button v-if="!spellingAnswered" type="submit" class="w-full py-3.5 bg-violet-600 text-white font-extrabold rounded-2xl hover:bg-violet-700 transition shadow-lg shadow-violet-500/25 active:scale-98 text-sm">
-                                送出答案
+                                送出答案 (Enter)
                             </button>
-                            <button v-else @click="generateSpellingQuestion" type="button" class="w-full py-3.5 bg-indigo-600 text-white font-extrabold rounded-2xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/25 active:scale-98 text-sm">
-                                下一題 <i class="fa-solid fa-arrow-right ml-1"></i>
+                            <button v-else @click="generateSpellingQuestion" type="button" class="w-full py-3.5 bg-indigo-600 text-white font-extrabold rounded-2xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/25 active:scale-98 text-sm flex items-center justify-center gap-1">
+                                下一題 (Enter) <i class="fa-solid fa-arrow-right"></i>
                             </button>
                         </div>
                     </form>
@@ -374,23 +401,23 @@
                 
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-3 mb-3 flex items-center gap-2">
                     <i class="fa-solid fa-magnifying-glass text-slate-400 ml-1"></i>
-                    <input v-model="searchQuery" type="text" placeholder="搜尋英文、中文釋義或搭配詞..." class="w-full bg-transparent outline-none text-xs sm:text-sm font-semibold text-slate-700">
-                    <button v-if="searchQuery" @click="searchQuery = ''" class="text-slate-400 hover:text-slate-600 text-xs px-1">
+                    <input v-model="searchQuery" type="text" placeholder="搜尋英文單字、中文釋義或搭配詞..." class="w-full bg-transparent outline-none text-xs sm:text-sm font-semibold text-slate-700">
+                    <button v-if="searchQuery" @click="searchQuery = ''" class="text-slate-400 hover:text-slate-600 text-xs px-2">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
-                    <div class="max-h-[62vh] overflow-y-auto divide-y divide-slate-100 no-scrollbar">
-                        <div v-for="item in displayedListWords" :key="item.id" class="p-3.5 hover:bg-slate-50 transition flex flex-col gap-2">
+                    <div class="max-h-[62vh] sm:max-h-[68vh] overflow-y-auto divide-y divide-slate-100 no-scrollbar p-1">
+                        <div v-for="item in displayedListWords" :key="item.id" class="p-3.5 hover:bg-slate-50/80 transition flex flex-col gap-2 rounded-xl">
                             
                             <div class="flex items-start justify-between gap-2">
                                 <div class="flex items-center gap-2 flex-wrap">
-                                    <button @click="toggleStar(item.id)" class="text-sm active:scale-125" :class="isStarred(item.id) ? 'text-amber-400' : 'text-slate-300'">
+                                    <button @click="toggleStar(item.id)" class="text-base active:scale-125 transition-transform" :class="isStarred(item.id) ? 'text-amber-400' : 'text-slate-300 hover:text-slate-400'">
                                         <i class="fa-solid fa-star"></i>
                                     </button>
                                     <span class="font-black text-slate-800 text-base sm:text-lg tracking-tight">{{ item.word }}</span>
-                                    <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">{{ item.collocation }}</span>
+                                    <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">{{ item.collocation }}</span>
                                     <span v-if="isMastered(item.id)" class="text-[9px] font-extrabold text-emerald-600 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">已熟練</span>
                                 </div>
 
@@ -398,16 +425,16 @@
                                     <button @click="speak(item.word)" class="p-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white active:scale-90 transition">
                                         <i class="fa-solid fa-volume-high text-xs"></i>
                                     </button>
-                                    <button @click="toggleMastered(item.id)" :class="isMastered(item.id) ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'" class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold active:scale-95 transition">
+                                    <button @click="toggleMastered(item.id)" :class="isMastered(item.id) ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold active:scale-95 transition">
                                         {{ isMastered(item.id) ? '已熟練' : '標記' }}
                                     </button>
                                 </div>
                             </div>
 
                             <div>
-                                <p class="text-xs font-black text-emerald-600 mb-1">{{ item.chinese }}</p>
-                                <p class="text-[11px] text-slate-700 font-medium leading-snug">{{ item.enSentence }}</p>
-                                <p class="text-[10px] text-slate-400 font-normal leading-snug">{{ item.zhSentence }}</p>
+                                <p class="text-xs sm:text-sm font-black text-emerald-600 mb-1">{{ item.chinese }}</p>
+                                <p class="text-[11px] sm:text-xs text-slate-700 font-semibold leading-snug">{{ item.enSentence }}</p>
+                                <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium leading-snug">{{ item.zhSentence }}</p>
                             </div>
 
                         </div>
@@ -418,7 +445,7 @@
 
         </main>
 
-        <!-- MOBILE BOTTOM NAV BAR (Fixed Thumb Access for Mobile) -->
+        <!-- MOBILE BOTTOM NAV BAR (Hidden on PC / Desktop) -->
         <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200/80 px-2 py-1.5 z-40 flex items-center justify-around shadow-lg pb-safe">
             
             <button @click="setMode('card')" 
@@ -458,6 +485,51 @@
 
         </nav>
 
+        <!-- PC KEYBOARD SHORTCUTS MODAL -->
+        <div v-if="showShortcutModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="showShortcutModal = false">
+            <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="text-base font-extrabold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-keyboard text-indigo-600"></i> 電腦版鍵盤快捷鍵說明
+                    </h3>
+                    <button @click="showShortcutModal = false" class="text-slate-400 hover:text-slate-600 p-1">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <div class="space-y-2.5 text-xs">
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl">
+                        <span class="font-bold text-slate-600">閃卡翻面</span>
+                        <kbd class="px-2 py-1 bg-white border border-slate-300 rounded-lg shadow-xs font-mono font-extrabold text-slate-800">Space 空白鍵</kbd>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl">
+                        <span class="font-bold text-slate-600">上一個 / 下一個單字</span>
+                        <kbd class="px-2 py-1 bg-white border border-slate-300 rounded-lg shadow-xs font-mono font-extrabold text-slate-800">← / → 方向鍵</kbd>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl">
+                        <span class="font-bold text-slate-600">選擇測驗選項 (4選1)</span>
+                        <kbd class="px-2 py-1 bg-white border border-slate-300 rounded-lg shadow-xs font-mono font-extrabold text-slate-800">1 / 2 / 3 / 4 數字鍵</kbd>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl">
+                        <span class="font-bold text-slate-600">切換星號標記</span>
+                        <kbd class="px-2 py-1 bg-white border border-slate-300 rounded-lg shadow-xs font-mono font-extrabold text-slate-800">S 鍵</kbd>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl">
+                        <span class="font-bold text-slate-600">切換熟練狀態</span>
+                        <kbd class="px-2 py-1 bg-white border border-slate-300 rounded-lg shadow-xs font-mono font-extrabold text-slate-800">M 鍵</kbd>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl">
+                        <span class="font-bold text-slate-600">拼字送出 / 下一題</span>
+                        <kbd class="px-2 py-1 bg-white border border-slate-300 rounded-lg shadow-xs font-mono font-extrabold text-slate-800">Enter 鍵</kbd>
+                    </div>
+                </div>
+
+                <button @click="showShortcutModal = false" class="w-full py-3 bg-indigo-600 text-white font-extrabold rounded-xl hover:bg-indigo-700 transition text-xs">
+                    我知道了
+                </button>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -479,7 +551,7 @@
             { id: 27, title: '數位科技', ch: 4 }
         ];
 
-        // Representative Genuine Core Dataset Seed
+        // Core Representative TOEIC Seed Words
         const coreSeed = [
             ['vacancy','職缺','have a vacancy','We have a vacancy for a senior accountant in our firm.','我們公司有一個資深會計的職缺。'],
             ['openings','職務空缺','job openings','You can check our website for the latest job openings.','您可以上我們的網站查看最新的職缺資訊。'],
@@ -514,7 +586,7 @@
             ['bandwidth','網路頻寬','high bandwidth','Our office needs high bandwidth for video calls.','我們辦公室進行視訊通話需要高頻寬。']
         ];
 
-        // GENERATE FULL 1,350 DATASET PROGRAMMATICALLY
+        // Programmatically generate 1,350 dataset
         const FULL_DATASET = [];
         for (let i = 1; i <= 1350; i++) {
             const seed = coreSeed[(i - 1) % coreSeed.length];
@@ -522,7 +594,7 @@
             const epNum = Math.ceil(i / 50);
             FULL_DATASET.push({
                 id: i,
-                word: i > coreSeed.length ? `${seed[0]}` : seed[0],
+                word: seed[0],
                 chinese: seed[1],
                 collocation: seed[2],
                 enSentence: seed[3],
@@ -544,6 +616,7 @@
                     statusFilter: 'all',
                     searchQuery: '',
                     showFilterDrawer: false,
+                    showShortcutModal: false,
 
                     // Flashcard state
                     currentCardIndex: 0,
@@ -616,6 +689,13 @@
                     return this.filteredWords.filter(w => this.isMastered(w.id)).length;
                 }
             },
+            mounted() {
+                // Register Keyboard Listeners for PC / Desktop Users
+                window.addEventListener('keydown', this.handleKeyDown);
+            },
+            beforeUnmount() {
+                window.removeEventListener('keydown', this.handleKeyDown);
+            },
             methods: {
                 setMode(mode) {
                     this.activeMode = mode;
@@ -660,11 +740,56 @@
                 },
                 nextCard() {
                     this.isFlipped = false;
+                    if (this.filteredWords.length === 0) return;
                     this.currentCardIndex = (this.currentCardIndex + 1) % this.filteredWords.length;
                 },
                 prevCard() {
                     this.isFlipped = false;
+                    if (this.filteredWords.length === 0) return;
                     this.currentCardIndex = (this.currentCardIndex - 1 + this.filteredWords.length) % this.filteredWords.length;
+                },
+
+                // PC Keyboard Shortcuts Event Handler
+                handleKeyDown(e) {
+                    // Do not trigger shortcuts if user is typing in search or spelling input
+                    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+
+                    if (this.activeMode === 'card') {
+                        if (e.code === 'Space') {
+                            e.preventDefault();
+                            this.isFlipped = !this.isFlipped;
+                        } else if (e.code === 'ArrowRight') {
+                            e.preventDefault();
+                            this.nextCard();
+                        } else if (e.code === 'ArrowLeft') {
+                            e.preventDefault();
+                            this.prevCard();
+                        } else if (e.code === 'KeyS') {
+                            e.preventDefault();
+                            if (this.currentWord.id) this.toggleStar(this.currentWord.id);
+                        } else if (e.code === 'KeyM') {
+                            e.preventDefault();
+                            if (this.currentWord.id) this.toggleMastered(this.currentWord.id);
+                        }
+                    } else if (this.activeMode === 'quiz') {
+                        if (!this.quizAnswered && ['Digit1', 'Digit2', 'Digit3', 'Digit4'].includes(e.code)) {
+                            const idx = parseInt(e.code.replace('Digit', '')) - 1;
+                            if (this.quizOptions[idx]) this.selectQuizOption(this.quizOptions[idx]);
+                        } else if (this.quizAnswered && e.code === 'Enter') {
+                            this.generateQuizQuestion();
+                        }
+                    } else if (this.activeMode === 'listening') {
+                        if (!this.listeningAnswered && ['Digit1', 'Digit2', 'Digit3', 'Digit4'].includes(e.code)) {
+                            const idx = parseInt(e.code.replace('Digit', '')) - 1;
+                            if (this.listeningOptions[idx]) this.selectListeningOption(this.listeningOptions[idx]);
+                        } else if (this.listeningAnswered && e.code === 'Enter') {
+                            this.generateListeningQuestion();
+                        }
+                    } else if (this.activeMode === 'spelling') {
+                        if (this.spellingAnswered && e.code === 'Enter') {
+                            this.generateSpellingQuestion();
+                        }
+                    }
                 },
 
                 // 4選1 筆試
