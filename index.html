@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>TOEIC 1350 多益單字聽力特訓台 (全裝置相容版)</title>
-    <!-- Tailwind CSS -->
+    <title>TOEIC 1350 多益單字聽力特訓台 (全裝置相容版 + AI自然語音)</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Vue 3 CDN -->
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
@@ -57,7 +55,9 @@
                             <h1 class="text-base sm:text-xl font-extrabold bg-gradient-to-r from-indigo-700 via-indigo-600 to-purple-600 bg-clip-text text-transparent leading-tight">
                                 TOEIC 1350 特訓台
                             </h1>
-                            <span class="hidden sm:inline-block bg-indigo-50 text-indigo-700 text-[10px] font-black px-2 py-0.5 rounded-full border border-indigo-100">PC/平板/手機全支援</span>
+                            <span class="hidden sm:inline-block bg-purple-50 text-purple-700 text-[10px] font-black px-2 py-0.5 rounded-full border border-purple-100">
+                                <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Gemini AI 語音版
+                            </span>
                         </div>
                         <p class="text-[11px] text-slate-500 font-medium">聽力．職場．差旅．商務全收錄</p>
                     </div>
@@ -82,13 +82,24 @@
                     </button>
                 </nav>
 
-                <!-- Action Controls (PC Keyboard Shortcut Modal & Filter Toggle) -->
+                <!-- Action Controls (AI Voice Toggle & Filter) -->
                 <div class="flex items-center gap-2">
+                    <!-- AI 語音切換鈕 -->
+                    <button @click="toggleVoiceEngine" 
+                            class="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-bold active:scale-95 transition border"
+                            :class="voiceEngine === 'ai' ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-purple-500 shadow-md shadow-purple-500/20' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'" 
+                            :title="voiceEngine === 'ai' ? '使用 Gemini AI 真人自然語音' : '使用瀏覽器原生語音'">
+                        <i class="fa-solid" :class="isAudioLoading ? 'fa-spinner fa-spin' : (voiceEngine === 'ai' ? 'fa-wand-magic-sparkles' : 'fa-volume-high')"></i>
+                        <span class="hidden sm:inline">{{ voiceEngine === 'ai' ? 'AI 自然語音' : '原生語音' }}</span>
+                    </button>
+
+                    <!-- PC 鍵盤快捷鍵 Modal 鈕 -->
                     <button @click="showShortcutModal = true" class="hidden lg:flex items-center gap-1 px-2.5 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold active:scale-95 transition" title="檢視電腦鍵盤快捷鍵">
                         <i class="fa-solid fa-keyboard text-indigo-600"></i>
                         <span>快捷鍵</span>
                     </button>
 
+                    <!-- 篩選抽屜鈕 -->
                     <button @click="showFilterDrawer = !showFilterDrawer" 
                             class="px-3 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 active:scale-95 transition flex items-center gap-1.5 text-xs font-bold shrink-0">
                         <i class="fa-solid fa-sliders text-indigo-600"></i>
@@ -99,9 +110,9 @@
             </div>
 
             <transition enter-active-class="transition duration-200 ease-out" enter-from-class="transform -translate-y-2 opacity-0" enter-to-class="transform translate-y-0 opacity-100" leave-active-class="transition duration-150 ease-in" leave-from-class="transform translate-y-0 opacity-100" leave-to-class="transform -translate-y-2 opacity-0">
-                <div v-if="showFilterDrawer" class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                <div v-if="showFilterDrawer" class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-4 gap-2.5 text-xs">
                     <div>
-                        <label class="block font-bold text-slate-500 mb-1">選擇章節 (Chapter)</label>
+                        <label class="block font-bold text-slate-500 mb-1">章節 (Chapter)</label>
                         <select v-model="selectedChapter" @change="onFilterChange" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500">
                             <option :value="0">所有章節 (全 1,350 單字)</option>
                             <option :value="1">Ch 1: 職場核心詞彙 (1-400)</option>
@@ -122,12 +133,22 @@
                     </div>
 
                     <div>
-                        <label class="block font-bold text-slate-500 mb-1">學習狀態過濾</label>
+                        <label class="block font-bold text-slate-500 mb-1">學習狀態</label>
                         <select v-model="statusFilter" @change="onFilterChange" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2 font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500">
                             <option value="all">全部單字</option>
                             <option value="starred">★ 星號標記 ({{ starredIds.length }})</option>
                             <option value="unmastered">尚未熟練 ({{ filteredWords.length - masteredCountInFiltered }})</option>
                             <option value="mastered">✓ 已熟練 ({{ masteredIds.length }})</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-purple-600 mb-1"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>AI 聲線風格</label>
+                        <select v-model="aiVoiceName" class="w-full bg-purple-50 border border-purple-200 rounded-xl px-2.5 py-2 font-bold text-purple-900 outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="Aoede">Aoede (清亮自然女音)</option>
+                            <option value="Zephyr">Zephyr (陽光明亮男音)</option>
+                            <option value="Puck">Puck (活力輕快聲音)</option>
+                            <option value="Kore">Kore (專業自信語調)</option>
                         </select>
                     </div>
                 </div>
@@ -138,13 +159,13 @@
         <div class="flex items-center justify-between text-xs px-2 mb-2 text-slate-500 font-semibold">
             <span><i class="fa-solid fa-filter text-indigo-500 mr-1"></i>當前涵蓋範圍：<strong class="text-slate-800 font-extrabold">{{ filteredWords.length }}</strong> 字</span>
             <div class="flex items-center gap-2">
+                <span v-if="isAudioLoading" class="text-purple-600 font-bold animate-pulse text-[11px]"><i class="fa-solid fa-spinner fa-spin mr-1"></i>AI 語音生成中...</span>
                 <span class="bg-indigo-50 text-indigo-700 px-2.5 py-0.5 rounded-full text-[11px] font-bold">已熟練: {{ masteredCountInFiltered }} / {{ filteredWords.length }}</span>
             </div>
         </div>
 
         <main class="flex-1 flex flex-col justify-center max-w-2xl mx-auto w-full">
 
-            <!-- 1. FLASHCARD MODE (閃卡記憶) -->
             <div v-if="activeMode === 'card'" class="flex flex-col items-center justify-center w-full my-auto">
                 
                 <div class="w-full flex items-center justify-between text-xs text-slate-500 font-bold mb-2 px-1">
@@ -166,7 +187,7 @@
                             <div class="flex justify-between items-center">
                                 <span class="text-[11px] font-black tracking-wider uppercase text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100">ENGLISH</span>
                                 <button @click.stop="speak(currentWord.word)" class="w-12 h-12 rounded-2xl bg-indigo-600 text-white hover:bg-indigo-700 active:scale-90 transition flex items-center justify-center shadow-md shadow-indigo-500/30 text-lg" title="發音">
-                                    <i class="fa-solid fa-volume-high"></i>
+                                    <i class="fa-solid" :class="isAudioLoading ? 'fa-spinner fa-spin' : 'fa-volume-high'"></i>
                                 </button>
                             </div>
                             
@@ -187,7 +208,7 @@
                             <div class="flex justify-between items-center">
                                 <span class="text-[11px] font-bold tracking-wider uppercase text-emerald-400 bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700">CHINESE</span>
                                 <button @click.stop="speak(currentWord.enSentence)" class="w-11 h-11 rounded-xl bg-slate-800 text-emerald-400 hover:bg-emerald-500 hover:text-white transition flex items-center justify-center border border-slate-700 active:scale-90" title="朗讀例句">
-                                    <i class="fa-solid fa-volume-high"></i>
+                                    <i class="fa-solid" :class="isAudioLoading ? 'fa-spinner fa-spin' : 'fa-volume-high'"></i>
                                 </button>
                             </div>
 
@@ -224,7 +245,6 @@
                 </div>
             </div>
 
-            <!-- 2. QUIZ MODE (4選1筆試) -->
             <div v-else-if="activeMode === 'quiz'" class="w-full my-auto">
                 <div v-if="quizQuestion" class="bg-white rounded-3xl shadow-lg border border-slate-200/80 p-5 sm:p-7">
                     
@@ -241,13 +261,13 @@
                         <div class="flex justify-center items-center gap-2 mb-1">
                             <h2 class="text-2xl sm:text-4xl font-black text-slate-800 tracking-tight">{{ quizQuestion.word }}</h2>
                             <button @click="speak(quizQuestion.word)" class="text-indigo-600 hover:text-indigo-800 text-lg p-1.5 active:scale-90" title="朗讀">
-                                <i class="fa-solid fa-volume-high"></i>
+                                <i class="fa-solid" :class="isAudioLoading ? 'fa-spinner fa-spin' : 'fa-volume-high'"></i>
                             </button>
                         </div>
                         <p class="text-xs font-bold text-slate-500 bg-slate-100/80 inline-block px-2.5 py-1 rounded-lg">搭配詞: {{ quizQuestion.collocation }}</p>
                     </div>
 
-                    <!-- Options Grid (1 Col Mobile, 2 Col Desktop) -->
+                    <!-- Options Grid -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-5">
                         <button v-for="(opt, idx) in quizOptions" :key="idx" 
                                 @click="selectQuizOption(opt)"
@@ -276,7 +296,6 @@
                 </div>
             </div>
 
-            <!-- 3. LISTENING CHALLENGE MODE (聽力特訓 4選1) -->
             <div v-else-if="activeMode === 'listening'" class="w-full my-auto">
                 <div v-if="listeningQuestion" class="bg-white rounded-3xl shadow-lg border border-slate-200/80 p-5 sm:p-7">
                     
@@ -290,10 +309,10 @@
 
                     <!-- Audio Trigger Center -->
                     <div class="text-center mb-6 flex flex-col items-center">
-                        <span class="text-[11px] font-bold text-purple-600 bg-purple-50 px-2.5 py-0.5 rounded-full mb-3 inline-block">請聆聽發音並選擇正確中文釋義</span>
+                        <span class="text-[11px] font-bold text-purple-600 bg-purple-50 px-2.5 py-0.5 rounded-full mb-3 inline-block">請聆聽真人發音並選擇正確中文釋義</span>
                         
                         <button @click="speak(listeningQuestion.word)" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-indigo-600 via-purple-600 to-violet-600 text-white text-3xl flex items-center justify-center shadow-lg shadow-purple-500/30 active:scale-90 hover:scale-105 transition-all mb-3 pulse-audio" title="播放語音">
-                            <i class="fa-solid fa-volume-high"></i>
+                            <i class="fa-solid" :class="isAudioLoading ? 'fa-spinner fa-spin' : 'fa-volume-high'"></i>
                         </button>
                         <p class="text-[11px] text-slate-400 font-bold mb-3">點擊上方按鈕可重新播放發音</p>
 
@@ -307,7 +326,7 @@
                         </div>
                     </div>
 
-                    <!-- Options Grid (1 Col Mobile, 2 Col Desktop) -->
+                    <!-- Options Grid -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-5">
                         <button v-for="(opt, idx) in listeningOptions" :key="idx" 
                                 @click="selectListeningOption(opt)"
@@ -339,7 +358,6 @@
                 </div>
             </div>
 
-            <!-- 4. SPELLING MODE (拼字神射手) -->
             <div v-else-if="activeMode === 'spelling'" class="w-full my-auto">
                 <div v-if="spellingWord" class="bg-white rounded-3xl shadow-lg border border-slate-200/80 p-5 sm:p-7 text-center">
                     
@@ -375,7 +393,7 @@
                                    :disabled="spellingAnswered"
                                    class="w-full text-center text-lg sm:text-2xl font-extrabold tracking-wide py-3 px-4 border-2 border-slate-200 rounded-2xl focus:border-violet-500 focus:ring-2 focus:ring-violet-200 outline-none uppercase bg-white" />
                             <button type="button" @click="speak(spellingWord.word)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 p-2" title="朗讀發音">
-                                <i class="fa-solid fa-volume-high text-lg"></i>
+                                <i class="fa-solid" :class="isAudioLoading ? 'fa-spinner fa-spin' : 'fa-volume-high'"></i>
                             </button>
                         </div>
 
@@ -396,7 +414,6 @@
                 </div>
             </div>
 
-            <!-- 5. LIST MODE (單字總庫) -->
             <div v-else-if="activeMode === 'list'" class="w-full">
                 
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-3 mb-3 flex items-center gap-2">
@@ -423,7 +440,7 @@
 
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <button @click="speak(item.word)" class="p-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white active:scale-90 transition">
-                                        <i class="fa-solid fa-volume-high text-xs"></i>
+                                        <i class="fa-solid" :class="isAudioLoading ? 'fa-spinner fa-spin' : 'fa-volume-high'"></i>
                                     </button>
                                     <button @click="toggleMastered(item.id)" :class="isMastered(item.id) ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold active:scale-95 transition">
                                         {{ isMastered(item.id) ? '已熟練' : '標記' }}
@@ -445,7 +462,6 @@
 
         </main>
 
-        <!-- MOBILE BOTTOM NAV BAR (Hidden on PC / Desktop) -->
         <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200/80 px-2 py-1.5 z-40 flex items-center justify-around shadow-lg pb-safe">
             
             <button @click="setMode('card')" 
@@ -485,7 +501,6 @@
 
         </nav>
 
-        <!-- PC KEYBOARD SHORTCUTS MODAL -->
         <div v-if="showShortcutModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="showShortcutModal = false">
             <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4">
                 <div class="flex justify-between items-center border-b pb-3">
@@ -533,6 +548,56 @@
     </div>
 
     <script>
+        // Helper function: Convert PCM16 array to WAV Blob for Gemini Audio API
+        function pcmToWav(pcm16Array, sampleRate) {
+            const numChannels = 1;
+            const bitsPerSample = 16;
+            const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+            const blockAlign = numChannels * (bitsPerSample / 8);
+            const dataSize = pcm16Array.length * 2;
+            const chunkSize = 36 + dataSize;
+
+            const buffer = new ArrayBuffer(44 + dataSize);
+            const view = new DataView(buffer);
+
+            function writeString(view, offset, string) {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            }
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, chunkSize, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, byteRate, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, bitsPerSample, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataSize, true);
+
+            let offset = 44;
+            for (let i = 0; i < pcm16Array.length; i++, offset += 2) {
+                view.setInt16(offset, pcm16Array[i], true);
+            }
+
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
         // EPISODE TAXONOMY META
         const EPISODE_META = [
             { id: 1, title: '招募與應徵', ch: 1 }, { id: 2, title: '薪酬福利與保險', ch: 1 },
@@ -551,7 +616,7 @@
             { id: 27, title: '數位科技', ch: 4 }
         ];
 
-        // Core Representative TOEIC Seed Words
+        // Core Seed Words
         const coreSeed = [
             ['vacancy','職缺','have a vacancy','We have a vacancy for a senior accountant in our firm.','我們公司有一個資深會計的職缺。'],
             ['openings','職務空缺','job openings','You can check our website for the latest job openings.','您可以上我們的網站查看最新的職缺資訊。'],
@@ -617,6 +682,12 @@
                     searchQuery: '',
                     showFilterDrawer: false,
                     showShortcutModal: false,
+
+                    // Voice Engine Control
+                    voiceEngine: 'ai', // 'ai' or 'browser'
+                    aiVoiceName: 'Aoede', // 'Aoede', 'Zephyr', 'Puck', 'Kore'
+                    isAudioLoading: false,
+                    audioCache: new Map(),
 
                     // Flashcard state
                     currentCardIndex: 0,
@@ -692,11 +763,121 @@
             mounted() {
                 // Register Keyboard Listeners for PC / Desktop Users
                 window.addEventListener('keydown', this.handleKeyDown);
+
+                // Initialize Speech Synthesis Voices (Browser Fallback)
+                this.initVoices();
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.onvoiceschanged = () => {
+                        this.initVoices();
+                    };
+                }
             },
             beforeUnmount() {
                 window.removeEventListener('keydown', this.handleKeyDown);
             },
             methods: {
+                initVoices() {
+                    if ('speechSynthesis' in window) {
+                        const voices = window.speechSynthesis.getVoices();
+                        this.englishVoice = voices.find(v => v.lang === 'en-US') || 
+                                           voices.find(v => v.lang.startsWith('en')) || null;
+                    }
+                },
+                toggleVoiceEngine() {
+                    this.voiceEngine = this.voiceEngine === 'ai' ? 'browser' : 'ai';
+                },
+
+                async speak(text) {
+                    if (!text) return;
+
+                    // If AI voice mode is active
+                    if (this.voiceEngine === 'ai') {
+                        const cacheKey = `${this.aiVoiceName}:${text}`;
+                        if (this.audioCache.has(cacheKey)) {
+                            const audio = this.audioCache.get(cacheKey);
+                            audio.currentTime = 0;
+                            audio.play().catch(e => this.fallbackBrowserSpeak(text));
+                            return;
+                        }
+
+                        this.isAudioLoading = true;
+                        try {
+                            const apiKey = "";
+                            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+                            const payload = {
+                                contents: [{
+                                    parts: [{ text: `Say clearly in a natural American English accent: ${text}` }]
+                                }],
+                                generationConfig: {
+                                    responseModalities: ["AUDIO"],
+                                    speechConfig: {
+                                        voiceConfig: {
+                                            prebuiltVoiceConfig: { voiceName: this.aiVoiceName }
+                                        }
+                                    }
+                                }
+                            };
+
+                            const res = await fetch(apiUrl, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
+
+                            const data = await res.json();
+                            const part = data?.candidates?.[0]?.content?.parts?.[0];
+                            const audioData = part?.inlineData?.data;
+                            const mimeType = part?.inlineData?.mimeType || "";
+
+                            if (audioData) {
+                                let sampleRate = 24000;
+                                const match = mimeType.match(/rate=(\d+)/);
+                                if (match) sampleRate = parseInt(match[1], 10);
+
+                                const pcmData = base64ToArrayBuffer(audioData);
+                                const pcm16 = new Int16Array(pcmData);
+                                const wavBlob = pcmToWav(pcm16, sampleRate);
+                                const audioUrl = URL.createObjectURL(wavBlob);
+                                const audio = new Audio(audioUrl);
+
+                                this.audioCache.set(cacheKey, audio);
+                                audio.play();
+                            } else {
+                                this.fallbackBrowserSpeak(text);
+                            }
+                        } catch (err) {
+                            console.warn("AI TTS Request failed, fallback to Browser TTS:", err);
+                            this.fallbackBrowserSpeak(text);
+                        } finally {
+                            this.isAudioLoading = false;
+                        }
+                    } else {
+                        this.fallbackBrowserSpeak(text);
+                    }
+                },
+
+                fallbackBrowserSpeak(text) {
+                    if (!text) return;
+                    if ('speechSynthesis' in window) {
+                        try {
+                            window.speechSynthesis.cancel();
+                            
+                            const utterance = new SpeechSynthesisUtterance(text);
+                            utterance.lang = 'en-US';
+                            utterance.rate = 0.88;
+                            utterance.pitch = 1.0;
+                            
+                            if (this.englishVoice) {
+                                utterance.voice = this.englishVoice;
+                            }
+                            
+                            window.speechSynthesis.speak(utterance);
+                        } catch (err) {
+                            console.warn("Browser Speech Error:", err);
+                        }
+                    }
+                },
+
                 setMode(mode) {
                     this.activeMode = mode;
                     this.showFilterDrawer = false;
@@ -710,15 +891,6 @@
                     if (this.activeMode === 'quiz') this.generateQuizQuestion();
                     if (this.activeMode === 'listening') this.generateListeningQuestion();
                     if (this.activeMode === 'spelling') this.generateSpellingQuestion();
-                },
-                speak(text) {
-                    if ('speechSynthesis' in window) {
-                        window.speechSynthesis.cancel();
-                        const utterance = new SpeechSynthesisUtterance(text);
-                        utterance.lang = 'en-US';
-                        utterance.rate = 0.9;
-                        window.speechSynthesis.speak(utterance);
-                    }
                 },
                 isStarred(id) { return this.starredIds.includes(id); },
                 isMastered(id) { return this.masteredIds.includes(id); },
@@ -751,7 +923,6 @@
 
                 // PC Keyboard Shortcuts Event Handler
                 handleKeyDown(e) {
-                    // Do not trigger shortcuts if user is typing in search or spelling input
                     if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
 
                     if (this.activeMode === 'card') {
@@ -850,10 +1021,7 @@
                     }
                     this.listeningOptions = options.sort(() => Math.random() - 0.5);
 
-                    // Auto-play TTS audio upon generating question
-                    setTimeout(() => {
-                        this.speak(this.listeningQuestion.word);
-                    }, 250);
+                    this.speak(this.listeningQuestion.word);
                 },
                 selectListeningOption(opt) {
                     this.selectedListeningOption = opt;
@@ -868,7 +1036,7 @@
                 },
                 getListeningOptionClass(opt) {
                     if (!this.listeningAnswered) {
-                        return 'bg-slate-50 border-slate-200 text-slate-700 hover:border-purple-500 hover:bg-purple-50/50';
+                        return 'bg-purple-50/50 border-purple-100 text-purple-900 hover:border-purple-500 hover:bg-purple-50';
                     }
                     if (opt.id === this.listeningQuestion.id) {
                         return 'bg-emerald-50 border-emerald-500 text-emerald-800 font-extrabold';
@@ -883,13 +1051,24 @@
                 generateSpellingQuestion() {
                     this.spellingAnswered = false;
                     this.spellingInput = '';
+                    this.isSpellingCorrect = false;
                     const pool = this.filteredWords.length > 0 ? this.filteredWords : this.words;
-                    this.spellingWord = pool[Math.floor(Math.random() * pool.length)];
+                    const rand = pool[Math.floor(Math.random() * pool.length)];
+                    this.spellingWord = rand;
+
+                    this.$nextTick(() => {
+                        if (this.$refs.spellingInputRef) {
+                            this.$refs.spellingInputRef.focus();
+                        }
+                    });
                 },
                 checkSpelling() {
                     if (!this.spellingInput.trim() || this.spellingAnswered) return;
                     this.spellingAnswered = true;
-                    if (this.spellingInput.trim().toLowerCase() === this.spellingWord.word.toLowerCase()) {
+                    const userAns = this.spellingInput.trim().toLowerCase();
+                    const correctAns = this.spellingWord.word.trim().toLowerCase();
+
+                    if (userAns === correctAns) {
                         this.isSpellingCorrect = true;
                         this.spellingScore += 10;
                         this.speak(this.spellingWord.word);
