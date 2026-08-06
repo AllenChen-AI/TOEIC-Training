@@ -175,6 +175,7 @@
 
         <main class="flex-1 flex flex-col justify-center max-w-2xl mx-auto w-full">
 
+            <!-- Mode 1: Flashcard Mode -->
             <div v-if="activeMode === 'card'" class="flex flex-col items-center justify-center w-full my-auto">
                 
                 <div class="w-full flex items-center justify-between text-xs text-slate-500 font-bold mb-2 px-1">
@@ -254,6 +255,7 @@
                 </div>
             </div>
 
+            <!-- Mode 2: Quiz Mode -->
             <div v-else-if="activeMode === 'quiz'" class="w-full my-auto">
                 <div v-if="quizQuestion" class="bg-white rounded-3xl shadow-lg border border-slate-200/80 p-5 sm:p-7">
                     
@@ -305,6 +307,7 @@
                 </div>
             </div>
 
+            <!-- Mode 3: Listening Mode -->
             <div v-else-if="activeMode === 'listening'" class="w-full my-auto">
                 <div v-if="listeningQuestion" class="bg-white rounded-3xl shadow-lg border border-slate-200/80 p-5 sm:p-7">
                     
@@ -367,6 +370,7 @@
                 </div>
             </div>
 
+            <!-- Mode 4: Spelling Challenge -->
             <div v-else-if="activeMode === 'spelling'" class="w-full my-auto">
                 <div v-if="spellingWord" class="bg-white rounded-3xl shadow-lg border border-slate-200/80 p-5 sm:p-7 text-center">
                     
@@ -423,6 +427,7 @@
                 </div>
             </div>
 
+            <!-- Mode 5: Word List Mode -->
             <div v-else-if="activeMode === 'list'" class="w-full">
                 
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-3 mb-3 flex items-center gap-2">
@@ -471,6 +476,7 @@
 
         </main>
 
+        <!-- Mobile Bottom Navigation Bar -->
         <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200/80 px-2 py-1.5 z-40 flex items-center justify-around shadow-lg pb-safe">
             
             <button @click="setMode('card')" 
@@ -509,6 +515,7 @@
             </button>
 
         </nav>
+
         <!-- 鍵盤快捷鍵 Modal -->
         <div v-if="showShortcutModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="showShortcutModal = false">
             <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4">
@@ -520,6 +527,35 @@
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
+
+                <div class="space-y-2 text-xs text-slate-600">
+                    <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                        <span class="font-bold">空白鍵 (Space)</span>
+                        <span class="text-slate-500">閃卡記憶模式下卡片翻面</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                        <span class="font-bold">方向鍵 (← / →)</span>
+                        <span class="text-slate-500">切換上 / 下一張卡片</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                        <span class="font-bold">數字鍵 (1 / 2 / 3 / 4)</span>
+                        <span class="text-slate-500">筆試與聽力測驗快速選擇選項</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                        <span class="font-bold">S 鍵 / M 鍵</span>
+                        <span class="text-slate-500">星號標記 / 標記已熟練</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
+                        <span class="font-bold">Enter 鍵</span>
+                        <span class="text-slate-500">送出拼字 / 跳至下一題</span>
+                    </div>
+                </div>
+
+                <button @click="showShortcutModal = false" class="w-full py-3 bg-slate-800 text-white font-extrabold rounded-xl hover:bg-slate-900 transition text-xs shadow-md">
+                    我知道了
+                </button>
+            </div>
+        </div>
 
         <!-- Gemini API Key 設定 Modal -->
         <div v-if="showApiKeyModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="showApiKeyModal = false">
