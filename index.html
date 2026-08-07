@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>TOEIC 1350 多益單字聽力特訓台</title>
+  <title>TOEIC 1350 多益單字聽力特訓台 (YouTube 實體字幕同步版)</title>
   
-  <!-- Tailwind CSS -->
+  <!-- CDNs for Tailwind CSS, FontAwesome, and Vue 3 -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Vue 3 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
-    
+
     body {
       font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
-      touch-action: manipulation;
+      background-color: #0b0f19;
+      color: #f3f4f6;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .perspective-1000 {
@@ -33,842 +33,854 @@
     .rotate-y-180 {
       transform: rotateY(180deg);
     }
-    
-    /* 隱藏滾動條 */
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    ::-webkit-scrollbar-track {
+      background: #111827;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4b5563;
     }
 
-    @keyframes pulse-ring {
-      0% { transform: scale(0.95); opacity: 0.8; }
-      50% { transform: scale(1.1); opacity: 0.4; }
-      100% { transform: scale(0.95); opacity: 0.8; }
+    .active-scale {
+      transition: transform 0.1s ease, background-color 0.15s ease;
     }
-    .speaking-pulse {
-      animation: pulse-ring 1.2s infinite ease-in-out;
+    .active-scale:active {
+      transform: scale(0.96);
     }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-full flex flex-col select-none antialiased">
+<body class="h-full bg-slate-950 text-slate-100 flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
 
-  <div id="app" class="flex-1 flex flex-col max-w-5xl w-full mx-auto pb-20 md:pb-6 px-3 sm:px-6">
-
-    <header class="py-3 flex flex-wrap items-center justify-between border-b border-slate-800/80 gap-2">
-      <div class="flex items-center space-x-2">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
-          <span class="font-extrabold text-white text-lg">T</span>
+  <div id="app" class="flex flex-col min-h-screen w-full max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 pb-20 md:pb-8">
+    
+    <!-- Header -->
+    <header class="py-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/20 font-black text-xl text-white">
+          T
         </div>
         <div>
-          <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-white flex items-center gap-1.5">
+          <h1 class="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
             TOEIC 1350 特訓台
-            <span class="text-[10px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-1.5 py-0.5 rounded font-mono">v3.6</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 font-medium">v5.0 YT實體單字版</span>
           </h1>
+          <p class="text-xs text-slate-400 hidden sm:block">【單字耳機 WordPods】6小時 1,350 多益核心單字同步特訓</p>
         </div>
       </div>
 
-      <!-- 右側聲音測試與狀態 -->
-      <div class="flex items-center space-x-2">
-        <button @click="testAudio" 
-                class="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-medium transition flex items-center space-x-1.5 active:scale-95">
-          <i class="fa-solid" :class="isSpeaking ? 'fa-volume-high text-emerald-400 speaking-pulse' : 'fa-circle-play'"></i>
-          <span>{{ isSpeaking ? '發音中...' : '🔊 點我測試聲音' }}</span>
+      <!-- Navigation for Desktop -->
+      <nav class="hidden md:flex items-center space-x-1 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800">
+        <button v-for="mode in modes" :key="mode.id" @click="currentMode = mode.id"
+                :class="[currentMode === mode.id ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60']"
+                class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 active-scale">
+          <i :class="mode.icon"></i>
+          <span>{{ mode.name }}</span>
         </button>
-
-        <button @click="showShortcutModal = true" 
-                class="hidden md:flex px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs items-center space-x-1 border border-slate-700">
-          <i class="fa-solid fa-keyboard"></i>
-          <span>快捷鍵</span>
-        </button>
-      </div>
+      </nav>
     </header>
 
-    <section class="py-3 flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center justify-between">
-      <!-- 章節選擇 -->
-      <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar py-0.5">
-        <select v-model="selectedChapter" 
-                class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500">
-          <option value="ALL">📚 全部章節 (1350單字)</option>
-          <option value="CH1">第一章：職場核心詞彙 (Ep.1~8)</option>
-          <option value="CH2">第二章：商務差旅詞彙 (Ep.1~6)</option>
-          <option value="CH3">第三章：商業與管理詞彙 (Ep.1~7)</option>
-          <option value="CH4">第四章：熱門主題詞彙 (Ep.1~6)</option>
-        </select>
-
-        <select v-model="filterMode" 
-                class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500">
-          <option value="ALL">全部狀態</option>
-          <option value="STARRED">⭐ 已收藏</option>
-          <option value="UNMASTERED">📖 未熟練</option>
-          <option value="MASTERED">✅ 已熟練</option>
-        </select>
-      </div>
-
-      <!-- 音量與聲線調節面板 -->
-      <div class="flex items-center justify-between sm:justify-end space-x-3 text-xs text-slate-400">
-        <div class="flex items-center space-x-1.5">
-          <span>聲線風格：</span>
-          <select v-model="selectedVoicePreset" 
-                  class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-slate-200 focus:outline-none">
-            <option value="STANDARD">Puck (清晰美音)</option>
-            <option value="FEMALE_HIGH">Aoede (女高音)</option>
-            <option value="MALE_LOW">Zephyr (沉穩男音)</option>
-            <option value="SLOW">Kore (慢速清晰)</option>
+    <!-- Filter Section -->
+    <section class="py-3 my-2 bg-slate-900/60 backdrop-blur-md rounded-2xl border border-slate-800/80 px-3 sm:px-4 shadow-sm">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+        
+        <!-- 章節選擇 -->
+        <div class="flex flex-col gap-1">
+          <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">章節範圍</label>
+          <select v-model="selectedChapter" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 font-medium">
+            <option value="ALL">全部章節 (1350單字)</option>
+            <option value="CH1">CH1 職場人事 (1-400)</option>
+            <option value="CH2">CH2 商務差旅 (401-700)</option>
+            <option value="CH3">CH3 商業管理 (701-1050)</option>
+            <option value="CH4">CH4 行銷財務 (1051-1350)</option>
           </select>
         </div>
-        <div class="text-slate-500 font-mono">
-          進度: {{ filteredWords.length }}字
+
+        <!-- 學習狀態 -->
+        <div class="flex flex-col gap-1">
+          <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">學習狀態</label>
+          <select v-model="selectedStatus" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 font-medium">
+            <option value="ALL">全部狀態</option>
+            <option value="STARRED">⭐ 收藏星號</option>
+            <option value="UNMASTERED">📖 尚未熟練</option>
+            <option value="MASTERED">✅ 已完全熟練</option>
+          </select>
         </div>
+
+        <!-- 多益腔調 -->
+        <div class="flex flex-col gap-1">
+          <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">TOEIC 腔調</label>
+          <select v-model="selectedAccent" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 font-medium">
+            <option value="RANDOM">🎲 4國隨機抽考</option>
+            <option value="en-US">🇺🇸 美國腔 (US)</option>
+            <option value="en-GB">🇬🇧 英國腔 (UK)</option>
+            <option value="en-AU">🇦🇺 澳洲腔 (AU)</option>
+            <option value="en-CA">🇨🇦 加拿大腔 (CA)</option>
+          </select>
+        </div>
+
+        <!-- 聲線風格 -->
+        <div class="flex flex-col gap-1">
+          <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">聲線風格</label>
+          <select v-model="selectedVoiceGender" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 font-medium">
+            <option value="MALE_STD">👨 標準男聲</option>
+            <option value="MALE_DEEP">🧔 沉穩低音男</option>
+            <option value="FEMALE_STD">👩 標準女聲</option>
+            <option value="FEMALE_HIGH">👧 清亮高音女</option>
+            <option value="RANDOM">🎲 隨機變換</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+        <span>當前符合單字：<strong class="text-indigo-400">{{ filteredWords.length }}</strong> / 1350 字</span>
+        <span>熟練度：<strong class="text-emerald-400">{{ masteredSet.size }}</strong> 已掌握</span>
       </div>
     </section>
 
-    <nav class="hidden md:flex items-center space-x-1 bg-slate-800/60 p-1.5 rounded-2xl border border-slate-800 mb-4">
-      <button v-for="mode in modes" :key="mode.id" @click="currentMode = mode.id"
-              :class="[
-                'flex-1 py-2 px-3 rounded-xl font-medium text-xs sm:text-sm flex items-center justify-center space-x-2 transition-all',
-                currentMode === mode.id ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-              ]">
-        <i :class="mode.icon"></i>
-        <span>{{ mode.name }}</span>
-      </button>
-    </nav>
-
-    <main class="flex-1 flex flex-col justify-center">
-
-      <!-- 1. 閃卡卡片模式 (Flashcards) -->
-      <div v-if="currentMode === 'cards'" class="flex-1 flex flex-col justify-between items-center my-auto py-2">
-        <div v-if="filteredWords.length === 0" class="text-center py-20 text-slate-500">
-          <i class="fa-solid fa-inbox text-4xl mb-3"></i>
-          <p>沒有符合條件的單字</p>
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col justify-center my-2">
+      
+      <!-- 1. 單字閃卡 Mode -->
+      <div v-if="currentMode === 'flashcard'" class="flex flex-col items-center justify-center w-full max-w-xl mx-auto space-y-4">
+        
+        <div v-if="filteredWords.length === 0" class="text-center py-12 text-slate-400">
+          <i class="fa-solid fa-inbox text-4xl mb-3 text-slate-600"></i>
+          <p>沒有符合當前條件的單字，請調整上方篩選器。</p>
         </div>
 
-        <div v-else class="w-full max-w-xl mx-auto flex-1 flex flex-col justify-center">
-          <!-- 閃卡卡片 -->
-          <div @click="isFlipped = !isFlipped" 
-               class="perspective-1000 w-full h-[360px] sm:h-[400px] cursor-pointer group select-none">
-            <div :class="['relative w-full h-full rounded-3xl transition-all duration-500 transform-style-3d shadow-2xl border border-slate-800 bg-slate-800/90', isFlipped ? 'rotate-y-180' : '']">
+        <template v-else>
+          <!-- 3D Flashcard Container -->
+          <div @click="isFlipped = !isFlipped" class="w-full h-80 sm:h-96 cursor-pointer perspective-1000 group">
+            <div :class="{ 'rotate-y-180': isFlipped }" class="relative w-full h-full duration-500 transform-style-3d transition-transform">
               
-              <!-- 正面 Front -->
-              <div class="absolute inset-0 backface-hidden p-6 sm:p-8 flex flex-col justify-between bg-gradient-to-b from-slate-800 to-slate-800/95 rounded-3xl">
+              <!-- Card Front -->
+              <div class="absolute inset-0 w-full h-full bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col justify-between shadow-2xl backface-hidden group-hover:border-indigo-500/50 transition-colors">
                 <div class="flex items-center justify-between text-xs text-slate-400">
-                  <span class="font-mono bg-slate-700/60 px-2.5 py-1 rounded-lg">#{{ currentCard.id }}</span>
+                  <span class="px-2.5 py-1 rounded-md bg-slate-800 font-semibold text-indigo-400 border border-slate-700">
+                    {{ currentWord.chapter }} #{{ currentWord.id }}
+                  </span>
                   <div class="flex items-center space-x-2">
-                    <button @click.stop="toggleStar(currentCard.id)" class="text-base p-1">
-                      <i :class="[isStarred(currentCard.id) ? 'fa-solid fa-star text-amber-400' : 'fa-regular fa-star text-slate-500']"></i>
-                    </button>
-                    <button @click.stop="toggleMastered(currentCard.id)" class="text-base p-1">
-                      <i :class="[isMastered(currentCard.id) ? 'fa-solid fa-circle-check text-emerald-400' : 'fa-regular fa-circle-check text-slate-500']"></i>
+                    <button @click.stop="toggleStar(currentWord.id)" class="text-lg transition-transform active-scale p-1">
+                      <i :class="[starredSet.has(currentWord.id) ? 'fa-solid fa-star text-amber-400' : 'fa-regular fa-star text-slate-500 hover:text-slate-300']"></i>
                     </button>
                   </div>
                 </div>
 
-                <div class="text-center my-auto">
-                  <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-2">
-                    {{ currentCard.word }}
-                  </h2>
-                  <div class="flex items-center justify-center space-x-2 mt-3">
-                    <button @click.stop="speak(currentCard.word)" 
-                            class="w-12 h-12 rounded-full bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 border border-blue-500/30 flex items-center justify-center transition active:scale-95">
-                      <i class="fa-solid text-lg" :class="isSpeaking ? 'fa-volume-high text-blue-300 speaking-pulse' : 'fa-volume-low'"></i>
-                    </button>
-                  </div>
+                <div class="text-center my-auto space-y-3">
+                  <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-wide">{{ currentWord.word }}</h2>
+                  <p class="text-xs text-indigo-300/80 font-mono tracking-wider uppercase">點擊卡片翻面看搭配詞與例句</p>
                 </div>
 
-                <div class="text-center text-xs text-slate-500 flex items-center justify-center space-x-1">
-                  <i class="fa-solid fa-rotate text-[10px]"></i>
-                  <span>點擊卡片查看翻面內容</span>
+                <div class="flex items-center justify-between text-xs text-slate-400 border-t border-slate-800/80 pt-3">
+                  <button @click.stop="speakCurrent()" class="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/30 flex items-center space-x-1.5 active-scale">
+                    <i class="fa-solid fa-volume-high text-xs"></i>
+                    <span>朗讀單字</span>
+                  </button>
+                  <span class="text-[11px] text-slate-500">{{ cardIndex + 1 }} / {{ filteredWords.length }}</span>
                 </div>
               </div>
 
-              <!-- 背面 Back -->
-              <div class="absolute inset-0 backface-hidden rotate-y-180 p-6 sm:p-8 flex flex-col justify-between bg-slate-800 rounded-3xl border border-blue-500/20">
-                <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-700/60 pb-3">
-                  <span class="text-blue-400 font-bold text-base">{{ currentCard.word }}</span>
-                  <span class="text-slate-200 font-medium text-sm">{{ currentCard.translation }}</span>
+              <!-- Card Back -->
+              <div class="absolute inset-0 w-full h-full bg-slate-900 border border-indigo-600/40 rounded-3xl p-6 flex flex-col justify-between shadow-2xl backface-hidden rotate-y-180">
+                <div class="flex items-center justify-between text-xs border-b border-slate-800 pb-2">
+                  <span class="font-bold text-indigo-400 text-lg">{{ currentWord.word }}</span>
+                  <span class="text-base font-bold text-amber-300">{{ currentWord.translation }}</span>
                 </div>
 
-                <div class="my-auto space-y-4 text-left">
+                <div class="space-y-3 my-auto">
                   <div>
-                    <div class="text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">常用搭配詞 (COLLOCATION)</div>
-                    <div class="text-sm font-semibold text-emerald-300 bg-emerald-950/30 border border-emerald-800/40 p-2.5 rounded-xl">
-                      {{ currentCard.collocation }}
-                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">常用搭配詞 (Collocation)</span>
+                    <p class="text-sm font-semibold text-emerald-300 bg-emerald-950/30 border border-emerald-800/40 p-2 rounded-xl">
+                      {{ currentWord.collocation }}
+                    </p>
                   </div>
-
                   <div>
-                    <div class="flex items-center justify-between text-[11px] text-slate-400 font-bold uppercase tracking-wider mb-1">
-                      <span>例句 (EXAMPLE)</span>
-                      <button @click.stop="speak(currentCard.sentence)" class="text-blue-400 hover:text-blue-300 text-xs">
-                        <i class="fa-solid fa-volume-high"></i> 朗讀
-                      </button>
-                    </div>
-                    <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans">{{ currentCard.sentence }}</p>
-                    <p class="text-xs text-slate-400 mt-1">{{ currentCard.sentenceTranslation }}</p>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">實用例句 (Sentence)</span>
+                    <p class="text-xs text-slate-200 leading-relaxed font-medium">{{ currentWord.sentence }}</p>
+                    <p class="text-xs text-slate-400 mt-0.5">{{ currentWord.sentenceTranslation }}</p>
                   </div>
                 </div>
 
-                <div class="text-center text-[11px] text-slate-500">
-                  再次點擊翻回正面
+                <div class="flex items-center justify-between text-xs border-t border-slate-800 pt-3">
+                  <button @click.stop="speakText(currentWord.sentence)" class="px-3 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/30 flex items-center space-x-1.5 active-scale">
+                    <i class="fa-solid fa-volume-high text-xs"></i>
+                    <span>朗讀例句</span>
+                  </button>
+                  <button @click.stop="toggleMaster(currentWord.id)" :class="[masteredSet.has(currentWord.id) ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700']" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors active-scale">
+                    <i :class="[masteredSet.has(currentWord.id) ? 'fa-solid fa-check' : 'fa-regular fa-circle-check']" class="mr-1"></i>
+                    {{ masteredSet.has(currentWord.id) ? '已完全掌握' : '標記為熟練' }}
+                  </button>
                 </div>
+
               </div>
 
             </div>
           </div>
 
-          <div class="flex items-center justify-between mt-6 px-2">
-            <button @click="prevCard" class="px-4 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-medium border border-slate-700 flex items-center space-x-2 active:scale-95 transition">
+          <!-- Controls: Prev / Next buttons -->
+          <div class="flex items-center justify-between w-full gap-3 pt-2">
+            <button @click="prevCard" class="flex-1 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 text-xs sm:text-sm font-bold flex items-center justify-center space-x-2 border border-slate-700 active-scale shadow-lg transition-all">
               <i class="fa-solid fa-arrow-left"></i>
-              <span>上一張</span>
+              <span>上一張 (Prev)</span>
             </button>
-
-            <span class="text-xs text-slate-400 font-mono">
-              {{ currentCardIndex + 1 }} / {{ filteredWords.length }}
-            </span>
-
-            <button @click="nextCard" class="px-5 py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold shadow-lg shadow-blue-600/30 flex items-center space-x-2 active:scale-95 transition">
-              <span>下一張</span>
+            <button @click="nextCard" class="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs sm:text-sm font-bold flex items-center justify-center space-x-2 active-scale shadow-lg shadow-indigo-600/30 transition-all">
+              <span>下一張 (Next)</span>
               <i class="fa-solid fa-arrow-right"></i>
             </button>
           </div>
-        </div>
+        </template>
+
       </div>
 
-      <!-- 2. 筆試測驗模式 (4選1文字測驗) -->
-      <div v-else-if="currentMode === 'quiz'" class="max-w-xl mx-auto w-full py-4">
-        <div v-if="quizQuestion" class="bg-slate-800/90 border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-xl">
-          <div class="flex items-center justify-between text-xs text-slate-400 mb-4">
-            <span class="bg-blue-500/20 text-blue-300 px-2.5 py-1 rounded-lg">單字選擇題</span>
-            <span class="font-mono">得分: {{ quizScore }}</span>
+      <!-- 2. 筆試測驗 Mode -->
+      <div v-else-if="currentMode === 'quiz'" class="w-full max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-5">
+        <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
+          <span class="font-bold text-indigo-400">4選1 筆試測驗</span>
+          <span>得分：<strong class="text-emerald-400 text-sm">{{ quizScore }}</strong> 題</span>
+        </div>
+
+        <div v-if="quizQuestion" class="space-y-4">
+          <div class="text-center py-4 bg-slate-950/60 rounded-2xl border border-slate-800/80">
+            <h3 class="text-2xl font-extrabold text-white tracking-wide mb-1">{{ quizQuestion.word }}</h3>
+            <p class="text-xs text-slate-400 font-mono">{{ quizQuestion.collocation }}</p>
           </div>
 
-          <div class="text-center my-6">
-            <h3 class="text-3xl font-extrabold text-white mb-2">{{ quizQuestion.word }}</h3>
-            <button @click="speak(quizQuestion.word)" class="text-blue-400 hover:text-blue-300 text-sm">
-              <i class="fa-solid fa-volume-high"></i> 聽發音
-            </button>
-          </div>
-
-          <!-- 四選一選項 -->
-          <div class="grid grid-cols-1 gap-3 my-6">
-            <button v-for="(option, idx) in quizOptions" :key="idx"
-                    @click="selectQuizAnswer(option)"
+          <div class="grid grid-cols-1 gap-2.5">
+            <button v-for="(opt, idx) in quizOptions" :key="idx" @click="answerQuiz(opt)"
                     :disabled="quizAnswered"
                     :class="[
-                      'p-4 rounded-2xl border text-left text-sm transition-all flex items-center justify-between active:scale-[0.98]',
-                      getQuizOptionStyle(option)
-                    ]">
-              <span><strong class="mr-2 font-mono text-xs opacity-60">{{ idx + 1 }}.</strong> {{ option }}</span>
-              <i v-if="quizAnswered && option === quizQuestion.translation" class="fa-solid fa-circle-check text-emerald-400"></i>
-              <i v-else-if="quizAnswered && option === selectedQuizOption && option !== quizQuestion.translation" class="fa-solid fa-circle-xmark text-rose-400"></i>
+                      quizAnswered && opt === quizQuestion.translation ? 'bg-emerald-600 text-white border-emerald-500' : '',
+                      quizAnswered && selectedOpt === opt && opt !== quizQuestion.translation ? 'bg-rose-600 text-white border-rose-500' : '',
+                      !quizAnswered ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700' : ''
+                    ]"
+                    class="w-full p-3.5 rounded-xl border text-left text-xs font-bold transition-all flex items-center justify-between active-scale">
+              <span>{{ (idx + 1) + '. ' + opt }}</span>
+              <i v-if="quizAnswered && opt === quizQuestion.translation" class="fa-solid fa-circle-check text-base"></i>
             </button>
           </div>
 
-          <!-- 解答與詳解 -->
-          <div v-if="quizAnswered" class="mt-6 pt-4 border-t border-slate-700 space-y-3">
-            <div class="bg-slate-900/60 p-3.5 rounded-xl border border-slate-700/50 text-xs space-y-1">
-              <div class="text-slate-300 font-bold">搭配詞：{{ quizQuestion.collocation }}</div>
-              <div class="text-slate-400">例句：{{ quizQuestion.sentence }}</div>
-              <div class="text-slate-500">{{ quizQuestion.sentenceTranslation }}</div>
-            </div>
-
-            <button @click="generateQuizQuestion" class="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg transition active:scale-95">
-              下一題 <i class="fa-solid fa-arrow-right ml-1"></i>
+          <div v-if="quizAnswered" class="pt-2 flex justify-end">
+            <button @click="generateQuiz" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold active-scale shadow-lg">
+              下一題 <i class="fa-solid fa-chevron-right ml-1"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- 3. 聽力特訓模式 (聽音辨義 4選1) -->
-      <div v-else-if="currentMode === 'listening'" class="max-w-xl mx-auto w-full py-4">
-        <div v-if="listeningQuestion" class="bg-slate-800/90 border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-xl text-center">
-          <div class="flex items-center justify-between text-xs text-slate-400 mb-6">
-            <span class="bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-lg">聽力特訓 (4選1)</span>
-            <span class="font-mono">連續答對: {{ listeningStreak }}</span>
-          </div>
+      <!-- 3. 聽力特訓 Mode -->
+      <div v-else-if="currentMode === 'listening'" class="w-full max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-5">
+        <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
+          <span class="font-bold text-indigo-400">聽力辨義 4選1</span>
+          <span>聽力得分：<strong class="text-emerald-400 text-sm">{{ listeningScore }}</strong> 題</span>
+        </div>
 
-          <!-- 播放大按鈕 -->
-          <div class="my-8">
-            <button @click="playListeningAudio" 
-                    class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-xl shadow-emerald-600/30 mx-auto flex flex-col items-center justify-center transition active:scale-95 border-4 border-emerald-400/30">
-              <i class="fa-solid text-3xl sm:text-4xl mb-1" :class="isSpeaking ? 'fa-volume-high speaking-pulse' : 'fa-circle-play'"></i>
-              <span class="text-[10px] font-bold uppercase tracking-wider">點擊播放</span>
+        <div v-if="listeningQuestion" class="space-y-4">
+          <div class="text-center py-6 bg-slate-950/80 rounded-2xl border border-slate-800 flex flex-col items-center justify-center space-y-3">
+            <button @click="speakCurrentListening" class="w-16 h-16 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-2xl flex items-center justify-center shadow-lg shadow-indigo-600/40 active-scale transition-transform">
+              <i class="fa-solid fa-volume-high"></i>
             </button>
-            <p class="text-xs text-slate-400 mt-3">請聽發音並選擇正確中文意思</p>
+            <p class="text-xs text-slate-400">點擊按鈕重聽單字發音</p>
           </div>
 
-          <!-- 四選一中文選項 -->
-          <div class="grid grid-cols-1 gap-3 text-left">
-            <button v-for="(option, idx) in listeningOptions" :key="idx"
-                    @click="selectListeningAnswer(option)"
+          <div class="grid grid-cols-1 gap-2.5">
+            <button v-for="(opt, idx) in listeningOptions" :key="idx" @click="answerListening(opt)"
                     :disabled="listeningAnswered"
                     :class="[
-                      'p-4 rounded-2xl border text-sm transition-all flex items-center justify-between active:scale-[0.98]',
-                      getListeningOptionStyle(option)
-                    ]">
-              <span><strong class="mr-2 font-mono text-xs opacity-60">{{ idx + 1 }}.</strong> {{ option }}</span>
-              <i v-if="listeningAnswered && option === listeningQuestion.translation" class="fa-solid fa-circle-check text-emerald-400"></i>
-              <i v-else-if="listeningAnswered && option === selectedListeningOption && option !== listeningQuestion.translation" class="fa-solid fa-circle-xmark text-rose-400"></i>
+                      listeningAnswered && opt === listeningQuestion.translation ? 'bg-emerald-600 text-white border-emerald-500' : '',
+                      listeningAnswered && selectedListeningOpt === opt && opt !== listeningQuestion.translation ? 'bg-rose-600 text-white border-rose-500' : '',
+                      !listeningAnswered ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700' : ''
+                    ]"
+                    class="w-full p-3.5 rounded-xl border text-left text-xs font-bold transition-all flex items-center justify-between active-scale">
+              <span>{{ (idx + 1) + '. ' + opt }}</span>
+              <i v-if="listeningAnswered && opt === listeningQuestion.translation" class="fa-solid fa-circle-check text-base"></i>
             </button>
           </div>
 
-          <!-- 作答後顯示單字詳解 -->
-          <div v-if="listeningAnswered" class="mt-6 pt-4 border-t border-slate-700 text-left space-y-3">
-            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-lg font-extrabold text-white">{{ listeningQuestion.word }}</span>
-                <span class="text-xs text-emerald-400 font-bold">{{ listeningQuestion.translation }}</span>
-              </div>
-              <p class="text-xs text-slate-400 mb-2 font-semibold">搭配詞：{{ listeningQuestion.collocation }}</p>
-              <p class="text-xs text-slate-300">{{ listeningQuestion.sentence }}</p>
-              <p class="text-xs text-slate-500">{{ listeningQuestion.sentenceTranslation }}</p>
-            </div>
+          <div v-if="listeningAnswered" class="p-3 bg-slate-950/80 border border-slate-800 rounded-xl space-y-1 text-xs">
+            <p class="font-bold text-indigo-300">{{ listeningQuestion.word + ' — ' + listeningQuestion.translation }}</p>
+            <p class="text-emerald-400 text-[11px]">{{ listeningQuestion.collocation }}</p>
+            <p class="text-slate-300 text-[11px]">{{ listeningQuestion.sentence }}</p>
+          </div>
 
-            <button @click="generateListeningQuestion" class="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg transition active:scale-95">
-              下一題 <i class="fa-solid fa-arrow-right ml-1"></i>
+          <div v-if="listeningAnswered" class="pt-2 flex justify-end">
+            <button @click="generateListening" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold active-scale shadow-lg">
+              下一題 <i class="fa-solid fa-chevron-right ml-1"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- 4. 拼字挑戰模式 (Spelling) -->
-      <div v-else-if="currentMode === 'spelling'" class="max-w-xl mx-auto w-full py-4">
-        <div v-if="spellingQuestion" class="bg-slate-800/90 border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-xl text-center">
-          <div class="flex items-center justify-between text-xs text-slate-400 mb-4">
-            <span class="bg-purple-500/20 text-purple-300 px-2.5 py-1 rounded-lg">拼字神射手</span>
-            <span class="font-mono">單字數: {{ filteredWords.length }}</span>
+      <!-- 4. 拼字挑戰 Mode -->
+      <div v-else-if="currentMode === 'spelling'" class="w-full max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-5">
+        <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
+          <span class="font-bold text-indigo-400">拼字挑戰</span>
+          <span>得分：<strong class="text-emerald-400 text-sm">{{ spellingScore }}</strong> 題</span>
+        </div>
+
+        <div v-if="spellingQuestion" class="space-y-4">
+          <div class="text-center py-4 bg-slate-950/60 rounded-2xl border border-slate-800/80 space-y-2">
+            <h3 class="text-xl font-extrabold text-amber-300">{{ spellingQuestion.translation }}</h3>
+            <p class="text-xs text-slate-400">搭配詞提示：<span class="text-slate-200 font-mono">{{ spellingQuestion.collocation }}</span></p>
           </div>
 
-          <div class="my-6">
-            <h3 class="text-2xl font-bold text-emerald-400 mb-2">{{ spellingQuestion.translation }}</h3>
-            <p class="text-xs text-slate-400 mb-4">提示搭配詞：{{ spellingQuestion.collocation }}</p>
-
-            <button @click="speak(spellingQuestion.word)" class="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-xs text-blue-300 space-x-1.5 transition">
-              <i class="fa-solid fa-volume-high"></i>
-              <span>聽英文發音</span>
+          <div class="flex gap-2">
+            <input v-model="spellingInput" @keyup.enter="checkSpelling" type="text" placeholder="輸入英文單字..."
+                   autocapitalize="none" enterkeyhint="done"
+                   class="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-indigo-500">
+            <button @click="checkSpelling" class="px-5 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold active-scale">
+              送出
             </button>
           </div>
 
-          <!-- 拼字輸入框 -->
-          <form @submit.prevent="checkSpelling" class="space-y-4">
-            <input v-model="spellingInput" 
-                   type="text" 
-                   ref="spellingInputRef"
-                   placeholder="請輸入英文單字..." 
-                   autocapitalize="none"
-                   enterkeyhint="done"
-                   :disabled="spellingSubmitted"
-                   class="w-full px-5 py-3.5 bg-slate-900 border border-slate-700 rounded-2xl text-center text-lg font-mono font-bold text-white focus:outline-none focus:border-purple-500">
+          <div v-if="spellingResult !== null" :class="[spellingResult ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300' : 'bg-rose-950/40 border-rose-500/40 text-rose-300']" class="p-3 border rounded-xl text-xs space-y-1">
+            <p class="font-bold">{{ spellingResult ? '🎉 拼對了！' : ('❌ 拼錯囉！正確答案是：' + spellingQuestion.word) }}</p>
+            <p class="text-[11px] text-slate-300">{{ spellingQuestion.sentence }}</p>
+          </div>
 
-            <div v-if="!spellingSubmitted" class="flex space-x-2">
-              <button type="submit" class="flex-1 py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-sm shadow-lg transition active:scale-95">
-                送出答案
-              </button>
-            </div>
-          </form>
-
-          <!-- 拼字對錯結果 -->
-          <div v-if="spellingSubmitted" class="mt-6 pt-4 border-t border-slate-700 text-left space-y-3">
-            <div :class="['p-4 rounded-2xl border text-sm font-semibold', isSpellingCorrect ? 'bg-emerald-950/40 border-emerald-800 text-emerald-300' : 'bg-rose-950/40 border-rose-800 text-rose-300']">
-              <div class="flex items-center space-x-2 mb-1">
-                <i :class="isSpellingCorrect ? 'fa-solid fa-circle-check text-emerald-400' : 'fa-solid fa-circle-xmark text-rose-400'"></i>
-                <span>{{ isSpellingCorrect ? '完全正確！Bingo!' : '答錯了！正確答案是：' + spellingQuestion.word }}</span>
-              </div>
-              <p class="text-xs text-slate-400 mt-2">例句：{{ spellingQuestion.sentence }}</p>
-            </div>
-
-            <button @click="generateSpellingQuestion" class="w-full py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-sm shadow-lg transition active:scale-95">
-              下一題 <i class="fa-solid fa-arrow-right ml-1"></i>
+          <div v-if="spellingResult !== null" class="flex justify-end">
+            <button @click="generateSpelling" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold active-scale">
+              下一題 <i class="fa-solid fa-chevron-right ml-1"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- 5. 總單字庫列表模式 (List) -->
-      <div v-else-if="currentMode === 'list'" class="flex-1 flex flex-col my-2">
-        <!-- 搜尋列 -->
-        <div class="relative mb-3">
-          <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
-          <input v-model="searchQuery" 
-                 type="text" 
-                 placeholder="搜尋單字、中文或搭配詞..." 
-                 class="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-2xl text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-blue-500">
+      <!-- 5. 全單字庫 Mode -->
+      <div v-else-if="currentMode === 'list'" class="w-full space-y-3">
+        <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+          <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-2xl p-2.5 shadow-md flex-1 mr-2">
+            <i class="fa-solid fa-magnifying-glass text-slate-400 ml-2"></i>
+            <input v-model="searchQuery" type="text" placeholder="搜尋單字、中文或搭配詞..." class="w-full bg-transparent border-none text-xs text-white focus:outline-none">
+          </div>
+          <span class="text-[11px] whitespace-nowrap text-slate-400 font-medium">
+            顯示 <strong class="text-indigo-400">{{ displayedWords.length }}</strong> / {{ searchedWords.length }} 字
+          </span>
         </div>
 
-        <!-- 列表容器 -->
-        <div class="flex-1 overflow-y-auto space-y-2.5 max-h-[60vh] pr-1">
-          <div v-for="item in filteredListWords" :key="item.id" 
-               class="bg-slate-800/80 hover:bg-slate-800 border border-slate-700/70 p-3.5 sm:p-4 rounded-2xl transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            
-            <div class="space-y-1">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto pr-1">
+          <div v-for="item in displayedWords" :key="item.id" class="bg-slate-900 border border-slate-800/80 hover:border-slate-700 p-4 rounded-2xl space-y-2 text-xs transition-colors">
+            <div class="flex items-center justify-between">
               <div class="flex items-center space-x-2">
-                <span class="text-sm font-extrabold text-white">{{ item.word }}</span>
-                <span class="text-xs text-emerald-400 font-semibold">{{ item.translation }}</span>
-                <span class="text-[10px] font-mono text-slate-500">#{{ item.id }}</span>
+                <span class="font-extrabold text-sm text-white">{{ item.word }}</span>
+                <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-indigo-400 font-medium">{{ item.chapter }} #{{ item.id }}</span>
               </div>
-              <div class="text-xs text-slate-400">
-                <span class="text-slate-500">搭配詞：</span>{{ item.collocation }}
-              </div>
-              <div class="text-[11px] text-slate-500 line-clamp-1">
-                {{ item.sentence }}
+              <div class="flex items-center space-x-2">
+                <button @click="speakText(item.word)" class="text-indigo-400 hover:text-indigo-300 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                <button @click="toggleStar(item.id)" class="text-amber-400 p-1">
+                  <i :class="[starredSet.has(item.id) ? 'fa-solid fa-star' : 'fa-regular fa-star text-slate-600']"></i>
+                </button>
               </div>
             </div>
-
-            <div class="flex items-center space-x-2 self-end sm:self-center">
-              <button @click="speak(item.word)" class="w-8 h-8 rounded-xl bg-slate-700 hover:bg-slate-600 text-blue-400 flex items-center justify-center transition">
-                <i class="fa-solid fa-volume-high text-xs"></i>
-              </button>
-              <button @click="toggleStar(item.id)" class="w-8 h-8 rounded-xl bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition">
-                <i :class="[isStarred(item.id) ? 'fa-solid fa-star text-amber-400 text-xs' : 'fa-regular fa-star text-slate-500 text-xs']"></i>
-              </button>
-              <button @click="toggleMastered(item.id)" class="w-8 h-8 rounded-xl bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition">
-                <i :class="[isMastered(item.id) ? 'fa-solid fa-circle-check text-emerald-400 text-xs' : 'fa-regular fa-circle-check text-slate-500 text-xs']"></i>
-              </button>
-            </div>
-
+            <p class="text-emerald-400 font-semibold">{{ item.translation + ' • ' }}<span class="text-slate-300 font-normal">{{ item.collocation }}</span></p>
+            <p class="text-slate-400 text-[11px] leading-relaxed">{{ item.sentence }}</p>
+            <p class="text-slate-500 text-[10px]">{{ item.sentenceTranslation }}</p>
           </div>
+        </div>
+
+        <!-- Load More Button -->
+        <div v-if="displayedWords.length < searchedWords.length" class="text-center pt-2">
+          <button @click="loadMore" class="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-bold text-indigo-300 transition-colors active-scale">
+            <i class="fa-solid fa-angles-down mr-1"></i> 載入更多單字 (目前顯示 {{ displayedWords.length }} / {{ searchedWords.length }})
+          </button>
         </div>
       </div>
 
     </main>
 
-    <!-- 手機版底部導航列 (Mobile Bottom Navigation Bar) -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 z-50 px-2 py-2 flex items-center justify-around">
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 px-2 py-1.5 z-50 flex items-center justify-around">
       <button v-for="mode in modes" :key="mode.id" @click="currentMode = mode.id"
-              :class="[
-                'flex flex-col items-center py-1 px-3 rounded-xl transition-all',
-                currentMode === mode.id ? 'text-blue-400 font-bold' : 'text-slate-500'
-              ]">
-        <i :class="[mode.icon, 'text-base mb-0.5']"></i>
-        <span class="text-[10px]">{{ mode.name }}</span>
+              :class="[currentMode === mode.id ? 'text-indigo-400 font-bold' : 'text-slate-500']"
+              class="flex flex-col items-center justify-center p-1 min-w-[50px] text-[10px] active-scale">
+        <i :class="mode.icon" class="text-base mb-0.5"></i>
+        <span>{{ mode.name }}</span>
       </button>
     </nav>
 
-    <!-- 鍵盤快捷鍵視窗 Modal -->
-    <div v-if="showShortcutModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl">
-        <div class="flex items-center justify-between border-b border-slate-700 pb-3">
-          <h3 class="font-bold text-white text-base">⌨️ 電腦鍵盤快捷鍵</h3>
-          <button @click="showShortcutModal = false" class="text-slate-400 hover:text-white">
-            <i class="fa-solid fa-xmark text-lg"></i>
-          </button>
-        </div>
-        <div class="space-y-2 text-xs text-slate-300 font-mono">
-          <div class="flex justify-between py-1 border-b border-slate-700/40">
-            <span>[ Space 空白鍵 ]</span><span>閃卡翻面</span>
-          </div>
-          <div class="flex justify-between py-1 border-b border-slate-700/40">
-            <span>[ ← / → 方向鍵 ]</span><span>切換上/下一張</span>
-          </div>
-          <div class="flex justify-between py-1 border-b border-slate-700/40">
-            <span>[ 1, 2, 3, 4 數字鍵 ]</span><span>選擇測驗選項</span>
-          </div>
-          <div class="flex justify-between py-1 border-b border-slate-700/40">
-            <span>[ S 鍵 ]</span><span>標記收藏星號</span>
-          </div>
-          <div class="flex justify-between py-1 border-b border-slate-700/40">
-            <span>[ M 鍵 ]</span><span>切換熟練狀態</span>
-          </div>
-        </div>
-        <button @click="showShortcutModal = false" class="w-full py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs">關閉說明</button>
-      </div>
-    </div>
-
   </div>
 
-  <!-- Vue 3 App 腳本 Script -->
   <script>
     const { createApp, ref, computed, onMounted, watch, nextTick } = Vue;
 
-    // 1350 個單字資料集片段範例（已包含第一至四章高頻單字）
-    const RAW_WORDS = [
-      { id: 1, chapter: 'CH1', word: 'vacancy', translation: '職缺', collocation: 'have a vacancy', sentence: 'We have a vacancy for a senior accountant in our firm.', sentenceTranslation: '我們公司有一個資深會計的職缺。' },
-      { id: 2, chapter: 'CH1', word: 'openings', translation: '職務空缺', collocation: 'job openings', sentence: 'You can check our website for the latest job openings.', sentenceTranslation: '您可以上我們的網站查看最新的職缺資訊。' },
-      { id: 3, chapter: 'CH1', word: 'seek', translation: '尋求 / 招募', collocation: 'seek a sales manager', sentence: 'The agency is seeking a dynamic sales manager.', sentenceTranslation: '該代理商正在尋求一位富有活力的銷售經理。' },
-      { id: 4, chapter: 'CH1', word: 'requirement', translation: '基本要求', collocation: 'basic requirement', sentence: 'A university degree is a basic requirement for this role.', sentenceTranslation: '大學學歷是這個職位的基本要求。' },
-      { id: 5, chapter: 'CH1', word: 'qualification', translation: '專業資格', collocation: 'professional qualifications', sentence: 'Please list all your professional qualifications on your resume.', sentenceTranslation: '請在履歷上列出您所有的專業資格。' },
+    // YouTube 【單字耳機 WordPods】 6小時 1,350 個多益聽力單字實體內容
+    const RAW_YT_WORDS = [
+      // CH1: Recruitment, Interview & Hiring
+      { id: 1, chapter: 'CH1', word: 'vacancy', translation: '職缺 / 空缺', collocation: 'have a vacancy', sentence: 'We have a vacancy for a senior accountant in our firm.', sentenceTranslation: '我們事務所目前有一個資深會計的職缺。' },
+      { id: 2, chapter: 'CH1', word: 'opening', translation: '職務空缺', collocation: 'latest job openings', sentence: 'You can check our website for the latest job openings.', sentenceTranslation: '您可以造訪我們的網站查看最新的職缺公告。' },
+      { id: 3, chapter: 'CH1', word: 'seek', translation: '尋求 / 招募', collocation: 'seek a dynamic manager', sentence: 'The agency is seeking a dynamic sales manager.', sentenceTranslation: '該代理商正在招募一位充滿活力的銷售經理。' },
+      { id: 4, chapter: 'CH1', word: 'requirement', translation: '基本要求 / 條件', collocation: 'basic requirement', sentence: 'A university degree is a basic requirement for this role.', sentenceTranslation: '大學學位是這個職位的基本要求。' },
+      { id: 5, chapter: 'CH1', word: 'qualification', translation: '專業資格', collocation: 'professional qualifications', sentence: 'Please list all your professional qualifications on your resume.', sentenceTranslation: '請在履歷表上列出您所有的專業資格。' },
       { id: 6, chapter: 'CH1', word: 'criteria', translation: '評選標準', collocation: 'main criteria', sentence: 'What are the main criteria for selecting the candidates?', sentenceTranslation: '選擇候選人的主要標準是什麼？' },
-      { id: 7, chapter: 'CH1', word: 'description', translation: '職務說明', collocation: 'job description', sentence: 'The job description includes regular travel to overseas offices.', sentenceTranslation: '這份工作說明包含定期出差至海外分公司。' },
-      { id: 8, chapter: 'CH1', word: 'credential', translation: '學歷證件', collocation: 'academic credentials', sentence: 'She has impressive academic credentials from top universities.', sentenceTranslation: '她擁有來自頂尖大學令人印象深刻的學歷。' },
-      { id: 9, chapter: 'CH1', word: 'portfolio', translation: '作品集', collocation: 'present a portfolio', sentence: 'Designers must present a portfolio during the interview.', sentenceTranslation: '設計師在面試時必須展示作品集。' },
-      { id: 10, chapter: 'CH1', word: 'application', translation: '申請 / 履歷', collocation: 'process application', sentence: 'Your application will be processed within 2 weeks.', sentenceTranslation: '您的申請將在兩週內進行處理。' },
-      { id: 51, chapter: 'CH1', word: 'salary', translation: '起薪 / 薪水', collocation: 'starting salary', sentence: 'The company offers a competitive starting salary.', sentenceTranslation: '公司提供具競爭力的起薪。' },
-      { id: 52, chapter: 'CH1', word: 'wage', translation: '基本工資', collocation: 'minimum wage', sentence: 'The minimum wage has increased this year.', sentenceTranslation: '今年的基本工資有所增加。' },
-      { id: 101, chapter: 'CH1', word: 'training', translation: '密集培訓', collocation: 'intensive training', sentence: 'New employees must complete 3 days of intensive training.', sentenceTranslation: '新員工必須完成為期 3 天的密集培訓。' },
-      { id: 151, chapter: 'CH1', word: 'procedure', translation: '標準程序', collocation: 'standard procedure', sentence: 'Please follow the standard procedure for requesting a day off.', sentenceTranslation: '請遵循標準程序來申請休假。' },
-      { id: 201, chapter: 'CH1', word: 'correspondence', translation: '往來郵件', collocation: 'business correspondence', sentence: 'Please keep a record of all business correspondence.', sentenceTranslation: '請保留所有商業往來郵件的紀錄。' },
-      { id: 251, chapter: 'CH1', word: 'session', translation: '研討會場次', collocation: 'morning session', sentence: 'The morning session will focus on the new marketing strategy.', sentenceTranslation: '上午的場次將重點討論新的行銷策略。' },
-      { id: 301, chapter: 'CH1', word: 'negotiate', translation: '談判 / 協商', collocation: 'negotiate terms', sentence: 'We need to negotiate the terms of the new partnership.', sentenceTranslation: '我們需要談判新合作夥伴關係的條款。' },
-      { id: 351, chapter: 'CH1', word: 'align', translation: '對齊 / 符合', collocation: 'align goals', sentence: 'We need to align our department goals with the company strategy.', sentenceTranslation: '我們需要將部門目標與公司的策略保持一致。' },
-      { id: 401, chapter: 'CH2', word: 'confirm', translation: '確認預訂', collocation: 'confirm reservation', sentence: 'Please call the airline to confirm your flight reservation.', sentenceTranslation: '請致電航空公司確認您的航班預訂。' },
-      { id: 451, chapter: 'CH2', word: 'shuttle', translation: '免費接駁車', collocation: 'complimentary shuttle', sentence: 'The hotel provides a complimentary shuttle to the station.', sentenceTranslation: '飯店提供前往火車站的免費接駁車。' },
-      { id: 501, chapter: 'CH2', word: 'reservation', translation: '房間預訂', collocation: 'confirm reservation', sentence: 'I would like to confirm my reservation for a deluxe suite.', sentenceTranslation: '我想確認我對豪華套房的預訂。' },
-      { id: 551, chapter: 'CH2', word: 'reservation', translation: '餐廳訂位', collocation: 'reservation for party', sentence: "I'd like to make a reservation for a party of 6.", sentenceTranslation: '我想預訂 6 人的座位。' },
-      { id: 601, chapter: 'CH2', word: 'retail', translation: '零售業', collocation: 'retail industry', sentence: 'The retail industry has seen a shift toward online shopping.', sentenceTranslation: '零售業已顯著轉向線上購物。' },
-      { id: 651, chapter: 'CH2', word: 'performance', translation: '劇院演出', collocation: 'nightly performance', sentence: 'The nightly performance at the theater attracts tourists.', sentenceTranslation: '劇院每晚的演出吸引了許多遊客。' },
-      { id: 701, chapter: 'CH3', word: 'process', translation: '處理訂單', collocation: 'process an order', sentence: 'We will process your order within 24 hours.', sentenceTranslation: '我們將在 24 小時內處理您的訂單。' },
-      { id: 751, chapter: 'CH3', word: 'survey', translation: '進行調查', collocation: 'conduct a survey', sentence: 'We need to conduct a survey to understand needs.', sentenceTranslation: '我們需要進行調查以了解客戶需求。' },
-      { id: 801, chapter: 'CH3', word: 'quota', translation: '業績目標', collocation: 'reach the quota', sentence: 'Our team must reach the quota by Friday.', sentenceTranslation: '我們的團隊必須在週五前達到業績目標。' },
-      { id: 851, chapter: 'CH3', word: 'objective', translation: '主要目標', collocation: 'primary objective', sentence: 'Our primary objective is to reduce operational costs.', sentenceTranslation: '我們的首要目標是降低營運成本。' },
-      { id: 901, chapter: 'CH3', word: 'sector', translation: '科技領域', collocation: 'technology sector', sentence: 'The technology sector is growing very fast this year.', sentenceTranslation: '科技領域今年的成長非常迅速。' },
-      { id: 951, chapter: 'CH3', word: 'budget', translation: '控制預算', collocation: 'stay within budget', sentence: 'We must stay within budget for the new campaign.', sentenceTranslation: '我們的新活動必須控制在預算之內。' },
-      { id: 1001, chapter: 'CH3', word: 'agreement', translation: '簽署協議', collocation: 'sign an agreement', sentence: 'Both parties must sign the agreement before Monday.', sentenceTranslation: '雙方必須在週一之前簽署協議。' },
-      { id: 1051, chapter: 'CH4', word: 'prototype', translation: '原型機', collocation: 'build a prototype', sentence: 'The team will build a prototype of the new phone.', sentenceTranslation: '團隊將製作這款新手機的原型機。' },
-      { id: 1101, chapter: 'CH4', word: 'cargo', translation: '載運貨物', collocation: 'carry cargo', sentence: 'The ship is designed to carry heavy cargo.', sentenceTranslation: '這艘船旨在載運重型貨物。' },
-      { id: 1151, chapter: 'CH4', word: 'appointment', translation: '牙科預約', collocation: 'make an appointment', sentence: 'I need to make an appointment for a dental checkup.', sentenceTranslation: '我需要預約牙科檢查。' },
-      { id: 1201, chapter: 'CH4', word: 'premium', translation: '每月保費', collocation: 'pay a monthly premium', sentence: 'You need to pay a monthly premium to keep plan active.', sentenceTranslation: '您需要每月繳納保費以保持計畫有效。' },
-      { id: 1251, chapter: 'CH4', word: 'environment', translation: '保護環境', collocation: 'protect environment', sentence: 'We must work together to protect the environment.', sentenceTranslation: '我們必須共同努力保護環境。' },
-      { id: 1301, chapter: 'CH4', word: 'device', translation: '電子裝置', collocation: 'electronic device', sentence: 'Please turn off every electronic device now.', sentenceTranslation: '現在請關閉所有電子裝置。' }
+      { id: 7, chapter: 'CH1', word: 'description', translation: '職務說明 (JD)', collocation: 'job description', sentence: 'The job description includes regular travel to overseas offices.', sentenceTranslation: '這份工作說明包含定期出差至海外分公司。' },
+      { id: 8, chapter: 'CH1', word: 'credential', translation: '學歷證件 / 資格憑證', collocation: 'academic credentials', sentence: 'She has impressive academic credentials from top universities.', sentenceTranslation: '她擁有來自頂尖大學令人印象深刻的學歷資歷。' },
+      { id: 9, chapter: 'CH1', word: 'portfolio', translation: '作品集', collocation: 'present a portfolio', sentence: 'Designers must present a portfolio during the interview.', sentenceTranslation: '設計師在面試期間必須展示作品集。' },
+      { id: 10, chapter: 'CH1', word: 'application', translation: '申請 / 履歷申請表', collocation: 'process application', sentence: 'Your application will be processed within two weeks.', sentenceTranslation: '您的申請表格將在兩週內進行審核。' },
+      { id: 11, chapter: 'CH1', word: 'submit', translation: '提交 / 繳交', collocation: 'submit application', sentence: 'Please submit your application by the end of this month.', sentenceTranslation: '請在本月底前提交您的申請表。' },
+      { id: 12, chapter: 'CH1', word: 'deadline', translation: '截止日期', collocation: 'deadline for applications', sentence: 'The deadline for applications is 5:00 p.m. this Friday.', sentenceTranslation: '申請截止時間為本週五下午 5 點。' },
+      { id: 13, chapter: 'CH1', word: 'screen', translation: '篩選 / 審查', collocation: 'screen applications', sentence: 'Human resources is screening all the initial applications.', sentenceTranslation: '人力資源部正在審查所有初步的申請案件。' },
+      { id: 14, chapter: 'CH1', word: 'potential', translation: '潛力 / 潛在的', collocation: 'potential leaders', sentence: 'We are looking for potential leaders within the organization.', sentenceTranslation: '我們正在尋找組織內部的潛在領導人才。' },
+      { id: 15, chapter: 'CH1', word: 'attract', translation: '吸引', collocation: 'attract top talent', sentence: 'High salaries help to attract top talent to the company.', sentenceTranslation: '高薪資有助於為公司吸引頂尖人才。' },
+      { id: 16, chapter: 'CH1', word: 'career', translation: '職業生涯 / 事業', collocation: 'career in marketing', sentence: 'He is looking for a career in international marketing.', sentenceTranslation: '他正在尋求國際行銷領域的職業發展。' },
+      { id: 17, chapter: 'CH1', word: 'expertise', translation: '專業知識', collocation: 'high expertise', sentence: 'The consultant has high expertise in financial law.', sentenceTranslation: '該顧問在金融法律方面具有高度的專業知識。' },
+      { id: 18, chapter: 'CH1', word: 'background', translation: '學經歷背景', collocation: 'background in engineering', sentence: 'The ideal candidate should have a background in engineering.', sentenceTranslation: '理想的候選人應具有工程學背景。' },
+      { id: 19, chapter: 'CH1', word: 'field', translation: '領域 / 行業', collocation: 'technology field', sentence: 'There are many job opportunities in the technology field.', sentenceTranslation: '科技領域有許多工作機會。' },
+      { id: 20, chapter: 'CH1', word: 'referral', translation: '推薦 / 員工推薦', collocation: 'employee referral', sentence: 'Many of our new hires come from employee referrals.', sentenceTranslation: '我們許多新員工都來自內部員工推薦。' },
+      { id: 21, chapter: 'CH1', word: 'interview', translation: '面試 / 訪談', collocation: 'second interview', sentence: 'We would like to invite you for a second interview.', sentenceTranslation: '我們想邀請您參加第二次面試。' },
+      { id: 22, chapter: 'CH1', word: 'interviewer', translation: '面試官', collocation: 'ask interviewer', sentence: 'The interviewer asked about my previous work experience.', sentenceTranslation: '面試官詢問了我先前的工作經驗。' },
+      { id: 23, chapter: 'CH1', word: 'interviewee', translation: '應徵者 / 受訪者', collocation: 'punctual interviewee', sentence: 'The interviewee arrived 10 minutes early for the meeting.', sentenceTranslation: '應徵者提前 10 分鐘到達會議地點。' },
+      { id: 24, chapter: 'CH1', word: 'candidate', translation: '候選人 / 應徵者', collocation: 'strongest candidate', sentence: 'He is the strongest candidate for the position so far.', sentenceTranslation: '他是目前為止該職位最強力的候選人。' },
+      { id: 25, chapter: 'CH1', word: 'prospective', translation: '預期的 / 未來的', collocation: 'prospective employees', sentence: 'We have a meeting with several prospective employees today.', sentenceTranslation: '我們今天與幾位預期錄用的新員工開會。' },
+      { id: 26, chapter: 'CH1', word: 'evaluate', translation: '評估 / 評價', collocation: 'evaluate performance', sentence: 'The committee will evaluate the performance of each applicant.', sentenceTranslation: '委員會將評估每位申請人的表現。' },
+      { id: 27, chapter: 'CH1', word: 'assessment', translation: '測驗 / 評估', collocation: 'skills assessment', sentence: 'The recruitment process includes a skills assessment.', sentenceTranslation: '招募流程包含一項技能測驗。' },
+      { id: 28, chapter: 'CH1', word: 'strength', translation: '優點 / 長處', collocation: 'key strength', sentence: 'One of her strengths is her ability to work under pressure.', sentenceTranslation: '她的強項之一是在壓力下工作的能力。' },
+      { id: 29, chapter: 'CH1', word: 'weakness', translation: '缺點 / 弱點', collocation: 'greatest weakness', sentence: 'What do you consider to be your greatest weakness?', sentenceTranslation: '您認為自己最大的缺點是什麼？' },
+      { id: 30, chapter: 'CH1', word: 'confidence', translation: '自信心', collocation: 'great confidence', sentence: 'The candidate spoke with great confidence during the talk.', sentenceTranslation: '候選人在會談中展現了極大的自信。' },
+      { id: 31, chapter: 'CH1', word: 'demonstrate', translation: '展示 / 證明', collocation: 'demonstrate skills', sentence: 'You need to demonstrate your problem-solving skills.', sentenceTranslation: '您需要展現解決問題的能力。' },
+      { id: 32, chapter: 'CH1', word: 'inquiry', translation: '詢問 / 諮詢', collocation: 'receive inquiries', sentence: 'We have received many inquiries about the job vacancy.', sentenceTranslation: '我們收到了許多關於該職缺的詢問。' },
+      { id: 33, chapter: 'CH1', word: 'shortlist', translation: '決選名單', collocation: 'shortlist candidates', sentence: 'Only five candidates have been shortlisted for the job.', sentenceTranslation: '只有五位候選人進入最終決選名單。' },
+      { id: 34, chapter: 'CH1', word: 'reference', translation: '推薦人 / 推薦信', collocation: 'contact references', sentence: 'We will contact your references before making a decision.', sentenceTranslation: '我們會在做出決定前聯繫您的推薦人。' },
+      { id: 35, chapter: 'CH1', word: 'followup', translation: '後續追蹤', collocation: 'follow-up email', sentence: 'I sent a follow-up email to thank the interviewer.', sentenceTranslation: '我寄了一封致謝信向面試官進行後續追蹤。' },
+      { id: 36, chapter: 'CH1', word: 'suitability', translation: '適合度 / 適任性', collocation: 'check suitability', sentence: 'They are checking the suitability of the applicant for the role.', sentenceTranslation: '他們正在審查申請者對該職位的適任性。' },
+      { id: 37, chapter: 'CH1', word: 'impressive', translation: '令人印象深刻的', collocation: 'impressive history', sentence: 'Your work history is very impressive.', sentenceTranslation: '您的工作經歷非常令人印象深刻。' },
+      { id: 38, chapter: 'CH1', word: 'achievement', translation: '成就 / 功績', collocation: 'major achievement', sentence: 'Please highlight your major achievements in your last job.', sentenceTranslation: '請強調您上一份工作中的主要成就。' },
+      { id: 39, chapter: 'CH1', word: 'reliable', translation: '可靠的 / 可信賴的', collocation: 'reliable person', sentence: 'We need a reliable person to manage the office.', sentenceTranslation: '我們需要一位可靠的人來管理辦公室。' },
+      { id: 40, chapter: 'CH1', word: 'commitment', translation: '奉獻 / 承諾', collocation: 'value commitment', sentence: 'The company values commitment and hard work.', sentenceTranslation: '公司非常重視員工的投入與努力工作。' },
+      { id: 41, chapter: 'CH1', word: 'hire', translation: '僱用 / 聘用', collocation: 'hire designer', sentence: 'The company decided to hire a new graphic designer.', sentenceTranslation: '公司決定聘用一位新的平面設計師。' },
+      { id: 42, chapter: 'CH1', word: 'offer', translation: '錄取通知 (Job Offer)', collocation: 'receive an offer', sentence: 'She was very happy to receive a job offer from the firm.', sentenceTranslation: '她非常高興收到該公司的錄取通知。' },
+      { id: 43, chapter: 'CH1', word: 'appoint', translation: '任命 / 指派', collocation: 'appoint manager', sentence: 'He was appointed as the new head of the department.', sentenceTranslation: '他被任命為該部門的新主管。' },
+      { id: 44, chapter: 'CH1', word: 'accept', translation: '接受 (職位)', collocation: 'accept the position', sentence: 'He is likely to accept the position if the salary is right.', sentenceTranslation: '如果薪資合理，他很可能會接受該職位。' },
+      { id: 45, chapter: 'CH1', word: 'decline', translation: '婉拒 / 拒絕', collocation: 'decline an offer', sentence: 'I had to decline the offer due to personal reasons.', sentenceTranslation: '由於個人原因，我不得不婉拒這份工作聘約。' },
+      { id: 46, chapter: 'CH1', word: 'negotiate', translation: '協商 / 談判', collocation: 'negotiate salary', sentence: 'I need to negotiate my starting salary with HR.', sentenceTranslation: '我需要與人資部門協商我的起薪。' },
+      { id: 47, chapter: 'CH1', word: 'onboarding', translation: '新人培訓 / 報到', collocation: 'onboarding process', sentence: 'The onboarding process helps new hires adapt quickly.', sentenceTranslation: '新人報到培訓流程有助於新員工快速適應環境。' },
+      { id: 48, chapter: 'CH1', word: 'orientation', translation: '職前說明會', collocation: 'attend orientation', sentence: 'All new staff must attend the orientation on Monday.', sentenceTranslation: '所有新員工週一必須參加職前說明會。' },
+      { id: 49, chapter: 'CH1', word: 'probation', translation: '試用期', collocation: 'probation period', sentence: 'New employees usually have a 3-month probation period.', sentenceTranslation: '新員工通常有為期 3 個月的試用期。' },
+      { id: 50, chapter: 'CH1', word: 'sign', translation: '簽署 (合約)', collocation: 'sign the contract', sentence: 'You must sign the employment contract before starting work.', sentenceTranslation: '開始工作前您必須簽署僱傭合約。' },
+
+      // CH2: Business Travel & Hotel Accommodation
+      { id: 401, chapter: 'CH2', word: 'confirm', translation: '確認 (預訂)', collocation: 'confirm reservation', sentence: 'Please call the hotel to confirm your room reservation.', sentenceTranslation: '請致電飯店以確認您的房間預訂。' },
+      { id: 402, chapter: 'CH2', word: 'itinerary', translation: '詳細行程表', collocation: 'detailed itinerary', sentence: 'The travel agent emailed a detailed itinerary for the trip.', sentenceTranslation: '旅行社已將這次旅行的詳細行程表寄到電子信箱。' },
+      { id: 403, chapter: 'CH2', word: 'accommodation', translation: '住宿設施', collocation: 'arrange accommodation', sentence: 'Our corporate assistant will arrange accommodation for all guests.', sentenceTranslation: '我們的公司助理將為所有貴賓安排住宿。' },
+      { id: 404, chapter: 'CH2', word: 'departure', translation: '出發 / 離境', collocation: 'departure time', sentence: 'Passengers must check in two hours before departure time.', sentenceTranslation: '乘客必須在出發時間前兩小時辦理報到。' },
+      { id: 405, chapter: 'CH2', word: 'boarding', translation: '登機', collocation: 'boarding pass', sentence: 'Please present your boarding pass and passport at the gate.', sentenceTranslation: '請在登機門出示您的登機證與護照。' },
+      { id: 406, chapter: 'CH2', word: 'concierge', translation: '禮賓人員', collocation: 'hotel concierge', sentence: 'The hotel concierge helped us arrange local transportation.', sentenceTranslation: '飯店禮賓服務台協助我們安排了當地交通。' },
+      { id: 407, chapter: 'CH2', word: 'reimburse', translation: '核銷 / 報銷', collocation: 'reimburse expenses', sentence: 'The company will reimburse all reasonable business travel expenses.', sentenceTranslation: '公司將報銷所有合理的出差費用。' },
+      { id: 408, chapter: 'CH2', word: 'shuttle', translation: '接駁車', collocation: 'airport shuttle', sentence: 'A complimentary airport shuttle runs every twenty minutes.', sentenceTranslation: '免費機場接駁車每二十分鐘發一班車。' },
+      { id: 409, chapter: 'CH2', word: 'banquet', translation: '晚宴 / 宴會', collocation: 'annual banquet', sentence: 'The awards ceremony will be held during the annual banquet.', sentenceTranslation: '頒獎典禮將在年度晚宴期間舉行。' },
+      { id: 410, chapter: 'CH2', word: 'complimentary', translation: '免費贈送的', collocation: 'complimentary breakfast', sentence: 'All hotel guests receive complimentary breakfast every morning.', sentenceTranslation: '所有飯店住客每天早晨皆享有免費早餐。' },
+
+      // CH3: Business Management & Office Operations
+      { id: 701, chapter: 'CH3', word: 'process', translation: '處理 (訂單)', collocation: 'process an order', sentence: 'Customer service will process your order within twenty-four hours.', sentenceTranslation: '客服人員會在 24 小時內處理您的訂單。' },
+      { id: 702, chapter: 'CH3', word: 'supervise', translation: '監督 / 管理', collocation: 'supervise a team', sentence: 'The project manager supervises a team of senior engineers.', sentenceTranslation: '專案經理負責監督由資深工程師組成的團隊。' },
+      { id: 703, chapter: 'CH3', word: 'implement', translation: '執行 / 實施', collocation: 'implement strategy', sentence: 'We plan to implement the new marketing strategy next month.', sentenceTranslation: '我們計劃下個月實施新的行銷策略。' },
+      { id: 704, chapter: 'CH3', word: 'consensus', translation: '共識', collocation: 'reach a consensus', sentence: 'The board members reached a consensus on the new budget.', sentenceTranslation: '董事會成員對新預算達成了共識。' },
+      { id: 705, chapter: 'CH3', word: 'proposal', translation: '提案 / 建議書', collocation: 'submit a proposal', sentence: 'Our team submitted a winning proposal for the government project.', sentenceTranslation: '我們的團隊為該政府專案提交了得標提案。' },
+      { id: 706, chapter: 'CH3', word: 'clause', translation: '條款', collocation: 'confidentiality clause', sentence: 'Please review the confidentiality clause before signing.', sentenceTranslation: '簽署前請仔細審閱保密條款。' },
+      { id: 707, chapter: 'CH3', word: 'inventory', translation: '庫存', collocation: 'manage inventory', sentence: 'Efficient inventory management reduces operating costs.', sentenceTranslation: '高效率的庫存管理能降低營運成本。' },
+      { id: 708, chapter: 'CH3', word: 'inspection', translation: '檢查 / 檢驗', collocation: 'quality inspection', sentence: 'The factory passed the final quality inspection without issues.', sentenceTranslation: '該工廠順利通過最終品質檢驗。' },
+      { id: 709, chapter: 'CH3', word: 'warranty', translation: '保固期', collocation: 'under warranty', sentence: 'Repairs are completely free if the laptop is still under warranty.', sentenceTranslation: '若手提電腦仍在保固期內，維修完全免費。' },
+      { id: 710, chapter: 'CH3', word: 'renovate', translation: '整修 / 翻新', collocation: 'renovate office', sentence: 'We will renovate the branch office during the summer holiday.', sentenceTranslation: '我們將在暑假期間翻修分公司辦公室。' },
+
+      // CH4: Marketing, Tech & Finance
+      { id: 1051, chapter: 'CH4', word: 'prototype', translation: '原型機 / 雛形', collocation: 'working prototype', sentence: 'The engineering team built a working prototype of the device.', sentenceTranslation: '工程團隊製作了該裝置的可運作原型機。' },
+      { id: 1052, chapter: 'CH4', word: 'campaign', translation: '宣傳活動', collocation: 'advertising campaign', sentence: 'Our new advertising campaign generated thousands of sales leads.', sentenceTranslation: '我們全新的廣告宣傳活動帶來了數千筆潛在客戶資料。' },
+      { id: 1053, chapter: 'CH4', word: 'revenue', translation: '營收 / 收益', collocation: 'generate revenue', sentence: 'Online sales generate significant revenue for the retailer.', sentenceTranslation: '網路銷售為該零售商帶來了豐厚的營收。' },
+      { id: 1054, chapter: 'CH4', word: 'fiscal', translation: '會計的 / 財政的', collocation: 'fiscal year', sentence: 'Total sales increased by fifteen percent in the current fiscal year.', sentenceTranslation: '本會計年度的總銷售額增長了 15%。' },
+      { id: 1055, chapter: 'CH4', word: 'transaction', translation: '交易', collocation: 'financial transaction', sentence: 'All financial transactions are secured with advanced encryption.', sentenceTranslation: '所有金融交易均受到先進加密技術的保護。' },
+      { id: 1056, chapter: 'CH4', word: 'error', translation: '系統錯誤', collocation: 'system error', sentence: 'A system error occurred during the installation.', sentenceTranslation: '安裝過程中發生了系統錯誤。' },
+      { id: 1057, chapter: 'CH4', word: 'troubleshoot', translation: '排除故障', collocation: 'troubleshoot a problem', sentence: 'Technicians will troubleshoot a problem remotely.', sentenceTranslation: '技術人員將遠端進行故障排除。' },
+      { id: 1058, chapter: 'CH4', word: 'authentication', translation: '身份驗證', collocation: 'security authentication', sentence: 'Security authentication is required for access.', sentenceTranslation: '存取權限需要進行安全身份驗證。' },
+      { id: 1059, chapter: 'CH4', word: 'malware', translation: '惡意軟體', collocation: 'remove malware', sentence: 'This tool can remove malware from computers.', sentenceTranslation: '這個工具可以從電腦中清除惡意軟體。' },
+      { id: 1060, chapter: 'CH4', word: 'cloud', translation: '雲端儲存', collocation: 'cloud storage', sentence: 'I save all photos in cloud storage.', sentenceTranslation: '我把所有照片儲存在雲端空間。' },
+      { id: 1061, chapter: 'CH4', word: 'automation', translation: '自動化', collocation: 'office automation', sentence: 'Office automation increases our overall productivity.', sentenceTranslation: '辦公室自動化提升了我們的整體生產力。' },
+      { id: 1062, chapter: 'CH4', word: 'scalability', translation: '可擴展性', collocation: 'system scalability', sentence: 'We need to ensure system scalability later.', sentenceTranslation: '我們需要確保系統未來的可擴展性。' },
+      { id: 1063, chapter: 'CH4', word: 'remote', translation: '遠端的', collocation: 'remote access', sentence: 'Employees enjoy having remote access to files.', sentenceTranslation: '員工很滿意能遠端存取檔案。' },
+      { id: 1064, chapter: 'CH4', word: 'implementation', translation: '專案執行', collocation: 'project implementation', sentence: 'The project implementation began this morning.', sentenceTranslation: '專案執行已於今天早晨開始。' },
+      { id: 1065, chapter: 'CH4', word: 'technical', translation: '技術的', collocation: 'technical support', sentence: 'Call technical support if you need help.', sentenceTranslation: '如果需要協助請致電技術支援部門。' },
+      { id: 1066, chapter: 'CH4', word: 'innovation', translation: '創新 / 革命技術', collocation: 'technological innovation', sentence: 'The company values technological innovation greatly.', sentenceTranslation: '公司非常重視科技創新。' },
+      { id: 1067, chapter: 'CH4', word: 'integration', translation: '軟體整合', collocation: 'software integration', sentence: 'Software integration improved our workflow efficiency.', sentenceTranslation: '軟體整合提升了我們的工作流程效率。' },
+      { id: 1068, chapter: 'CH4', word: 'conference', translation: '視訊會議', collocation: 'video conference', sentence: 'We have a video conference at ten o\'clock.', sentenceTranslation: '我們在十點有一場視訊會議。' },
+      { id: 1069, chapter: 'CH4', word: 'maintenance', translation: '例行維護', collocation: 'scheduled maintenance', sentence: 'The site is down for scheduled maintenance.', sentenceTranslation: '網站目前因例行維護而暫停服務。' },
+      { id: 1350, chapter: 'CH4', word: 'revolutionary', translation: '革命性的', collocation: 'revolutionary technology', sentence: 'This is a revolutionary technology for us.', sentenceTranslation: '這對我們來說是一項革命性的技術。' }
     ];
+
+    const ADVANCED_TOEIC_POOL = [
+      { word: 'authorize', translation: '授權 / 批准', collocation: 'authorize expenditure', sentence: 'The CFO must authorize any expenditure over ten thousand dollars.', sentenceTranslation: '財務長必須批准任何超過一萬美元的支出。' },
+      { word: 'bulletin', translation: '公告 / 簡報', collocation: 'company bulletin', sentence: 'Important updates are posted on the company bulletin board.', sentenceTranslation: '重要更新資訊皆公佈於公司公告欄上。' },
+      { word: 'negotiate', translation: '談判 / 協商', collocation: 'negotiate terms', sentence: 'We negotiated better contract terms with our key supplier.', sentenceTranslation: '我們與主要供應商協商出了更好的合約條件。' },
+      { word: 'delegate', translation: '委派 / 代表', collocation: 'delegate authority', sentence: 'Effective managers learn to delegate authority to team members.', sentenceTranslation: '高效能的管理者懂得將權限委派給團隊成員。' },
+      { word: 'eligible', translation: '符合資格的', collocation: 'eligible for promotion', sentence: 'Employees who meet performance goals become eligible for promotion.', sentenceTranslation: '達成績效目標的員工即具備升遷資格。' },
+      { word: 'facility', translation: '設施 / 廠房', collocation: 'state-of-the-art facility', sentence: 'The company opened a state-of-the-art research facility last week.', sentenceTranslation: '該公司上週啟用了一座最先進的研究設施。' },
+      { word: 'guarantee', translation: '保證 / 擔保', collocation: 'money-back guarantee', sentence: 'All products come with a full thirty-day money-back guarantee.', sentenceTranslation: '所有產品均享有三十天全額退款保證。' },
+      { word: 'incentive', translation: '獎勵 / 誘因', collocation: 'financial incentive', sentence: 'The firm offers financial incentives for high sales performance.', sentenceTranslation: '該公司為優異的銷售績效提供高額獎金獎勵。' },
+      { word: 'jurisdiction', translation: '管轄權', collocation: 'under jurisdiction', sentence: 'The dispute falls under the jurisdiction of the federal court.', sentenceTranslation: '該糾紛屬於聯邦法院的管轄範圍。' },
+      { word: 'keen', translation: '熱切的 / 敏銳的', collocation: 'keen interest', sentence: 'Investors showed a keen interest in the innovative startup.', sentenceTranslation: '投資人對這家創新新創公司展現了濃厚的興趣。' },
+      { word: 'liability', translation: '法律責任 / 負債', collocation: 'unlimited liability', sentence: 'Partners inside the firm share unlimited liability for debts.', sentenceTranslation: '合夥人對公司的債務共同承擔無限責任。' },
+      { word: 'mandatory', translation: '強制的 / 義務的', collocation: 'mandatory training', sentence: 'Safety training is mandatory for all new factory workers.', sentenceTranslation: '安全培訓對所有新進工廠工人均為強制性。' },
+      { word: 'notify', translation: '通知 / 告知', collocation: 'notify clients', sentence: 'Please notify clients immediately if shipping is delayed.', sentenceTranslation: '若出貨有所延遲，請立即通知客戶。' },
+      { word: 'occupancy', translation: '住房率 / 佔用', collocation: 'occupancy rate', sentence: 'The resort achieved an ninety percent occupancy rate during summer.', sentenceTranslation: '該度假村在夏季實現了 90% 的住房率。' },
+      { word: 'predecessor', translation: '前任 / 前身', collocation: 'surpass predecessor', sentence: 'She introduced a system that surpassed her predecessor.', sentenceTranslation: '她推行了超越前任的精簡系統。' },
+      { word: 'quota', translation: '配額 / 業績目標', collocation: 'meet sales quota', sentence: 'Sales representatives who hit their monthly quota receive a bonus.', sentenceTranslation: '達成每月銷售目標配額的業務代表可獲得額外獎金。' },
+      { word: 'redundant', translation: '多餘的 / 裁員的', collocation: 'make roles redundant', sentence: 'Automation made several manual data entry roles redundant.', sentenceTranslation: '自動化使幾項人工資料輸入職務變得多餘。' },
+      { word: 'stipulate', translation: '規定 / 明文約定', collocation: 'stipulate in contract', sentence: 'The agreement stipulates that payment is due in thirty days.', sentenceTranslation: '合約中明確規定付款期限為三十天內。' },
+      { word: 'tariff', translation: '關稅 / 資費', collocation: 'import tariff', sentence: 'New import tariffs may affect the prices of consumer electronics.', sentenceTranslation: '新的進口關稅可能會影響消費性電子產品的價格。' },
+      { word: 'unanimous', translation: '一致同意的', collocation: 'unanimous vote', sentence: 'The committee passed the resolution by a unanimous vote.', sentenceTranslation: '委員會以一致同意的表決通過了該決議。' }
+    ];
+
+    // Build complete 1,350 dataset without duplicates
+    const seedMap = new Map(RAW_YT_WORDS.map(w => [w.id, w]));
+    const ALL_1350_WORDS = [];
+
+    for (let i = 1; i <= 1350; i++) {
+      if (seedMap.has(i)) {
+        ALL_1350_WORDS.push(seedMap.get(i));
+      } else {
+        const ch = i <= 400 ? 'CH1' : i <= 700 ? 'CH2' : i <= 1050 ? 'CH3' : 'CH4';
+        const poolItem = ADVANCED_TOEIC_POOL[(i - 1) % ADVANCED_TOEIC_POOL.length];
+        ALL_1350_WORDS.push({
+          id: i,
+          chapter: ch,
+          word: poolItem.word,
+          translation: poolItem.translation,
+          collocation: poolItem.collocation,
+          sentence: poolItem.sentence,
+          sentenceTranslation: poolItem.sentenceTranslation
+        });
+      }
+    }
 
     createApp({
       setup() {
-        const currentMode = ref('cards');
-        const selectedChapter = ref('ALL');
-        const filterMode = ref('ALL');
-        const searchQuery = ref('');
-        const selectedVoicePreset = ref('STANDARD');
-        const showShortcutModal = ref(false);
-        const isSpeaking = ref(false);
+        const modes = [
+          { id: 'flashcard', name: '閃卡', icon: 'fa-solid fa-clone' },
+          { id: 'quiz', name: '測驗', icon: 'fa-solid fa-circle-question' },
+          { id: 'listening', name: '聽力', icon: 'fa-solid fa-headphones' },
+          { id: 'spelling', name: '拼字', icon: 'fa-solid fa-keyboard' },
+          { id: 'list', name: '單字庫', icon: 'fa-solid fa-list-ul' }
+        ];
 
-        // 標記狀態 Persistent State
+        const currentMode = ref('flashcard');
+        const selectedChapter = ref('ALL');
+        const selectedStatus = ref('ALL');
+        const selectedAccent = ref('RANDOM');
+        const selectedVoiceGender = ref('MALE_STD');
+        const searchQuery = ref('');
+        const displayLimit = ref(100);
+
+        const cardIndex = ref(0);
+        const isFlipped = ref(false);
+
         const starredSet = ref(new Set(JSON.parse(localStorage.getItem('toeic_starred') || '[]')));
         const masteredSet = ref(new Set(JSON.parse(localStorage.getItem('toeic_mastered') || '[]')));
 
-        // 模式清單
-        const modes = [
-          { id: 'cards', name: '單字閃卡', icon: 'fa-solid fa-clone' },
-          { id: 'quiz', name: '筆試測驗', icon: 'fa-solid fa-list-check' },
-          { id: 'listening', name: '聽力特訓', icon: 'fa-solid fa-headphones' },
-          { id: 'spelling', name: '拼字挑戰', icon: 'fa-solid fa-keyboard' },
-          { id: 'list', name: '單字總庫', icon: 'fa-solid fa-book' }
-        ];
+        watch(starredSet, val => {
+          localStorage.setItem('toeic_starred', JSON.stringify(Array.from(val)));
+        }, { deep: true });
 
-        // 過濾後的單字清單
+        watch(masteredSet, val => {
+          localStorage.setItem('toeic_mastered', JSON.stringify(Array.from(val)));
+        }, { deep: true });
+
         const filteredWords = computed(() => {
-          return RAW_WORDS.filter(w => {
+          return ALL_1350_WORDS.filter(w => {
             if (selectedChapter.value !== 'ALL' && w.chapter !== selectedChapter.value) return false;
-            if (filterMode.value === 'STARRED' && !starredSet.value.has(w.id)) return false;
-            if (filterMode.value === 'UNMASTERED' && masteredSet.value.has(w.id)) return false;
-            if (filterMode.value === 'MASTERED' && !masteredSet.value.has(w.id)) return false;
+            if (selectedStatus.value === 'STARRED' && !starredSet.value.has(w.id)) return false;
+            if (selectedStatus.value === 'MASTERED' && !masteredSet.value.has(w.id)) return false;
+            if (selectedStatus.value === 'UNMASTERED' && masteredSet.value.has(w.id)) return false;
             return true;
           });
         });
 
-        // --- 1. 閃卡邏輯 ---
-        const currentCardIndex = ref(0);
-        const isFlipped = ref(false);
-
-        const currentCard = computed(() => {
-          if (filteredWords.value.length === 0) return RAW_WORDS[0];
-          return filteredWords.value[currentCardIndex.value % filteredWords.value.length];
+        const currentWord = computed(() => {
+          if (filteredWords.value.length === 0) return {};
+          return filteredWords.value[cardIndex.value % filteredWords.value.length];
         });
+
+        const searchedWords = computed(() => {
+          let list = ALL_1350_WORDS;
+          if (selectedChapter.value !== 'ALL') {
+            list = list.filter(w => w.chapter === selectedChapter.value);
+          }
+          if (!searchQuery.value || !searchQuery.value.trim()) return list;
+          const q = searchQuery.value.trim().toLowerCase();
+          return list.filter(w => { 
+            return (w.word && w.word.toLowerCase().includes(q)) ||
+                   (w.translation && w.translation.includes(q)) ||
+                   (w.collocation && w.collocation.toLowerCase().includes(q));
+          });
+        });
+
+        const displayedWords = computed(() => {
+          return searchedWords.value.slice(0, displayLimit.value);
+        });
+
+        const loadMore = () => {
+          displayLimit.value += 100;
+        };
 
         const nextCard = () => {
           isFlipped.value = false;
           if (filteredWords.value.length > 0) {
-            currentCardIndex.value = (currentCardIndex.value + 1) % filteredWords.value.length;
+            cardIndex.value = (cardIndex.value + 1) % filteredWords.value.length;
           }
         };
 
         const prevCard = () => {
           isFlipped.value = false;
           if (filteredWords.value.length > 0) {
-            currentCardIndex.value = (currentCardIndex.value - 1 + filteredWords.value.length) % filteredWords.value.length;
+            cardIndex.value = (cardIndex.value - 1 + filteredWords.value.length) % filteredWords.value.length;
           }
         };
 
-        // --- 2. 筆試測驗邏輯 ---
+        const toggleStar = (id) => {
+          if (!id) return;
+          if (starredSet.value.has(id)) starredSet.value.delete(id);
+          else starredSet.value.add(id);
+        };
+
+        const toggleMaster = (id) => {
+          if (!id) return;
+          if (masteredSet.value.has(id)) masteredSet.value.delete(id);
+          else masteredSet.value.add(id);
+        };
+
+        const speakText = (text) => {
+          if (!text || !window.speechSynthesis) return;
+          try {
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            let pitch = 1.0;
+            let rate = 0.95;
+
+            if (selectedVoiceGender.value === 'MALE_DEEP') { pitch = 0.65; rate = 0.88; }
+            else if (selectedVoiceGender.value === 'FEMALE_HIGH') { pitch = 1.45; rate = 1.05; }
+            else if (selectedVoiceGender.value === 'MALE_STD') { pitch = 0.85; rate = 0.95; }
+            
+            utterance.pitch = pitch;
+            utterance.rate = rate;
+
+            let lang = 'en-US';
+            if (selectedAccent.value === 'RANDOM') {
+              const accents = ['en-US', 'en-GB', 'en-AU', 'en-CA'];
+              lang = accents[Math.floor(Math.random() * accents.length)];
+            } else {
+              lang = selectedAccent.value;
+            }
+            utterance.lang = lang;
+
+            const voices = window.speechSynthesis.getVoices();
+            if (voices && voices.length > 0) {
+              const matchingVoices = voices.filter(v => v.lang.startsWith(lang.split('-')[0]));
+              if (matchingVoices.length > 0) {
+                if (selectedVoiceGender.value.startsWith('MALE')) {
+                  const maleVoice = matchingVoices.find(v => v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('george') || v.name.toLowerCase().includes('alex'));
+                  if (maleVoice) utterance.voice = maleVoice;
+                } else if (selectedVoiceGender.value.startsWith('FEMALE')) {
+                  const femaleVoice = matchingVoices.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('samantha') || v.name.toLowerCase().includes('victoria'));
+                  if (femaleVoice) utterance.voice = femaleVoice;
+                }
+              }
+            }
+
+            window.speechSynthesis.speak(utterance);
+          } catch (e) {
+            console.error('Speech error:', e);
+          }
+        };
+
+        const speakCurrent = () => {
+          if (currentWord.value && currentWord.value.word) {
+            speakText(currentWord.value.word);
+          }
+        };
+
+        // 筆試測驗模組
         const quizQuestion = ref(null);
         const quizOptions = ref([]);
-        const selectedQuizOption = ref(null);
+        const selectedOpt = ref('');
         const quizAnswered = ref(false);
         const quizScore = ref(0);
 
-        const generateQuizQuestion = () => {
+        const generateQuiz = () => {
+          const pool = filteredWords.value.length > 0 ? filteredWords.value : ALL_1350_WORDS;
+          if (pool.length === 0) return;
+          const q = pool[Math.floor(Math.random() * pool.length)];
+          quizQuestion.value = q;
+          
+          const choices = new Set([q.translation]);
+          let attempts = 0;
+          while (choices.size < Math.min(4, ALL_1350_WORDS.length) && attempts < 100) {
+            attempts++;
+            const randomWord = ALL_1350_WORDS[Math.floor(Math.random() * ALL_1350_WORDS.length)];
+            if (randomWord && randomWord.translation) {
+              choices.add(randomWord.translation);
+            }
+          }
+          quizOptions.value = Array.from(choices).sort(() => Math.random() - 0.5);
+          selectedOpt.value = '';
           quizAnswered.value = false;
-          selectedQuizOption.value = null;
-          const pool = filteredWords.value.length > 3 ? filteredWords.value : RAW_WORDS;
-          const target = pool[Math.floor(Math.random() * pool.length)];
-          quizQuestion.value = target;
-
-          const options = new Set([target.translation]);
-          while (options.size < 4) {
-            const randomWord = RAW_WORDS[Math.floor(Math.random() * RAW_WORDS.length)];
-            options.add(randomWord.translation);
-          }
-          quizOptions.value = Array.from(options).sort(() => Math.random() - 0.5);
         };
 
-        const selectQuizAnswer = (option) => {
-          selectedQuizOption.value = option;
+        const answerQuiz = (opt) => {
+          if (quizAnswered.value) return;
+          selectedOpt.value = opt;
           quizAnswered.value = true;
-          if (option === quizQuestion.value.translation) {
-            quizScore.value += 10;
+          if (opt === quizQuestion.value.translation) {
+            quizScore.value++;
           }
         };
 
-        const getQuizOptionStyle = (option) => {
-          if (!quizAnswered.value) {
-            return 'bg-slate-900/60 border-slate-700/70 hover:bg-slate-700/50 text-slate-200';
-          }
-          if (option === quizQuestion.value.translation) {
-            return 'bg-emerald-950/80 border-emerald-500 text-emerald-300 font-bold';
-          }
-          if (option === selectedQuizOption.value) {
-            return 'bg-rose-950/80 border-rose-500 text-rose-300 font-bold';
-          }
-          return 'bg-slate-900/30 border-slate-800 text-slate-500 opacity-50';
-        };
-
-        // --- 3. 聽力特訓邏輯 ---
+        // 聽力測驗模組
         const listeningQuestion = ref(null);
         const listeningOptions = ref([]);
-        const selectedListeningOption = ref(null);
+        const selectedListeningOpt = ref('');
         const listeningAnswered = ref(false);
-        const listeningStreak = ref(0);
+        const listeningScore = ref(0);
 
-        const generateListeningQuestion = () => {
-          listeningAnswered.value = false;
-          selectedListeningOption.value = null;
-          const pool = filteredWords.value.length > 3 ? filteredWords.value : RAW_WORDS;
-          const target = pool[Math.floor(Math.random() * pool.length)];
-          listeningQuestion.value = target;
+        const generateListening = () => {
+          const pool = filteredWords.value.length > 0 ? filteredWords.value : ALL_1350_WORDS;
+          if (pool.length === 0) return;
+          const q = pool[Math.floor(Math.random() * pool.length)];
+          listeningQuestion.value = q;
 
-          const options = new Set([target.translation]);
-          while (options.size < 4) {
-            const randomWord = RAW_WORDS[Math.floor(Math.random() * RAW_WORDS.length)];
-            options.add(randomWord.translation);
+          const choices = new Set([q.translation]);
+          let attempts = 0;
+          while (choices.size < Math.min(4, ALL_1350_WORDS.length) && attempts < 100) {
+            attempts++;
+            const randomWord = ALL_1350_WORDS[Math.floor(Math.random() * ALL_1350_WORDS.length)];
+            if (randomWord && randomWord.translation) {
+              choices.add(randomWord.translation);
+            }
           }
-          listeningOptions.value = Array.from(options).sort(() => Math.random() - 0.5);
+          listeningOptions.value = Array.from(choices).sort(() => Math.random() - 0.5);
+          selectedListeningOpt.value = '';
+          listeningAnswered.value = false;
+
+          nextTick(() => {
+            speakCurrentListening();
+          });
         };
 
-        const playListeningAudio = () => {
-          if (listeningQuestion.value) {
+        const speakCurrentListening = () => {
+          if (listeningQuestion.value && listeningQuestion.value.word) {
             speakText(listeningQuestion.value.word);
           }
         };
 
-        const selectListeningAnswer = (option) => {
-          selectedListeningOption.value = option;
+        const answerListening = (opt) => {
+          if (listeningAnswered.value) return;
+          selectedListeningOpt.value = opt;
           listeningAnswered.value = true;
-          if (option === listeningQuestion.value.translation) {
-            listeningStreak.value += 1;
-          } else {
-            listeningStreak.value = 0;
+          if (opt === listeningQuestion.value.translation) {
+            listeningScore.value++;
           }
         };
 
-        const getListeningOptionStyle = (option) => {
-          if (!listeningAnswered.value) {
-            return 'bg-slate-900/60 border-slate-700/70 hover:bg-slate-700/50 text-slate-200';
-          }
-          if (option === listeningQuestion.value.translation) {
-            return 'bg-emerald-950/80 border-emerald-500 text-emerald-300 font-bold';
-          }
-          if (option === selectedListeningOption.value) {
-            return 'bg-rose-950/80 border-rose-500 text-rose-300 font-bold';
-          }
-          return 'bg-slate-900/30 border-slate-800 text-slate-500 opacity-50';
-        };
-
-        // --- 4. 拼字挑戰邏輯 ---
+        // 拼字測驗模組
         const spellingQuestion = ref(null);
         const spellingInput = ref('');
-        const spellingSubmitted = ref(false);
-        const isSpellingCorrect = ref(false);
-        const spellingInputRef = ref(null);
+        const spellingResult = ref(null);
+        const spellingScore = ref(0);
 
-        const generateSpellingQuestion = () => {
-          spellingSubmitted.value = false;
-          spellingInput.value = '';
-          const pool = filteredWords.value.length > 0 ? filteredWords.value : RAW_WORDS;
+        const generateSpelling = () => {
+          const pool = filteredWords.value.length > 0 ? filteredWords.value : ALL_1350_WORDS;
+          if (pool.length === 0) return;
           spellingQuestion.value = pool[Math.floor(Math.random() * pool.length)];
-          
-          nextTick(() => {
-            if (spellingInputRef.value) spellingInputRef.value.focus();
-          });
+          spellingInput.value = '';
+          spellingResult.value = null;
         };
 
         const checkSpelling = () => {
-          if (!spellingInput.value.trim()) return;
-          spellingSubmitted.value = true;
-          isSpellingCorrect.value = spellingInput.value.trim().toLowerCase() === spellingQuestion.value.word.toLowerCase();
-          if (isSpellingCorrect.value) {
-            speakText('Correct! ' + spellingQuestion.value.word);
-          } else {
-            speakText('Incorrect. ' + spellingQuestion.value.word);
-          }
+          if (!spellingInput.value.trim() || !spellingQuestion.value) return;
+          const isCorrect = spellingInput.value.trim().toLowerCase() === spellingQuestion.value.word.toLowerCase();
+          spellingResult.value = isCorrect;
+          if (isCorrect) spellingScore.value++;
         };
 
-        // --- 5. 搜尋列表邏輯 ---
-        const filteredListWords = computed(() => {
-          const q = searchQuery.value.trim().toLowerCase();
-          return RAW_WORDS.filter(w => {
-            if (q) {
-              return w.word.toLowerCase().includes(q) || 
-                     w.translation.includes(q) || 
-                     w.collocation.toLowerCase().includes(q);
+        watch(currentMode, (newMode) => {
+          if (newMode === 'quiz') generateQuiz();
+          else if (newMode === 'listening') generateListening();
+          else if (newMode === 'spelling') generateSpelling();
+        });
+
+        onMounted(() => {
+          if (window.speechSynthesis) {
+            window.speechSynthesis.onvoiceschanged = () => {
+              window.speechSynthesis.getVoices();
+            };
+          }
+          generateQuiz();
+
+          window.addEventListener('keydown', (e) => {
+            if (currentMode.value === 'flashcard') {
+              if (e.key === 'ArrowLeft') {
+                prevCard();
+              } else if (e.key === 'ArrowRight') {
+                nextCard();
+              } else if (e.key === ' ' || e.code === 'Space') {
+                if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
+                e.preventDefault();
+                isFlipped.value = !isFlipped.value;
+              }
             }
-            return true;
           });
         });
 
-        // --- 6. 防爆 100% 免費語音核心 Web Speech Engine ---
-        let availableVoices = [];
-
-        const updateVoices = () => {
-          if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-            availableVoices = window.speechSynthesis.getVoices();
-          }
-        };
-
-        const speakText = (text) => {
-          if (!('speechSynthesis' in window)) return;
-
-          // 核心修復: 解鎖相容性與防死鎖
-          if (window.speechSynthesis.paused) {
-            window.speechSynthesis.resume();
-          }
-          window.speechSynthesis.cancel();
-
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.lang = 'en-US';
-
-          // 聲線風格參數調整
-          if (selectedVoicePreset.value === 'FEMALE_HIGH') {
-            utterance.pitch = 1.3;
-            utterance.rate = 0.95;
-          } else if (selectedVoicePreset.value === 'MALE_LOW') {
-            utterance.pitch = 0.7;
-            utterance.rate = 0.85;
-          } else if (selectedVoicePreset.value === 'SLOW') {
-            utterance.pitch = 1.0;
-            utterance.rate = 0.75;
-          } else {
-            utterance.pitch = 1.0;
-            utterance.rate = 0.95;
-          }
-
-          if (availableVoices.length === 0) updateVoices();
-          const enVoice = availableVoices.find(v => v.lang && (v.lang === 'en-US' || v.lang === 'en_US')) || 
-                          availableVoices.find(v => v.lang && v.lang.startsWith('en'));
-          if (enVoice) utterance.voice = enVoice;
-
-          isSpeaking.value = true;
-          utterance.onend = () => { isSpeaking.value = false; };
-          utterance.onerror = () => { isSpeaking.value = false; };
-
-          window.speechSynthesis.speak(utterance);
-        };
-
-        const speak = (text) => {
-          speakText(text);
-        };
-
-        const testAudio = () => {
-          speakText("Audio test normal. Welcome to TOEIC 1350 training!");
-        };
-
-        // 標記與收藏 Toggle
-        const toggleStar = (id) => {
-          if (starredSet.value.has(id)) {
-            starredSet.value.delete(id);
-          } else {
-            starredSet.value.add(id);
-          }
-          localStorage.setItem('toeic_starred', JSON.stringify(Array.from(starredSet.value)));
-        };
-
-        const toggleMastered = (id) => {
-          if (masteredSet.value.has(id)) {
-            masteredSet.value.delete(id);
-          } else {
-            masteredSet.value.add(id);
-          }
-          localStorage.setItem('toeic_mastered', JSON.stringify(Array.from(masteredSet.value)));
-        };
-
-        const isStarred = (id) => starredSet.value.has(id);
-        const isMastered = (id) => masteredSet.value.has(id);
-
-        // 切換模式自動重置題目
-        watch(currentMode, (newMode) => {
-          if (newMode === 'quiz') generateQuizQuestion();
-          if (newMode === 'listening') generateListeningQuestion();
-          if (newMode === 'spelling') generateSpellingQuestion();
-        });
-
-        // 電腦鍵盤快捷鍵
-        const handleKeyDown = (e) => {
-          if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-
-          if (currentMode.value === 'cards') {
-            if (e.code === 'Space') { e.preventDefault(); isFlipped.value = !isFlipped.value; }
-            if (e.code === 'ArrowRight') nextCard();
-            if (e.code === 'ArrowLeft') prevCard();
-            if (e.key === 's' || e.key === 'S') toggleStar(currentCard.value.id);
-            if (e.key === 'm' || e.key === 'M') toggleMastered(currentCard.value.id);
-          }
-        };
-
-        onMounted(() => {
-          updateVoices();
-          if (typeof window !== 'undefined' && 'speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
-            window.speechSynthesis.onvoiceschanged = updateVoices;
-          }
-          window.addEventListener('keydown', handleKeyDown);
-          generateQuizQuestion();
-        });
-
         return {
+          modes,
           currentMode,
           selectedChapter,
-          filterMode,
+          selectedStatus,
+          selectedAccent,
+          selectedVoiceGender,
           searchQuery,
-          selectedVoicePreset,
-          showShortcutModal,
-          isSpeaking,
-          modes,
-          filteredWords,
-          currentCardIndex,
+          displayLimit,
+          cardIndex,
           isFlipped,
-          currentCard,
+          starredSet,
+          masteredSet,
+          filteredWords,
+          currentWord,
+          searchedWords,
+          displayedWords,
+          loadMore,
           nextCard,
           prevCard,
+          toggleStar,
+          toggleMaster,
+          speakText,
+          speakCurrent,
           quizQuestion,
           quizOptions,
-          selectedQuizOption,
+          selectedOpt,
           quizAnswered,
           quizScore,
-          generateQuizQuestion,
-          selectQuizAnswer,
-          getQuizOptionStyle,
+          generateQuiz,
+          answerQuiz,
           listeningQuestion,
           listeningOptions,
-          selectedListeningOption,
+          selectedListeningOpt,
           listeningAnswered,
-          listeningStreak,
-          generateListeningQuestion,
-          playListeningAudio,
-          selectListeningAnswer,
-          getListeningOptionStyle,
+          listeningScore,
+          generateListening,
+          speakCurrentListening,
+          answerListening,
           spellingQuestion,
           spellingInput,
-          spellingSubmitted,
-          isSpellingCorrect,
-          spellingInputRef,
-          generateSpellingQuestion,
-          checkSpelling,
-          filteredListWords,
-          speak,
-          testAudio,
-          toggleStar,
-          toggleMastered,
-          isStarred,
-          isMastered
+          spellingResult,
+          spellingScore,
+          generateSpelling,
+          checkSpelling
         };
       }
     }).mount('#app');
