@@ -130,10 +130,10 @@
         <div class="flex flex-col gap-1">
           <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">聲線風格</label>
           <select v-model="selectedVoiceGender" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 font-medium">
-            <option value="MALE_STD">👨 標準男聲</option>
-            <option value="MALE_DEEP">🧔 沉穩低音男</option>
-            <option value="FEMALE_STD">👩 標準女聲</option>
-            <option value="FEMALE_HIGH">👧 清亮高音女</option>
+            <option value="MALE_STD">👨 沉穩美音男 (Charon)</option>
+            <option value="MALE_DEEP">🧔 歡快感男聲 (Puck)</option>
+            <option value="FEMALE_STD">👩 溫和自然女 (Kore)</option>
+            <option value="FEMALE_HIGH">👧 亮麗陽光女 (Zephyr)</option>
             <option value="RANDOM">🎲 隨機變換</option>
           </select>
         </div>
@@ -142,7 +142,12 @@
 
       <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 font-medium">
         <span>當前符合單字：<strong class="text-indigo-400">{{ filteredWords.length }}</strong> / 1350 字</span>
-        <span>熟練度：<strong class="text-emerald-400">{{ masteredSet.size }}</strong> 已掌握</span>
+        <div class="flex items-center gap-2">
+          <span v-if="isAiAudioLoading" class="text-amber-400 flex items-center gap-1">
+            <i class="fa-solid fa-spinner fa-spin"></i> AI 語音合成中...
+          </span>
+          <span>熟練度：<strong class="text-emerald-400">{{ masteredSet.size }}</strong> 已掌握</span>
+        </div>
       </div>
     </section>
 
@@ -652,49 +657,159 @@
           else masteredSet.value.add(id);
         };
 
-        const speakText = (text) => {
-          if (!text || !window.speechSynthesis) return;
-          try {
-            window.speechSynthesis.cancel();
+        // Gemini AI 高音質 TTS 語音生成引擎
+        const isAiAudioLoading = ref(false);
+        const audioCache = new Map();
 
-            const utterance = new SpeechSynthesisUtterance(text);
-            
-            let pitch = 1.0;
-            let rate = 0.95;
+        const base64ToArrayBuffer = (base64) => {
+          const binaryString = window.atob(base64);
+          const len = binaryString.length;
+          const bytes = new Uint8Array(len);
+          for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          return bytes.buffer;
+        };
 
-            if (selectedVoiceGender.value === 'MALE_DEEP') { pitch = 0.65; rate = 0.88; }
-            else if (selectedVoiceGender.value === 'FEMALE_HIGH') { pitch = 1.45; rate = 1.05; }
-            else if (selectedVoiceGender.value === 'MALE_STD') { pitch = 0.85; rate = 0.95; }
-            
-            utterance.pitch = pitch;
-            utterance.rate = rate;
+        const pcmToWav = (pcm16Data, sampleRate = 24000) => {
+          const numChannels = 1;
+          const bitsPerSample = 16;
+          const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+          const blockAlign = numChannels * (bitsPerSample / 8);
+          const dataSize = pcm16Data.length * 2;
+          const buffer = new ArrayBuffer(44 + dataSize);
+          const view = new DataView(buffer);
 
-            let lang = 'en-US';
-            if (selectedAccent.value === 'RANDOM') {
-              const accents = ['en-US', 'en-GB', 'en-AU', 'en-CA'];
-              lang = accents[Math.floor(Math.random() * accents.length)];
-            } else {
-              lang = selectedAccent.value;
+          const writeString = (v, offset, str) => {
+            for (let i = 0; i < str.length; i++) {
+              v.setUint8(offset + i, str.charCodeAt(i));
             }
-            utterance.lang = lang;
+          };
 
-            const voices = window.speechSynthesis.getVoices();
-            if (voices && voices.length > 0) {
-              const matchingVoices = voices.filter(v => v.lang.startsWith(lang.split('-')[0]));
-              if (matchingVoices.length > 0) {
-                if (selectedVoiceGender.value.startsWith('MALE')) {
-                  const maleVoice = matchingVoices.find(v => v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('george') || v.name.toLowerCase().includes('alex'));
-                  if (maleVoice) utterance.voice = maleVoice;
-                } else if (selectedVoiceGender.value.startsWith('FEMALE')) {
-                  const femaleVoice = matchingVoices.find(v => v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('samantha') || v.name.toLowerCase().includes('victoria'));
-                  if (femaleVoice) utterance.voice = femaleVoice;
+          writeString(view, 0, 'RIFF');
+          view.setUint32(4, 36 + dataSize, true);
+          writeString(view, 8, 'WAVE');
+          writeString(view, 12, 'fmt ');
+          view.setUint32(16, 16, true);
+          view.setUint16(20, 1, true);
+          view.setUint16(22, numChannels, true);
+          view.setUint32(24, sampleRate, true);
+          view.setUint32(28, byteRate, true);
+          view.setUint16(32, blockAlign, true);
+          view.setUint16(34, bitsPerSample, true);
+          writeString(view, 36, 'data');
+          view.setUint32(40, dataSize, true);
+
+          let offset = 44;
+          for (let i = 0; i < pcm16Data.length; i++, offset += 2) {
+            view.setInt16(offset, pcm16Data[i], true);
+          }
+          return new Blob([buffer], { type: 'audio/wav' });
+        };
+
+        const speakText = async (text) => {
+          if (!text || !text.trim()) return;
+          const cleanText = text.trim();
+
+          // 選擇對應的 Gemini AI Voice
+          let voiceName = 'Charon';
+          if (selectedVoiceGender.value === 'MALE_STD') voiceName = 'Charon';
+          else if (selectedVoiceGender.value === 'MALE_DEEP') voiceName = 'Puck';
+          else if (selectedVoiceGender.value === 'FEMALE_STD') voiceName = 'Kore';
+          else if (selectedVoiceGender.value === 'FEMALE_HIGH') voiceName = 'Zephyr';
+          else if (selectedVoiceGender.value === 'RANDOM') {
+            const voices = ['Charon', 'Puck', 'Kore', 'Zephyr', 'Fenrir', 'Aoede'];
+            voiceName = voices[Math.floor(Math.random() * voices.length)];
+          }
+
+          // 決定腔調語氣提示詞
+          let accentInstruction = "American";
+          if (selectedAccent.value === 'en-GB') accentInstruction = "British";
+          else if (selectedAccent.value === 'en-AU') accentInstruction = "Australian";
+          else if (selectedAccent.value === 'en-CA') accentInstruction = "Canadian";
+          else if (selectedAccent.value === 'RANDOM') {
+            const accents = ["American", "British", "Australian", "Canadian"];
+            accentInstruction = accents[Math.floor(Math.random() * accents.length)];
+          }
+
+          const cacheKey = `${cleanText}_${voiceName}_${accentInstruction}`;
+          if (audioCache.has(cacheKey)) {
+            const audioUrl = audioCache.get(cacheKey);
+            const audio = new Audio(audioUrl);
+            audio.play().catch(e => console.warn('Audio play error:', e));
+            return;
+          }
+
+          isAiAudioLoading.value = true;
+
+          try {
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            const promptText = `Say clearly in a natural ${accentInstruction} accent: ${cleanText}`;
+
+            const payload = {
+              contents: [{
+                parts: [{ text: promptText }]
+              }],
+              generationConfig: {
+                responseModalities: ["AUDIO"],
+                speechConfig: {
+                  voiceConfig: {
+                    prebuiltVoiceConfig: { voiceName: voiceName }
+                  }
                 }
               }
-            }
+            };
 
+            const response = await fetch(apiUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) throw new Error('API response not ok');
+
+            const result = await response.json();
+            const part = result?.candidates?.[0]?.content?.parts?.[0];
+            const audioData = part?.inlineData?.data;
+            const mimeType = part?.inlineData?.mimeType || '';
+
+            if (audioData) {
+              const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+              const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
+              const pcmData = base64ToArrayBuffer(audioData);
+              const pcm16 = new Int16Array(pcmData);
+              const wavBlob = pcmToWav(pcm16, sampleRate);
+              const audioUrl = URL.createObjectURL(wavBlob);
+
+              audioCache.set(cacheKey, audioUrl);
+              const audio = new Audio(audioUrl);
+              audio.play().catch(e => console.warn('Audio play error:', e));
+            } else {
+              throw new Error('No audio data received');
+            }
+          } catch (error) {
+            console.warn('Gemini AI TTS unavailable, fallback to WebSpeech API:', error);
+            // 備援：瀏覽器本機語音
+            fallbackWebSpeech(cleanText);
+          } finally {
+            isAiAudioLoading.value = false;
+          }
+        };
+
+        const fallbackWebSpeech = (text) => {
+          if (!window.speechSynthesis) return;
+          try {
+            window.speechSynthesis.cancel();
+            if (window.speechSynthesis.resume) window.speechSynthesis.resume();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = selectedAccent.value === 'RANDOM' ? 'en-US' : selectedAccent.value;
+            utterance.rate = 0.95;
             window.speechSynthesis.speak(utterance);
           } catch (e) {
-            console.error('Speech error:', e);
+            console.error('WebSpeech fallback error:', e);
           }
         };
 
@@ -843,6 +958,7 @@
           selectedStatus,
           selectedAccent,
           selectedVoiceGender,
+          isAiAudioLoading,
           searchQuery,
           displayLimit,
           cardIndex,
