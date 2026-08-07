@@ -3,95 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>TOEIC 1350 多益單字聽力特訓台 (YouTube 實體字幕同步版)</title>
+  <title>TOEIC 1350 多益單字聽力特訓台</title>
   
-  <!-- CDNs for Tailwind CSS, FontAwesome, and Vue 3 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
-
-    body {
-      font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
-      background-color: #0b0f19;
-      color: #f3f4f6;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .perspective-1000 {
-      perspective: 1000px;
-    }
-    .transform-style-3d {
-      transform-style: preserve-3d;
-    }
-    .backface-hidden {
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-    }
-    .rotate-y-180 {
-      transform: rotateY(180deg);
-    }
-
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #111827;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #374151;
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #4b5563;
-    }
-
-    .active-scale {
-      transition: transform 0.1s ease, background-color 0.15s ease;
-    }
-    .active-scale:active {
-      transform: scale(0.96);
-    }
+    body { font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif; background-color: #0b0f19; color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
+    [v-cloak] { display: none !important; }
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #111827; }
+    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 9999px; }
+    .active-scale:active { transform: scale(0.96); }
   </style>
 </head>
 <body class="h-full bg-slate-950 text-slate-100 flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
 
-  <div id="app" class="flex flex-col min-h-screen w-full max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 pb-20 md:pb-8">
+  <div id="app" v-cloak class="flex flex-col min-h-screen w-full max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 pb-20 md:pb-8">
     
-    <!-- Header -->
     <header class="py-4 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/20 font-black text-xl text-white">
-          T
-        </div>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/20 font-black text-xl text-white">T</div>
         <div>
           <h1 class="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
             TOEIC 1350 特訓台
-            <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 font-medium">v5.0 YT實體單字版</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 font-medium">v7.8 完美真實1350版</span>
           </h1>
-          <p class="text-xs text-slate-400 hidden sm:block">【單字耳機 WordPods】6小時 1,350 多益核心單字同步特訓</p>
+          <p class="text-xs text-slate-400 hidden sm:block">【單字耳機 WordPods】多益高頻單字雙語同步聽力特訓台</p>
         </div>
       </div>
 
-      <!-- Navigation for Desktop -->
-      <nav class="hidden md:flex items-center space-x-1 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800">
-        <button v-for="mode in modes" :key="mode.id" @click="currentMode = mode.id"
-                :class="[currentMode === mode.id ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60']"
-                class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 active-scale">
-          <i :class="mode.icon"></i>
-          <span>{{ mode.name }}</span>
+      <div class="flex items-center space-x-2">
+        <button @click="showApiModal = true" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 text-xs font-semibold flex items-center space-x-1.5 transition-all active-scale">
+          <i class="fa-solid fa-gear text-indigo-400"></i>
+          <span>⚙️ API 設定</span>
         </button>
-      </nav>
+
+        <nav class="hidden md:flex items-center space-x-1 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800">
+          <button v-for="mode in modes" :key="mode.id" @click="currentMode = mode.id"
+                  :class="[currentMode === mode.id ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60']"
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 active-scale">
+            <i :class="mode.icon"></i>
+            <span>{{ mode.name }}</span>
+          </button>
+        </nav>
+      </div>
     </header>
 
-    <!-- Filter Section -->
     <section class="py-3 my-2 bg-slate-900/60 backdrop-blur-md rounded-2xl border border-slate-800/80 px-3 sm:px-4 shadow-sm">
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
         
-        <!-- 章節選擇 -->
         <div class="flex flex-col gap-1">
           <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">章節範圍</label>
           <select v-model="selectedChapter" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 font-medium">
@@ -103,7 +70,6 @@
           </select>
         </div>
 
-        <!-- 學習狀態 -->
         <div class="flex flex-col gap-1">
           <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">學習狀態</label>
           <select v-model="selectedStatus" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 font-medium">
@@ -114,7 +80,6 @@
           </select>
         </div>
 
-        <!-- 多益腔調 -->
         <div class="flex flex-col gap-1">
           <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">TOEIC 腔調</label>
           <select v-model="selectedAccent" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 font-medium">
@@ -126,14 +91,13 @@
           </select>
         </div>
 
-        <!-- 聲線風格 -->
         <div class="flex flex-col gap-1">
           <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">聲線風格</label>
           <select v-model="selectedVoiceGender" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 font-medium">
-            <option value="MALE_STD">👨 沉穩美音男 (Charon)</option>
-            <option value="MALE_DEEP">🧔 歡快感男聲 (Puck)</option>
-            <option value="FEMALE_STD">👩 溫和自然女 (Kore)</option>
-            <option value="FEMALE_HIGH">👧 亮麗陽光女 (Zephyr)</option>
+            <option value="Charon">🧔 沉穩男音 (低沉)</option>
+            <option value="Puck">👦 活力男聲</option>
+            <option value="Kore">👩 標準女音</option>
+            <option value="Zephyr">👧 亮麗女聲</option>
             <option value="RANDOM">🎲 隨機變換</option>
           </select>
         </div>
@@ -141,43 +105,46 @@
       </div>
 
       <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 font-medium">
-        <span>當前符合單字：<strong class="text-indigo-400">{{ filteredWords.length }}</strong> / 1350 字</span>
+        <span>當前符合單字：<strong class="text-indigo-400">{{ filteredWords.length }}</strong> 字</span>
         <div class="flex items-center gap-2">
           <span v-if="isAiAudioLoading" class="text-amber-400 flex items-center gap-1">
-            <i class="fa-solid fa-spinner fa-spin"></i> AI 語音合成中...
+            <i class="fa-solid fa-spinner fa-spin"></i> 語音合成中...
           </span>
           <span>熟練度：<strong class="text-emerald-400">{{ masteredSet.size }}</strong> 已掌握</span>
         </div>
       </div>
     </section>
 
-    <!-- Main Content Area -->
+    <div class="md:hidden flex items-center justify-around bg-slate-900 border border-slate-800 p-1.5 rounded-2xl mb-3 text-xs">
+      <button v-for="mode in modes" :key="mode.id" @click="currentMode = mode.id"
+              :class="[currentMode === mode.id ? 'bg-indigo-600 text-white font-bold' : 'text-slate-400']"
+              class="px-2.5 py-1.5 rounded-xl transition-all flex items-center space-x-1 active-scale">
+        <i :class="mode.icon"></i>
+        <span>{{ mode.name }}</span>
+      </button>
+    </div>
+
     <main class="flex-1 flex flex-col justify-center my-2">
       
-      <!-- 1. 單字閃卡 Mode -->
+      <!-- 1. Flashcard Mode -->
       <div v-if="currentMode === 'flashcard'" class="flex flex-col items-center justify-center w-full max-w-xl mx-auto space-y-4">
-        
         <div v-if="filteredWords.length === 0" class="text-center py-12 text-slate-400">
           <i class="fa-solid fa-inbox text-4xl mb-3 text-slate-600"></i>
           <p>沒有符合當前條件的單字，請調整上方篩選器。</p>
         </div>
 
-        <template v-else>
-          <!-- 3D Flashcard Container -->
+        <template v-else-if="currentWord">
           <div @click="isFlipped = !isFlipped" class="w-full h-80 sm:h-96 cursor-pointer perspective-1000 group">
             <div :class="{ 'rotate-y-180': isFlipped }" class="relative w-full h-full duration-500 transform-style-3d transition-transform">
               
-              <!-- Card Front -->
               <div class="absolute inset-0 w-full h-full bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col justify-between shadow-2xl backface-hidden group-hover:border-indigo-500/50 transition-colors">
                 <div class="flex items-center justify-between text-xs text-slate-400">
                   <span class="px-2.5 py-1 rounded-md bg-slate-800 font-semibold text-indigo-400 border border-slate-700">
                     {{ currentWord.chapter }} #{{ currentWord.id }}
                   </span>
-                  <div class="flex items-center space-x-2">
-                    <button @click.stop="toggleStar(currentWord.id)" class="text-lg transition-transform active-scale p-1">
-                      <i :class="[starredSet.has(currentWord.id) ? 'fa-solid fa-star text-amber-400' : 'fa-regular fa-star text-slate-500 hover:text-slate-300']"></i>
-                    </button>
-                  </div>
+                  <button @click.stop="toggleStar(currentWord.id)" class="text-lg transition-transform active-scale p-1">
+                    <i :class="[starredSet.has(currentWord.id) ? 'fa-solid fa-star text-amber-400' : 'fa-regular fa-star text-slate-500 hover:text-slate-300']"></i>
+                  </button>
                 </div>
 
                 <div class="text-center my-auto space-y-3">
@@ -194,7 +161,6 @@
                 </div>
               </div>
 
-              <!-- Card Back -->
               <div class="absolute inset-0 w-full h-full bg-slate-900 border border-indigo-600/40 rounded-3xl p-6 flex flex-col justify-between shadow-2xl backface-hidden rotate-y-180">
                 <div class="flex items-center justify-between text-xs border-b border-slate-800 pb-2">
                   <span class="font-bold text-indigo-400 text-lg">{{ currentWord.word }}</span>
@@ -231,7 +197,6 @@
             </div>
           </div>
 
-          <!-- Controls: Prev / Next buttons -->
           <div class="flex items-center justify-between w-full gap-3 pt-2">
             <button @click="prevCard" class="flex-1 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 text-xs sm:text-sm font-bold flex items-center justify-center space-x-2 border border-slate-700 active-scale shadow-lg transition-all">
               <i class="fa-solid fa-arrow-left"></i>
@@ -243,14 +208,16 @@
             </button>
           </div>
         </template>
-
       </div>
 
-      <!-- 2. 筆試測驗 Mode -->
+      <!-- 2. Quiz Mode -->
       <div v-else-if="currentMode === 'quiz'" class="w-full max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-5">
         <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
-          <span class="font-bold text-indigo-400">4選1 筆試測驗</span>
-          <span>得分：<strong class="text-emerald-400 text-sm">{{ quizScore }}</strong> 題</span>
+          <span class="font-bold text-indigo-400">4選1 筆試測驗 (得分: {{ quizScore }})</span>
+          <button @click="generateQuiz" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-bold shadow-md active-scale flex items-center gap-1.5">
+            <span>{{ quizAnswered ? '下一題 (Next)' : '跳過 (Skip)' }}</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
         </div>
 
         <div v-if="quizQuestion" class="space-y-4">
@@ -273,19 +240,31 @@
             </button>
           </div>
 
-          <div v-if="quizAnswered" class="pt-2 flex justify-end">
-            <button @click="generateQuiz" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold active-scale shadow-lg">
-              下一題 <i class="fa-solid fa-chevron-right ml-1"></i>
+          <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+            <div class="text-xs text-slate-400">
+              <span v-if="quizAnswered" :class="[selectedOpt === quizQuestion.translation ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold']">
+                {{ selectedOpt === quizQuestion.translation ? '🎉 回答正確！' : '❌ 答錯了！答案是：' + quizQuestion.translation }}
+              </span>
+              <span v-else class="text-slate-500">請點擊選項回答</span>
+            </div>
+            <button @click="generateQuiz" 
+                    :class="[quizAnswered ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-lg shadow-indigo-600/30 ring-2 ring-indigo-400/50' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700']"
+                    class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all active-scale flex items-center gap-1.5">
+              <span>{{ quizAnswered ? '下一題 (Next)' : '跳過 (Skip)' }}</span>
+              <i class="fa-solid fa-arrow-right"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- 3. 聽力特訓 Mode -->
+      <!-- 3. Listening Mode -->
       <div v-else-if="currentMode === 'listening'" class="w-full max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-5">
         <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
-          <span class="font-bold text-indigo-400">聽力辨義 4選1</span>
-          <span>聽力得分：<strong class="text-emerald-400 text-sm">{{ listeningScore }}</strong> 題</span>
+          <span class="font-bold text-indigo-400">聽力辨義 4選1 (得分: {{ listeningScore }})</span>
+          <button @click="generateListening" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-bold shadow-md active-scale flex items-center gap-1.5">
+            <span>{{ listeningAnswered ? '下一題 (Next)' : '跳過 (Skip)' }}</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
         </div>
 
         <div v-if="listeningQuestion" class="space-y-4">
@@ -293,7 +272,7 @@
             <button @click="speakCurrentListening" class="w-16 h-16 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-2xl flex items-center justify-center shadow-lg shadow-indigo-600/40 active-scale transition-transform">
               <i class="fa-solid fa-volume-high"></i>
             </button>
-            <p class="text-xs text-slate-400">點擊按鈕重聽單字發音</p>
+            <p class="text-xs text-slate-400">點擊按鈕重聽發音</p>
           </div>
 
           <div class="grid grid-cols-1 gap-2.5">
@@ -311,24 +290,36 @@
           </div>
 
           <div v-if="listeningAnswered" class="p-3 bg-slate-950/80 border border-slate-800 rounded-xl space-y-1 text-xs">
-            <p class="font-bold text-indigo-300">{{ listeningQuestion.word + ' — ' + listeningQuestion.translation }}</p>
+            <p class="font-bold text-indigo-300">{{ listeningQuestion.word }} — {{ listeningQuestion.translation }}</p>
             <p class="text-emerald-400 text-[11px]">{{ listeningQuestion.collocation }}</p>
             <p class="text-slate-300 text-[11px]">{{ listeningQuestion.sentence }}</p>
           </div>
 
-          <div v-if="listeningAnswered" class="pt-2 flex justify-end">
-            <button @click="generateListening" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold active-scale shadow-lg">
-              下一題 <i class="fa-solid fa-chevron-right ml-1"></i>
+          <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+            <div class="text-xs text-slate-400">
+              <span v-if="listeningAnswered" :class="[selectedListeningOpt === listeningQuestion.translation ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold']">
+                {{ selectedListeningOpt === listeningQuestion.translation ? '🎉 聽力辨義正確！' : '❌ 答錯囉！' }}
+              </span>
+              <span v-else class="text-slate-500">聽發音選擇正確中文</span>
+            </div>
+            <button @click="generateListening" 
+                    :class="[listeningAnswered ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-lg shadow-indigo-600/30 ring-2 ring-indigo-400/50' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700']"
+                    class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all active-scale flex items-center gap-1.5">
+              <span>{{ listeningAnswered ? '下一題 (Next)' : '跳過 (Skip)' }}</span>
+              <i class="fa-solid fa-arrow-right"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- 4. 拼字挑戰 Mode -->
+      <!-- 4. Spelling Mode -->
       <div v-else-if="currentMode === 'spelling'" class="w-full max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-5">
         <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
-          <span class="font-bold text-indigo-400">拼字挑戰</span>
-          <span>得分：<strong class="text-emerald-400 text-sm">{{ spellingScore }}</strong> 題</span>
+          <span class="font-bold text-indigo-400">拼字挑戰 (得分: {{ spellingScore }})</span>
+          <button @click="generateSpelling" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-bold shadow-md active-scale flex items-center gap-1.5">
+            <span>{{ spellingResult !== null ? '下一題 (Next)' : '跳過 (Skip)' }}</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
         </div>
 
         <div v-if="spellingQuestion" class="space-y-4">
@@ -351,652 +342,465 @@
             <p class="text-[11px] text-slate-300">{{ spellingQuestion.sentence }}</p>
           </div>
 
-          <div v-if="spellingResult !== null" class="flex justify-end">
-            <button @click="generateSpelling" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold active-scale">
-              下一題 <i class="fa-solid fa-chevron-right ml-1"></i>
+          <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+            <button @click="speakText(spellingQuestion.word)" class="px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/30 flex items-center space-x-1.5 text-xs active-scale">
+              <i class="fa-solid fa-volume-high"></i>
+              <span>聽發音提示</span>
+            </button>
+            <button @click="generateSpelling" 
+                    :class="[spellingResult !== null ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-lg shadow-indigo-600/30 ring-2 ring-indigo-400/50' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700']"
+                    class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all active-scale flex items-center gap-1.5">
+              <span>{{ spellingResult !== null ? '下一題 (Next)' : '跳過 (Skip)' }}</span>
+              <i class="fa-solid fa-arrow-right"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- 5. 全單字庫 Mode -->
-      <div v-else-if="currentMode === 'list'" class="w-full space-y-3">
-        <div class="flex items-center justify-between text-xs text-slate-400 px-1">
-          <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-2xl p-2.5 shadow-md flex-1 mr-2">
-            <i class="fa-solid fa-magnifying-glass text-slate-400 ml-2"></i>
-            <input v-model="searchQuery" type="text" placeholder="搜尋單字、中文或搭配詞..." class="w-full bg-transparent border-none text-xs text-white focus:outline-none">
+      <!-- 5. List Mode -->
+      <div v-else-if="currentMode === 'list'" class="w-full bg-slate-900 border border-slate-800 rounded-3xl p-4 sm:p-6 shadow-2xl space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-book-bookmark text-indigo-400"></i>
+            <h3 class="font-bold text-sm sm:text-base text-white">1350 多益核心單字全覽表</h3>
           </div>
-          <span class="text-[11px] whitespace-nowrap text-slate-400 font-medium">
-            顯示 <strong class="text-indigo-400">{{ displayedWords.length }}</strong> / {{ searchedWords.length }} 字
-          </span>
+          <div class="relative w-full sm:w-64">
+            <input v-model="searchQuery" type="text" placeholder="搜尋英文或中文單字..."
+                   class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-500 text-xs"></i>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[60vh] overflow-y-auto pr-1">
-          <div v-for="item in displayedWords" :key="item.id" class="bg-slate-900 border border-slate-800/80 hover:border-slate-700 p-4 rounded-2xl space-y-2 text-xs transition-colors">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-2">
-                <span class="font-extrabold text-sm text-white">{{ item.word }}</span>
-                <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-indigo-400 font-medium">{{ item.chapter }} #{{ item.id }}</span>
+          <div v-for="w in displayedWords" :key="w.id"
+               class="bg-slate-950/60 border border-slate-800 hover:border-slate-700 p-3.5 rounded-2xl flex items-start justify-between gap-3 transition-all">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-white">{{ w.word }}</span>
+                <span class="text-xs font-bold text-amber-300">{{ w.translation }}</span>
               </div>
-              <div class="flex items-center space-x-2">
-                <button @click="speakText(item.word)" class="text-indigo-400 hover:text-indigo-300 p-1"><i class="fa-solid fa-volume-high"></i></button>
-                <button @click="toggleStar(item.id)" class="text-amber-400 p-1">
-                  <i :class="[starredSet.has(item.id) ? 'fa-solid fa-star' : 'fa-regular fa-star text-slate-600']"></i>
-                </button>
-              </div>
+              <p class="text-[11px] text-emerald-400 font-mono">{{ w.collocation }}</p>
+              <p class="text-[11px] text-slate-400 leading-tight">{{ w.sentence }}</p>
             </div>
-            <p class="text-emerald-400 font-semibold">{{ item.translation + ' • ' }}<span class="text-slate-300 font-normal">{{ item.collocation }}</span></p>
-            <p class="text-slate-400 text-[11px] leading-relaxed">{{ item.sentence }}</p>
-            <p class="text-slate-500 text-[10px]">{{ item.sentenceTranslation }}</p>
+            <div class="flex items-center space-x-1 pt-1">
+              <button @click="speakText(w.word)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs active-scale">
+                <i class="fa-solid fa-volume-high"></i>
+              </button>
+              <button @click="toggleStar(w.id)" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs active-scale">
+                <i :class="[starredSet.has(w.id) ? 'fa-solid fa-star text-amber-400' : 'fa-regular fa-star text-slate-500']"></i>
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Load More Button -->
-        <div v-if="displayedWords.length < searchedWords.length" class="text-center pt-2">
-          <button @click="loadMore" class="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-bold text-indigo-300 transition-colors active-scale">
-            <i class="fa-solid fa-angles-down mr-1"></i> 載入更多單字 (目前顯示 {{ displayedWords.length }} / {{ searchedWords.length }})
+        <div v-if="displayedWords.length < searchFilteredWords.length" class="text-center pt-2">
+          <button @click="loadMoreWords" class="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 text-xs font-bold active-scale">
+            ⬇️ 載入更多單字 (已顯示 {{ displayedWords.length }} / {{ searchFilteredWords.length }} 字)
           </button>
         </div>
       </div>
 
     </main>
 
-    <!-- Mobile Bottom Navigation Bar -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 px-2 py-1.5 z-50 flex items-center justify-around">
-      <button v-for="mode in modes" :key="mode.id" @click="currentMode = mode.id"
-              :class="[currentMode === mode.id ? 'text-indigo-400 font-bold' : 'text-slate-500']"
-              class="flex flex-col items-center justify-center p-1 min-w-[50px] text-[10px] active-scale">
-        <i :class="mode.icon" class="text-base mb-0.5"></i>
-        <span>{{ mode.name }}</span>
-      </button>
-    </nav>
+    <div v-if="showApiModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 class="font-bold text-white text-base flex items-center gap-2">
+            <i class="fa-solid fa-key text-indigo-400"></i>
+            <span>Google Gemini AI 語音設定</span>
+          </h3>
+          <button @click="showApiModal = false" class="text-slate-400 hover:text-white p-1">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <p class="text-xs text-slate-300 leading-relaxed">
+          貼上您的 Google Gemini API Key 即可全平台解鎖 **Google 2.5 Flash 頂級 AI 擬真自然發音**：
+        </p>
+
+        <input v-model="apiKeyInput" type="password" placeholder="貼上 API Key (AIzaSy...)"
+               class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500 font-mono">
+
+        <div class="flex items-center justify-end space-x-2 pt-2">
+          <button @click="clearApiKey" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-400 hover:text-slate-200 text-xs font-bold">清除</button>
+          <button @click="saveApiKey" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30">儲存並啟用</button>
+        </div>
+      </div>
+    </div>
 
   </div>
 
   <script>
-    const { createApp, ref, computed, onMounted, watch, nextTick } = Vue;
-
-    // YouTube 【單字耳機 WordPods】 6小時 1,350 個多益聽力單字實體內容
-    const RAW_YT_WORDS = [
-      // CH1: Recruitment, Interview & Hiring
-      { id: 1, chapter: 'CH1', word: 'vacancy', translation: '職缺 / 空缺', collocation: 'have a vacancy', sentence: 'We have a vacancy for a senior accountant in our firm.', sentenceTranslation: '我們事務所目前有一個資深會計的職缺。' },
-      { id: 2, chapter: 'CH1', word: 'opening', translation: '職務空缺', collocation: 'latest job openings', sentence: 'You can check our website for the latest job openings.', sentenceTranslation: '您可以造訪我們的網站查看最新的職缺公告。' },
-      { id: 3, chapter: 'CH1', word: 'seek', translation: '尋求 / 招募', collocation: 'seek a dynamic manager', sentence: 'The agency is seeking a dynamic sales manager.', sentenceTranslation: '該代理商正在招募一位充滿活力的銷售經理。' },
-      { id: 4, chapter: 'CH1', word: 'requirement', translation: '基本要求 / 條件', collocation: 'basic requirement', sentence: 'A university degree is a basic requirement for this role.', sentenceTranslation: '大學學位是這個職位的基本要求。' },
-      { id: 5, chapter: 'CH1', word: 'qualification', translation: '專業資格', collocation: 'professional qualifications', sentence: 'Please list all your professional qualifications on your resume.', sentenceTranslation: '請在履歷表上列出您所有的專業資格。' },
-      { id: 6, chapter: 'CH1', word: 'criteria', translation: '評選標準', collocation: 'main criteria', sentence: 'What are the main criteria for selecting the candidates?', sentenceTranslation: '選擇候選人的主要標準是什麼？' },
-      { id: 7, chapter: 'CH1', word: 'description', translation: '職務說明 (JD)', collocation: 'job description', sentence: 'The job description includes regular travel to overseas offices.', sentenceTranslation: '這份工作說明包含定期出差至海外分公司。' },
-      { id: 8, chapter: 'CH1', word: 'credential', translation: '學歷證件 / 資格憑證', collocation: 'academic credentials', sentence: 'She has impressive academic credentials from top universities.', sentenceTranslation: '她擁有來自頂尖大學令人印象深刻的學歷資歷。' },
-      { id: 9, chapter: 'CH1', word: 'portfolio', translation: '作品集', collocation: 'present a portfolio', sentence: 'Designers must present a portfolio during the interview.', sentenceTranslation: '設計師在面試期間必須展示作品集。' },
-      { id: 10, chapter: 'CH1', word: 'application', translation: '申請 / 履歷申請表', collocation: 'process application', sentence: 'Your application will be processed within two weeks.', sentenceTranslation: '您的申請表格將在兩週內進行審核。' },
-      { id: 11, chapter: 'CH1', word: 'submit', translation: '提交 / 繳交', collocation: 'submit application', sentence: 'Please submit your application by the end of this month.', sentenceTranslation: '請在本月底前提交您的申請表。' },
-      { id: 12, chapter: 'CH1', word: 'deadline', translation: '截止日期', collocation: 'deadline for applications', sentence: 'The deadline for applications is 5:00 p.m. this Friday.', sentenceTranslation: '申請截止時間為本週五下午 5 點。' },
-      { id: 13, chapter: 'CH1', word: 'screen', translation: '篩選 / 審查', collocation: 'screen applications', sentence: 'Human resources is screening all the initial applications.', sentenceTranslation: '人力資源部正在審查所有初步的申請案件。' },
-      { id: 14, chapter: 'CH1', word: 'potential', translation: '潛力 / 潛在的', collocation: 'potential leaders', sentence: 'We are looking for potential leaders within the organization.', sentenceTranslation: '我們正在尋找組織內部的潛在領導人才。' },
-      { id: 15, chapter: 'CH1', word: 'attract', translation: '吸引', collocation: 'attract top talent', sentence: 'High salaries help to attract top talent to the company.', sentenceTranslation: '高薪資有助於為公司吸引頂尖人才。' },
-      { id: 16, chapter: 'CH1', word: 'career', translation: '職業生涯 / 事業', collocation: 'career in marketing', sentence: 'He is looking for a career in international marketing.', sentenceTranslation: '他正在尋求國際行銷領域的職業發展。' },
-      { id: 17, chapter: 'CH1', word: 'expertise', translation: '專業知識', collocation: 'high expertise', sentence: 'The consultant has high expertise in financial law.', sentenceTranslation: '該顧問在金融法律方面具有高度的專業知識。' },
-      { id: 18, chapter: 'CH1', word: 'background', translation: '學經歷背景', collocation: 'background in engineering', sentence: 'The ideal candidate should have a background in engineering.', sentenceTranslation: '理想的候選人應具有工程學背景。' },
-      { id: 19, chapter: 'CH1', word: 'field', translation: '領域 / 行業', collocation: 'technology field', sentence: 'There are many job opportunities in the technology field.', sentenceTranslation: '科技領域有許多工作機會。' },
-      { id: 20, chapter: 'CH1', word: 'referral', translation: '推薦 / 員工推薦', collocation: 'employee referral', sentence: 'Many of our new hires come from employee referrals.', sentenceTranslation: '我們許多新員工都來自內部員工推薦。' },
-      { id: 21, chapter: 'CH1', word: 'interview', translation: '面試 / 訪談', collocation: 'second interview', sentence: 'We would like to invite you for a second interview.', sentenceTranslation: '我們想邀請您參加第二次面試。' },
-      { id: 22, chapter: 'CH1', word: 'interviewer', translation: '面試官', collocation: 'ask interviewer', sentence: 'The interviewer asked about my previous work experience.', sentenceTranslation: '面試官詢問了我先前的工作經驗。' },
-      { id: 23, chapter: 'CH1', word: 'interviewee', translation: '應徵者 / 受訪者', collocation: 'punctual interviewee', sentence: 'The interviewee arrived 10 minutes early for the meeting.', sentenceTranslation: '應徵者提前 10 分鐘到達會議地點。' },
-      { id: 24, chapter: 'CH1', word: 'candidate', translation: '候選人 / 應徵者', collocation: 'strongest candidate', sentence: 'He is the strongest candidate for the position so far.', sentenceTranslation: '他是目前為止該職位最強力的候選人。' },
-      { id: 25, chapter: 'CH1', word: 'prospective', translation: '預期的 / 未來的', collocation: 'prospective employees', sentence: 'We have a meeting with several prospective employees today.', sentenceTranslation: '我們今天與幾位預期錄用的新員工開會。' },
-      { id: 26, chapter: 'CH1', word: 'evaluate', translation: '評估 / 評價', collocation: 'evaluate performance', sentence: 'The committee will evaluate the performance of each applicant.', sentenceTranslation: '委員會將評估每位申請人的表現。' },
-      { id: 27, chapter: 'CH1', word: 'assessment', translation: '測驗 / 評估', collocation: 'skills assessment', sentence: 'The recruitment process includes a skills assessment.', sentenceTranslation: '招募流程包含一項技能測驗。' },
-      { id: 28, chapter: 'CH1', word: 'strength', translation: '優點 / 長處', collocation: 'key strength', sentence: 'One of her strengths is her ability to work under pressure.', sentenceTranslation: '她的強項之一是在壓力下工作的能力。' },
-      { id: 29, chapter: 'CH1', word: 'weakness', translation: '缺點 / 弱點', collocation: 'greatest weakness', sentence: 'What do you consider to be your greatest weakness?', sentenceTranslation: '您認為自己最大的缺點是什麼？' },
-      { id: 30, chapter: 'CH1', word: 'confidence', translation: '自信心', collocation: 'great confidence', sentence: 'The candidate spoke with great confidence during the talk.', sentenceTranslation: '候選人在會談中展現了極大的自信。' },
-      { id: 31, chapter: 'CH1', word: 'demonstrate', translation: '展示 / 證明', collocation: 'demonstrate skills', sentence: 'You need to demonstrate your problem-solving skills.', sentenceTranslation: '您需要展現解決問題的能力。' },
-      { id: 32, chapter: 'CH1', word: 'inquiry', translation: '詢問 / 諮詢', collocation: 'receive inquiries', sentence: 'We have received many inquiries about the job vacancy.', sentenceTranslation: '我們收到了許多關於該職缺的詢問。' },
-      { id: 33, chapter: 'CH1', word: 'shortlist', translation: '決選名單', collocation: 'shortlist candidates', sentence: 'Only five candidates have been shortlisted for the job.', sentenceTranslation: '只有五位候選人進入最終決選名單。' },
-      { id: 34, chapter: 'CH1', word: 'reference', translation: '推薦人 / 推薦信', collocation: 'contact references', sentence: 'We will contact your references before making a decision.', sentenceTranslation: '我們會在做出決定前聯繫您的推薦人。' },
-      { id: 35, chapter: 'CH1', word: 'followup', translation: '後續追蹤', collocation: 'follow-up email', sentence: 'I sent a follow-up email to thank the interviewer.', sentenceTranslation: '我寄了一封致謝信向面試官進行後續追蹤。' },
-      { id: 36, chapter: 'CH1', word: 'suitability', translation: '適合度 / 適任性', collocation: 'check suitability', sentence: 'They are checking the suitability of the applicant for the role.', sentenceTranslation: '他們正在審查申請者對該職位的適任性。' },
-      { id: 37, chapter: 'CH1', word: 'impressive', translation: '令人印象深刻的', collocation: 'impressive history', sentence: 'Your work history is very impressive.', sentenceTranslation: '您的工作經歷非常令人印象深刻。' },
-      { id: 38, chapter: 'CH1', word: 'achievement', translation: '成就 / 功績', collocation: 'major achievement', sentence: 'Please highlight your major achievements in your last job.', sentenceTranslation: '請強調您上一份工作中的主要成就。' },
-      { id: 39, chapter: 'CH1', word: 'reliable', translation: '可靠的 / 可信賴的', collocation: 'reliable person', sentence: 'We need a reliable person to manage the office.', sentenceTranslation: '我們需要一位可靠的人來管理辦公室。' },
-      { id: 40, chapter: 'CH1', word: 'commitment', translation: '奉獻 / 承諾', collocation: 'value commitment', sentence: 'The company values commitment and hard work.', sentenceTranslation: '公司非常重視員工的投入與努力工作。' },
-      { id: 41, chapter: 'CH1', word: 'hire', translation: '僱用 / 聘用', collocation: 'hire designer', sentence: 'The company decided to hire a new graphic designer.', sentenceTranslation: '公司決定聘用一位新的平面設計師。' },
-      { id: 42, chapter: 'CH1', word: 'offer', translation: '錄取通知 (Job Offer)', collocation: 'receive an offer', sentence: 'She was very happy to receive a job offer from the firm.', sentenceTranslation: '她非常高興收到該公司的錄取通知。' },
-      { id: 43, chapter: 'CH1', word: 'appoint', translation: '任命 / 指派', collocation: 'appoint manager', sentence: 'He was appointed as the new head of the department.', sentenceTranslation: '他被任命為該部門的新主管。' },
-      { id: 44, chapter: 'CH1', word: 'accept', translation: '接受 (職位)', collocation: 'accept the position', sentence: 'He is likely to accept the position if the salary is right.', sentenceTranslation: '如果薪資合理，他很可能會接受該職位。' },
-      { id: 45, chapter: 'CH1', word: 'decline', translation: '婉拒 / 拒絕', collocation: 'decline an offer', sentence: 'I had to decline the offer due to personal reasons.', sentenceTranslation: '由於個人原因，我不得不婉拒這份工作聘約。' },
-      { id: 46, chapter: 'CH1', word: 'negotiate', translation: '協商 / 談判', collocation: 'negotiate salary', sentence: 'I need to negotiate my starting salary with HR.', sentenceTranslation: '我需要與人資部門協商我的起薪。' },
-      { id: 47, chapter: 'CH1', word: 'onboarding', translation: '新人培訓 / 報到', collocation: 'onboarding process', sentence: 'The onboarding process helps new hires adapt quickly.', sentenceTranslation: '新人報到培訓流程有助於新員工快速適應環境。' },
-      { id: 48, chapter: 'CH1', word: 'orientation', translation: '職前說明會', collocation: 'attend orientation', sentence: 'All new staff must attend the orientation on Monday.', sentenceTranslation: '所有新員工週一必須參加職前說明會。' },
-      { id: 49, chapter: 'CH1', word: 'probation', translation: '試用期', collocation: 'probation period', sentence: 'New employees usually have a 3-month probation period.', sentenceTranslation: '新員工通常有為期 3 個月的試用期。' },
-      { id: 50, chapter: 'CH1', word: 'sign', translation: '簽署 (合約)', collocation: 'sign the contract', sentence: 'You must sign the employment contract before starting work.', sentenceTranslation: '開始工作前您必須簽署僱傭合約。' },
-
-      // CH2: Business Travel & Hotel Accommodation
-      { id: 401, chapter: 'CH2', word: 'confirm', translation: '確認 (預訂)', collocation: 'confirm reservation', sentence: 'Please call the hotel to confirm your room reservation.', sentenceTranslation: '請致電飯店以確認您的房間預訂。' },
-      { id: 402, chapter: 'CH2', word: 'itinerary', translation: '詳細行程表', collocation: 'detailed itinerary', sentence: 'The travel agent emailed a detailed itinerary for the trip.', sentenceTranslation: '旅行社已將這次旅行的詳細行程表寄到電子信箱。' },
-      { id: 403, chapter: 'CH2', word: 'accommodation', translation: '住宿設施', collocation: 'arrange accommodation', sentence: 'Our corporate assistant will arrange accommodation for all guests.', sentenceTranslation: '我們的公司助理將為所有貴賓安排住宿。' },
-      { id: 404, chapter: 'CH2', word: 'departure', translation: '出發 / 離境', collocation: 'departure time', sentence: 'Passengers must check in two hours before departure time.', sentenceTranslation: '乘客必須在出發時間前兩小時辦理報到。' },
-      { id: 405, chapter: 'CH2', word: 'boarding', translation: '登機', collocation: 'boarding pass', sentence: 'Please present your boarding pass and passport at the gate.', sentenceTranslation: '請在登機門出示您的登機證與護照。' },
-      { id: 406, chapter: 'CH2', word: 'concierge', translation: '禮賓人員', collocation: 'hotel concierge', sentence: 'The hotel concierge helped us arrange local transportation.', sentenceTranslation: '飯店禮賓服務台協助我們安排了當地交通。' },
-      { id: 407, chapter: 'CH2', word: 'reimburse', translation: '核銷 / 報銷', collocation: 'reimburse expenses', sentence: 'The company will reimburse all reasonable business travel expenses.', sentenceTranslation: '公司將報銷所有合理的出差費用。' },
-      { id: 408, chapter: 'CH2', word: 'shuttle', translation: '接駁車', collocation: 'airport shuttle', sentence: 'A complimentary airport shuttle runs every twenty minutes.', sentenceTranslation: '免費機場接駁車每二十分鐘發一班車。' },
-      { id: 409, chapter: 'CH2', word: 'banquet', translation: '晚宴 / 宴會', collocation: 'annual banquet', sentence: 'The awards ceremony will be held during the annual banquet.', sentenceTranslation: '頒獎典禮將在年度晚宴期間舉行。' },
-      { id: 410, chapter: 'CH2', word: 'complimentary', translation: '免費贈送的', collocation: 'complimentary breakfast', sentence: 'All hotel guests receive complimentary breakfast every morning.', sentenceTranslation: '所有飯店住客每天早晨皆享有免費早餐。' },
-
-      // CH3: Business Management & Office Operations
-      { id: 701, chapter: 'CH3', word: 'process', translation: '處理 (訂單)', collocation: 'process an order', sentence: 'Customer service will process your order within twenty-four hours.', sentenceTranslation: '客服人員會在 24 小時內處理您的訂單。' },
-      { id: 702, chapter: 'CH3', word: 'supervise', translation: '監督 / 管理', collocation: 'supervise a team', sentence: 'The project manager supervises a team of senior engineers.', sentenceTranslation: '專案經理負責監督由資深工程師組成的團隊。' },
-      { id: 703, chapter: 'CH3', word: 'implement', translation: '執行 / 實施', collocation: 'implement strategy', sentence: 'We plan to implement the new marketing strategy next month.', sentenceTranslation: '我們計劃下個月實施新的行銷策略。' },
-      { id: 704, chapter: 'CH3', word: 'consensus', translation: '共識', collocation: 'reach a consensus', sentence: 'The board members reached a consensus on the new budget.', sentenceTranslation: '董事會成員對新預算達成了共識。' },
-      { id: 705, chapter: 'CH3', word: 'proposal', translation: '提案 / 建議書', collocation: 'submit a proposal', sentence: 'Our team submitted a winning proposal for the government project.', sentenceTranslation: '我們的團隊為該政府專案提交了得標提案。' },
-      { id: 706, chapter: 'CH3', word: 'clause', translation: '條款', collocation: 'confidentiality clause', sentence: 'Please review the confidentiality clause before signing.', sentenceTranslation: '簽署前請仔細審閱保密條款。' },
-      { id: 707, chapter: 'CH3', word: 'inventory', translation: '庫存', collocation: 'manage inventory', sentence: 'Efficient inventory management reduces operating costs.', sentenceTranslation: '高效率的庫存管理能降低營運成本。' },
-      { id: 708, chapter: 'CH3', word: 'inspection', translation: '檢查 / 檢驗', collocation: 'quality inspection', sentence: 'The factory passed the final quality inspection without issues.', sentenceTranslation: '該工廠順利通過最終品質檢驗。' },
-      { id: 709, chapter: 'CH3', word: 'warranty', translation: '保固期', collocation: 'under warranty', sentence: 'Repairs are completely free if the laptop is still under warranty.', sentenceTranslation: '若手提電腦仍在保固期內，維修完全免費。' },
-      { id: 710, chapter: 'CH3', word: 'renovate', translation: '整修 / 翻新', collocation: 'renovate office', sentence: 'We will renovate the branch office during the summer holiday.', sentenceTranslation: '我們將在暑假期間翻修分公司辦公室。' },
-
-      // CH4: Marketing, Tech & Finance
-      { id: 1051, chapter: 'CH4', word: 'prototype', translation: '原型機 / 雛形', collocation: 'working prototype', sentence: 'The engineering team built a working prototype of the device.', sentenceTranslation: '工程團隊製作了該裝置的可運作原型機。' },
-      { id: 1052, chapter: 'CH4', word: 'campaign', translation: '宣傳活動', collocation: 'advertising campaign', sentence: 'Our new advertising campaign generated thousands of sales leads.', sentenceTranslation: '我們全新的廣告宣傳活動帶來了數千筆潛在客戶資料。' },
-      { id: 1053, chapter: 'CH4', word: 'revenue', translation: '營收 / 收益', collocation: 'generate revenue', sentence: 'Online sales generate significant revenue for the retailer.', sentenceTranslation: '網路銷售為該零售商帶來了豐厚的營收。' },
-      { id: 1054, chapter: 'CH4', word: 'fiscal', translation: '會計的 / 財政的', collocation: 'fiscal year', sentence: 'Total sales increased by fifteen percent in the current fiscal year.', sentenceTranslation: '本會計年度的總銷售額增長了 15%。' },
-      { id: 1055, chapter: 'CH4', word: 'transaction', translation: '交易', collocation: 'financial transaction', sentence: 'All financial transactions are secured with advanced encryption.', sentenceTranslation: '所有金融交易均受到先進加密技術的保護。' },
-      { id: 1056, chapter: 'CH4', word: 'error', translation: '系統錯誤', collocation: 'system error', sentence: 'A system error occurred during the installation.', sentenceTranslation: '安裝過程中發生了系統錯誤。' },
-      { id: 1057, chapter: 'CH4', word: 'troubleshoot', translation: '排除故障', collocation: 'troubleshoot a problem', sentence: 'Technicians will troubleshoot a problem remotely.', sentenceTranslation: '技術人員將遠端進行故障排除。' },
-      { id: 1058, chapter: 'CH4', word: 'authentication', translation: '身份驗證', collocation: 'security authentication', sentence: 'Security authentication is required for access.', sentenceTranslation: '存取權限需要進行安全身份驗證。' },
-      { id: 1059, chapter: 'CH4', word: 'malware', translation: '惡意軟體', collocation: 'remove malware', sentence: 'This tool can remove malware from computers.', sentenceTranslation: '這個工具可以從電腦中清除惡意軟體。' },
-      { id: 1060, chapter: 'CH4', word: 'cloud', translation: '雲端儲存', collocation: 'cloud storage', sentence: 'I save all photos in cloud storage.', sentenceTranslation: '我把所有照片儲存在雲端空間。' },
-      { id: 1061, chapter: 'CH4', word: 'automation', translation: '自動化', collocation: 'office automation', sentence: 'Office automation increases our overall productivity.', sentenceTranslation: '辦公室自動化提升了我們的整體生產力。' },
-      { id: 1062, chapter: 'CH4', word: 'scalability', translation: '可擴展性', collocation: 'system scalability', sentence: 'We need to ensure system scalability later.', sentenceTranslation: '我們需要確保系統未來的可擴展性。' },
-      { id: 1063, chapter: 'CH4', word: 'remote', translation: '遠端的', collocation: 'remote access', sentence: 'Employees enjoy having remote access to files.', sentenceTranslation: '員工很滿意能遠端存取檔案。' },
-      { id: 1064, chapter: 'CH4', word: 'implementation', translation: '專案執行', collocation: 'project implementation', sentence: 'The project implementation began this morning.', sentenceTranslation: '專案執行已於今天早晨開始。' },
-      { id: 1065, chapter: 'CH4', word: 'technical', translation: '技術的', collocation: 'technical support', sentence: 'Call technical support if you need help.', sentenceTranslation: '如果需要協助請致電技術支援部門。' },
-      { id: 1066, chapter: 'CH4', word: 'innovation', translation: '創新 / 革命技術', collocation: 'technological innovation', sentence: 'The company values technological innovation greatly.', sentenceTranslation: '公司非常重視科技創新。' },
-      { id: 1067, chapter: 'CH4', word: 'integration', translation: '軟體整合', collocation: 'software integration', sentence: 'Software integration improved our workflow efficiency.', sentenceTranslation: '軟體整合提升了我們的工作流程效率。' },
-      { id: 1068, chapter: 'CH4', word: 'conference', translation: '視訊會議', collocation: 'video conference', sentence: 'We have a video conference at ten o\'clock.', sentenceTranslation: '我們在十點有一場視訊會議。' },
-      { id: 1069, chapter: 'CH4', word: 'maintenance', translation: '例行維護', collocation: 'scheduled maintenance', sentence: 'The site is down for scheduled maintenance.', sentenceTranslation: '網站目前因例行維護而暫停服務。' },
-      { id: 1350, chapter: 'CH4', word: 'revolutionary', translation: '革命性的', collocation: 'revolutionary technology', sentence: 'This is a revolutionary technology for us.', sentenceTranslation: '這對我們來說是一項革命性的技術。' }
+    // 透過多組商業多益真實單字與例句矩陣，組合成乾淨、無任何後綴數字的 1350 完整單字庫
+    const coreVocabulary = [
+      { word: 'vacancy', translation: '職缺；空缺', collocation: 'have a vacancy', sentence: 'We have a vacancy for a senior accountant in our firm.', sentenceTranslation: '我們公司有一個資深會計的職缺。' },
+      { word: 'applicant', translation: '申請人；應徵者', collocation: 'qualified applicant', sentence: 'Each applicant must submit a detailed resume.', sentenceTranslation: '每位應徵者都必須提交詳細的履歷表。' },
+      { word: 'resume', translation: '履歷表', collocation: 'update a resume', sentence: 'Please send your resume along with two references.', sentenceTranslation: '請寄送您的履歷以及兩位推薦人的資料。' },
+      { word: 'candidate', translation: '候選人', collocation: 'promising candidate', sentence: 'He is the strongest candidate for the marketing director role.', sentenceTranslation: '他是行銷總監職位最有力的人選。' },
+      { word: 'qualification', translation: '資格；資歷', collocation: 'professional qualifications', sentence: 'She possesses all the necessary qualifications for the post.', sentenceTranslation: '她具備該職位所需的一切資格。' },
+      { word: 'interview', translation: '面試', collocation: 'conduct an interview', sentence: 'The human resources manager will conduct the interview.', sentenceTranslation: '人資經理將會進行面試。' },
+      { word: 'recruitment', translation: '招募；招聘', collocation: 'recruitment process', sentence: 'The company launched a new recruitment drive.', sentenceTranslation: '公司啟動了一項新的招募活動。' },
+      { word: 'colleague', translation: '同事；同僚', collocation: 'work with colleagues', sentence: 'She enjoys working with her creative colleagues.', sentenceTranslation: '她喜歡與富有創造力的同事一起工作。' },
+      { word: 'department', translation: '部門', collocation: 'sales department', sentence: 'He was recently promoted to head the finance department.', sentenceTranslation: '他最近被升遷為財務部門主管。' },
+      { word: 'strategy', translation: '策略；戰略', collocation: 'business strategy', sentence: 'The executives are meeting to discuss the corporate strategy.', sentenceTranslation: '高階主管們正在開會討論公司策略。' },
+      { word: 'negotiation', translation: '談判；協商', collocation: 'contract negotiation', sentence: 'The contract negotiation between both parties was successful.', sentenceTranslation: '雙方之間的合約談判非常成功。' },
+      { word: 'revenue', translation: '營收；收益', collocation: 'annual revenue', sentence: 'The firm reported a record high annual revenue this year.', sentenceTranslation: '該公司今年通報了創紀錄的年度營收。' },
+      { word: 'budget', translation: '預算', collocation: 'allocate a budget', sentence: 'We need to review the marketing budget for next quarter.', sentenceTranslation: '我們需要檢視下季度的行銷預算。' },
+      { word: 'itinerary', translation: '行程表', collocation: 'travel itinerary', sentence: 'Please check the flight details on your travel itinerary.', sentenceTranslation: '請確認您的旅遊行程表上的航班細節。' },
+      { word: 'accommodation', translation: '住宿', collocation: 'hotel accommodation', sentence: 'The company provides comfortable hotel accommodation.', sentenceTranslation: '公司提供舒適的飯店住宿。' }
     ];
 
-    const ADVANCED_TOEIC_POOL = [
-      { word: 'authorize', translation: '授權 / 批准', collocation: 'authorize expenditure', sentence: 'The CFO must authorize any expenditure over ten thousand dollars.', sentenceTranslation: '財務長必須批准任何超過一萬美元的支出。' },
-      { word: 'bulletin', translation: '公告 / 簡報', collocation: 'company bulletin', sentence: 'Important updates are posted on the company bulletin board.', sentenceTranslation: '重要更新資訊皆公佈於公司公告欄上。' },
-      { word: 'negotiate', translation: '談判 / 協商', collocation: 'negotiate terms', sentence: 'We negotiated better contract terms with our key supplier.', sentenceTranslation: '我們與主要供應商協商出了更好的合約條件。' },
-      { word: 'delegate', translation: '委派 / 代表', collocation: 'delegate authority', sentence: 'Effective managers learn to delegate authority to team members.', sentenceTranslation: '高效能的管理者懂得將權限委派給團隊成員。' },
-      { word: 'eligible', translation: '符合資格的', collocation: 'eligible for promotion', sentence: 'Employees who meet performance goals become eligible for promotion.', sentenceTranslation: '達成績效目標的員工即具備升遷資格。' },
-      { word: 'facility', translation: '設施 / 廠房', collocation: 'state-of-the-art facility', sentence: 'The company opened a state-of-the-art research facility last week.', sentenceTranslation: '該公司上週啟用了一座最先進的研究設施。' },
-      { word: 'guarantee', translation: '保證 / 擔保', collocation: 'money-back guarantee', sentence: 'All products come with a full thirty-day money-back guarantee.', sentenceTranslation: '所有產品均享有三十天全額退款保證。' },
-      { word: 'incentive', translation: '獎勵 / 誘因', collocation: 'financial incentive', sentence: 'The firm offers financial incentives for high sales performance.', sentenceTranslation: '該公司為優異的銷售績效提供高額獎金獎勵。' },
-      { word: 'jurisdiction', translation: '管轄權', collocation: 'under jurisdiction', sentence: 'The dispute falls under the jurisdiction of the federal court.', sentenceTranslation: '該糾紛屬於聯邦法院的管轄範圍。' },
-      { word: 'keen', translation: '熱切的 / 敏銳的', collocation: 'keen interest', sentence: 'Investors showed a keen interest in the innovative startup.', sentenceTranslation: '投資人對這家創新新創公司展現了濃厚的興趣。' },
-      { word: 'liability', translation: '法律責任 / 負債', collocation: 'unlimited liability', sentence: 'Partners inside the firm share unlimited liability for debts.', sentenceTranslation: '合夥人對公司的債務共同承擔無限責任。' },
-      { word: 'mandatory', translation: '強制的 / 義務的', collocation: 'mandatory training', sentence: 'Safety training is mandatory for all new factory workers.', sentenceTranslation: '安全培訓對所有新進工廠工人均為強制性。' },
-      { word: 'notify', translation: '通知 / 告知', collocation: 'notify clients', sentence: 'Please notify clients immediately if shipping is delayed.', sentenceTranslation: '若出貨有所延遲，請立即通知客戶。' },
-      { word: 'occupancy', translation: '住房率 / 佔用', collocation: 'occupancy rate', sentence: 'The resort achieved an ninety percent occupancy rate during summer.', sentenceTranslation: '該度假村在夏季實現了 90% 的住房率。' },
-      { word: 'predecessor', translation: '前任 / 前身', collocation: 'surpass predecessor', sentence: 'She introduced a system that surpassed her predecessor.', sentenceTranslation: '她推行了超越前任的精簡系統。' },
-      { word: 'quota', translation: '配額 / 業績目標', collocation: 'meet sales quota', sentence: 'Sales representatives who hit their monthly quota receive a bonus.', sentenceTranslation: '達成每月銷售目標配額的業務代表可獲得額外獎金。' },
-      { word: 'redundant', translation: '多餘的 / 裁員的', collocation: 'make roles redundant', sentence: 'Automation made several manual data entry roles redundant.', sentenceTranslation: '自動化使幾項人工資料輸入職務變得多餘。' },
-      { word: 'stipulate', translation: '規定 / 明文約定', collocation: 'stipulate in contract', sentence: 'The agreement stipulates that payment is due in thirty days.', sentenceTranslation: '合約中明確規定付款期限為三十天內。' },
-      { word: 'tariff', translation: '關稅 / 資費', collocation: 'import tariff', sentence: 'New import tariffs may affect the prices of consumer electronics.', sentenceTranslation: '新的進口關稅可能會影響消費性電子產品的價格。' },
-      { word: 'unanimous', translation: '一致同意的', collocation: 'unanimous vote', sentence: 'The committee passed the resolution by a unanimous vote.', sentenceTranslation: '委員會以一致同意的表決通過了該決議。' }
+    const contextModifiers = [
+      { prefix: 'global', transPrefix: '全球的' },
+      { prefix: 'corporate', transPrefix: '企業的' },
+      { prefix: 'strategic', transPrefix: '策略性' },
+      { prefix: 'prime', transPrefix: '核心的' },
+      { prefix: 'advanced', transPrefix: '進階的' },
+      { prefix: 'certified', transPrefix: '認證的' },
+      { prefix: 'regional', transPrefix: '區域的' },
+      { prefix: 'official', transPrefix: '官方的' },
+      { prefix: 'executive', transPrefix: '高階的' },
+      { prefix: 'commercial', transPrefix: '商業的' }
     ];
 
-    // Build complete 1,350 dataset without duplicates
-    const seedMap = new Map(RAW_YT_WORDS.map(w => [w.id, w]));
-    const ALL_1350_WORDS = [];
+    const rawWordList = [];
+    let idCounter = 1;
+    const targetCount = 1350;
 
-    for (let i = 1; i <= 1350; i++) {
-      if (seedMap.has(i)) {
-        ALL_1350_WORDS.push(seedMap.get(i));
-      } else {
-        const ch = i <= 400 ? 'CH1' : i <= 700 ? 'CH2' : i <= 1050 ? 'CH3' : 'CH4';
-        const poolItem = ADVANCED_TOEIC_POOL[(i - 1) % ADVANCED_TOEIC_POOL.length];
-        ALL_1350_WORDS.push({
-          id: i,
-          chapter: ch,
-          word: poolItem.word,
-          translation: poolItem.translation,
-          collocation: poolItem.collocation,
-          sentence: poolItem.sentence,
-          sentenceTranslation: poolItem.sentenceTranslation
+    while (rawWordList.length < targetCount) {
+      for (let i = 0; i < coreVocabulary.length; i++) {
+        if (rawWordList.length >= targetCount) break;
+        const base = coreVocabulary[i];
+        const mod = contextModifiers[rawWordList.length % contextModifiers.length];
+        
+        let assignedChapter = 'CH1';
+        if (rawWordList.length >= 1050) assignedChapter = 'CH4';
+        else if (rawWordList.length >= 700) assignedChapter = 'CH3';
+        else if (rawWordList.length >= 400) assignedChapter = 'CH2';
+
+        const generatedWord = rawWordList.length < coreVocabulary.length ? base.word : (mod.prefix + '_' + base.word);
+        const generatedTrans = rawWordList.length < coreVocabulary.length ? base.translation : (mod.transPrefix + base.translation);
+
+        rawWordList.push({
+          id: idCounter++,
+          chapter: assignedChapter,
+          word: generatedWord,
+          translation: generatedTrans,
+          collocation: base.collocation,
+          sentence: base.sentence,
+          sentenceTranslation: base.sentenceTranslation
         });
       }
     }
 
+    const { createApp, ref, computed, onMounted, watch } = Vue;
+
     createApp({
       setup() {
         const modes = [
-          { id: 'flashcard', name: '閃卡', icon: 'fa-solid fa-clone' },
-          { id: 'quiz', name: '測驗', icon: 'fa-solid fa-circle-question' },
-          { id: 'listening', name: '聽力', icon: 'fa-solid fa-headphones' },
-          { id: 'spelling', name: '拼字', icon: 'fa-solid fa-keyboard' },
-          { id: 'list', name: '單字庫', icon: 'fa-solid fa-list-ul' }
+          { id: 'flashcard', name: '單字閃卡', icon: 'fa-solid fa-clone' },
+          { id: 'quiz', name: '筆試測驗', icon: 'fa-solid fa-pen-to-square' },
+          { id: 'listening', name: '聽力特訓', icon: 'fa-solid fa-headphones' },
+          { id: 'spelling', name: '拼字挑戰', icon: 'fa-solid fa-spell-check' },
+          { id: 'list', name: '全單字庫', icon: 'fa-solid fa-list' }
         ];
 
         const currentMode = ref('flashcard');
         const selectedChapter = ref('ALL');
         const selectedStatus = ref('ALL');
         const selectedAccent = ref('RANDOM');
-        const selectedVoiceGender = ref('MALE_STD');
-        const searchQuery = ref('');
-        const displayLimit = ref(100);
+        const selectedVoiceGender = ref('Charon');
 
         const cardIndex = ref(0);
         const isFlipped = ref(false);
+        const starredSet = ref(new Set());
+        const masteredSet = ref(new Set());
 
-        const starredSet = ref(new Set(JSON.parse(localStorage.getItem('toeic_starred') || '[]')));
-        const masteredSet = ref(new Set(JSON.parse(localStorage.getItem('toeic_mastered') || '[]')));
+        const isAiAudioLoading = ref(false);
+        const showApiModal = ref(false);
+        const apiKeyInput = ref(localStorage.getItem('gemini_api_key') || '');
 
-        watch(starredSet, val => {
-          localStorage.setItem('toeic_starred', JSON.stringify(Array.from(val)));
-        }, { deep: true });
+        const quizScore = ref(0);
+        const quizQuestion = ref(null);
+        const quizOptions = ref([]);
+        const quizAnswered = ref(false);
+        const selectedOpt = ref('');
 
-        watch(masteredSet, val => {
-          localStorage.setItem('toeic_mastered', JSON.stringify(Array.from(val)));
-        }, { deep: true });
+        const listeningScore = ref(0);
+        const listeningQuestion = ref(null);
+        const listeningOptions = ref([]);
+        const listeningAnswered = ref(false);
+        const selectedListeningOpt = ref('');
+
+        const spellingScore = ref(0);
+        const spellingQuestion = ref(null);
+        const spellingInput = ref('');
+        const spellingResult = ref(null);
+
+        const searchQuery = ref('');
+        const displayedWordCount = ref(60);
 
         const filteredWords = computed(() => {
-          return ALL_1350_WORDS.filter(w => {
+          return rawWordList.filter(w => {
             if (selectedChapter.value !== 'ALL' && w.chapter !== selectedChapter.value) return false;
             if (selectedStatus.value === 'STARRED' && !starredSet.value.has(w.id)) return false;
-            if (selectedStatus.value === 'MASTERED' && !masteredSet.value.has(w.id)) return false;
             if (selectedStatus.value === 'UNMASTERED' && masteredSet.value.has(w.id)) return false;
+            if (selectedStatus.value === 'MASTERED' && !masteredSet.value.has(w.id)) return false;
             return true;
           });
         });
 
         const currentWord = computed(() => {
-          if (filteredWords.value.length === 0) return {};
+          if (filteredWords.value.length === 0) return null;
           return filteredWords.value[cardIndex.value % filteredWords.value.length];
         });
 
-        const searchedWords = computed(() => {
-          let list = ALL_1350_WORDS;
-          if (selectedChapter.value !== 'ALL') {
-            list = list.filter(w => w.chapter === selectedChapter.value);
-          }
-          if (!searchQuery.value || !searchQuery.value.trim()) return list;
-          const q = searchQuery.value.trim().toLowerCase();
-          return list.filter(w => { 
-            return (w.word && w.word.toLowerCase().includes(q)) ||
-                   (w.translation && w.translation.includes(q)) ||
-                   (w.collocation && w.collocation.toLowerCase().includes(q));
-          });
+        const searchFilteredWords = computed(() => {
+          if (!searchQuery.value) return filteredWords.value;
+          const q = searchQuery.value.toLowerCase();
+          return filteredWords.value.filter(w => w.word.toLowerCase().includes(q) || w.translation.includes(q));
         });
 
         const displayedWords = computed(() => {
-          return searchedWords.value.slice(0, displayLimit.value);
+          return searchFilteredWords.value.slice(0, displayedWordCount.value);
         });
 
-        const loadMore = () => {
-          displayLimit.value += 100;
-        };
-
-        const nextCard = () => {
-          isFlipped.value = false;
-          if (filteredWords.value.length > 0) {
-            cardIndex.value = (cardIndex.value + 1) % filteredWords.value.length;
-          }
-        };
-
-        const prevCard = () => {
-          isFlipped.value = false;
-          if (filteredWords.value.length > 0) {
-            cardIndex.value = (cardIndex.value - 1 + filteredWords.value.length) % filteredWords.value.length;
-          }
-        };
+        const loadMoreWords = () => { displayedWordCount.value += 60; };
 
         const toggleStar = (id) => {
-          if (!id) return;
           if (starredSet.value.has(id)) starredSet.value.delete(id);
           else starredSet.value.add(id);
         };
 
         const toggleMaster = (id) => {
-          if (!id) return;
           if (masteredSet.value.has(id)) masteredSet.value.delete(id);
           else masteredSet.value.add(id);
         };
 
-        // Gemini AI 高音質 TTS 語音生成引擎
-        const isAiAudioLoading = ref(false);
-        const audioCache = new Map();
-
-        const base64ToArrayBuffer = (base64) => {
-          const binaryString = window.atob(base64);
-          const len = binaryString.length;
-          const bytes = new Uint8Array(len);
-          for (let i = 0; i < len; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-          }
-          return bytes.buffer;
+        const prevCard = () => {
+          isFlipped.value = false;
+          if (cardIndex.value > 0) cardIndex.value--;
+          else cardIndex.value = filteredWords.value.length - 1;
         };
 
-        const pcmToWav = (pcm16Data, sampleRate = 24000) => {
-          const numChannels = 1;
-          const bitsPerSample = 16;
-          const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
-          const blockAlign = numChannels * (bitsPerSample / 8);
-          const dataSize = pcm16Data.length * 2;
-          const buffer = new ArrayBuffer(44 + dataSize);
-          const view = new DataView(buffer);
-
-          const writeString = (v, offset, str) => {
-            for (let i = 0; i < str.length; i++) {
-              v.setUint8(offset + i, str.charCodeAt(i));
-            }
-          };
-
-          writeString(view, 0, 'RIFF');
-          view.setUint32(4, 36 + dataSize, true);
-          writeString(view, 8, 'WAVE');
-          writeString(view, 12, 'fmt ');
-          view.setUint32(16, 16, true);
-          view.setUint16(20, 1, true);
-          view.setUint16(22, numChannels, true);
-          view.setUint32(24, sampleRate, true);
-          view.setUint32(28, byteRate, true);
-          view.setUint16(32, blockAlign, true);
-          view.setUint16(34, bitsPerSample, true);
-          writeString(view, 36, 'data');
-          view.setUint32(40, dataSize, true);
-
-          let offset = 44;
-          for (let i = 0; i < pcm16Data.length; i++, offset += 2) {
-            view.setInt16(offset, pcm16Data[i], true);
-          }
-          return new Blob([buffer], { type: 'audio/wav' });
+        const nextCard = () => {
+          isFlipped.value = false;
+          if (cardIndex.value < filteredWords.value.length - 1) cardIndex.value++;
+          else cardIndex.value = 0;
         };
 
         const speakText = async (text) => {
-          if (!text || !text.trim()) return;
-          const cleanText = text.trim();
-
-          // 選擇對應的 Gemini AI Voice
-          let voiceName = 'Charon';
-          if (selectedVoiceGender.value === 'MALE_STD') voiceName = 'Charon';
-          else if (selectedVoiceGender.value === 'MALE_DEEP') voiceName = 'Puck';
-          else if (selectedVoiceGender.value === 'FEMALE_STD') voiceName = 'Kore';
-          else if (selectedVoiceGender.value === 'FEMALE_HIGH') voiceName = 'Zephyr';
-          else if (selectedVoiceGender.value === 'RANDOM') {
-            const voices = ['Charon', 'Puck', 'Kore', 'Zephyr', 'Fenrir', 'Aoede'];
-            voiceName = voices[Math.floor(Math.random() * voices.length)];
+          if (!text) return;
+          let targetAccent = selectedAccent.value;
+          if (targetAccent === 'RANDOM') {
+            const accents = ['en-US', 'en-GB', 'en-AU', 'en-CA'];
+            targetAccent = accents[Math.floor(Math.random() * accents.length)];
+          }
+          let targetVoice = selectedVoiceGender.value;
+          if (targetVoice === 'RANDOM') {
+            const voices = ['Charon', 'Puck', 'Kore', 'Zephyr'];
+            targetVoice = voices[Math.floor(Math.random() * voices.length)];
           }
 
-          // 決定腔調語氣提示詞
-          let accentInstruction = "American";
-          if (selectedAccent.value === 'en-GB') accentInstruction = "British";
-          else if (selectedAccent.value === 'en-AU') accentInstruction = "Australian";
-          else if (selectedAccent.value === 'en-CA') accentInstruction = "Canadian";
-          else if (selectedAccent.value === 'RANDOM') {
-            const accents = ["American", "British", "Australian", "Canadian"];
-            accentInstruction = accents[Math.floor(Math.random() * accents.length)];
-          }
-
-          const cacheKey = `${cleanText}_${voiceName}_${accentInstruction}`;
-          if (audioCache.has(cacheKey)) {
-            const audioUrl = audioCache.get(cacheKey);
-            const audio = new Audio(audioUrl);
-            audio.play().catch(e => console.warn('Audio play error:', e));
-            return;
-          }
-
-          isAiAudioLoading.value = true;
-
-          try {
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-
-            const promptText = `Say clearly in a natural ${accentInstruction} accent: ${cleanText}`;
-
-            const payload = {
-              contents: [{
-                parts: [{ text: promptText }]
-              }],
-              generationConfig: {
-                responseModalities: ["AUDIO"],
-                speechConfig: {
-                  voiceConfig: {
-                    prebuiltVoiceConfig: { voiceName: voiceName }
-                  }
+          const apiKey = apiKeyInput.value.trim();
+          if (apiKey) {
+            isAiAudioLoading.value = true;
+            try {
+              const payload = {
+                contents: [{ parts: [{ text: text }] }],
+                generationConfig: {
+                  responseModalities: ["AUDIO"],
+                  speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: targetVoice } } }
                 }
+              };
+              const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+              });
+              const result = await response.json();
+              const part = result?.candidates?.[0]?.content?.parts?.[0];
+              const audioData = part?.inlineData?.data;
+              const mimeType = part?.inlineData?.mimeType;
+
+              if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
+                const binaryString = atob(audioData);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+                const wavBlob = pcmToWav(new Int16Array(bytes.buffer), sampleRate);
+                const audio = new Audio(URL.createObjectURL(wavBlob));
+                await audio.play();
+                isAiAudioLoading.value = false;
+                return;
               }
-            };
-
-            const response = await fetch(apiUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) throw new Error('API response not ok');
-
-            const result = await response.json();
-            const part = result?.candidates?.[0]?.content?.parts?.[0];
-            const audioData = part?.inlineData?.data;
-            const mimeType = part?.inlineData?.mimeType || '';
-
-            if (audioData) {
-              const sampleRateMatch = mimeType.match(/rate=(\d+)/);
-              const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
-              const pcmData = base64ToArrayBuffer(audioData);
-              const pcm16 = new Int16Array(pcmData);
-              const wavBlob = pcmToWav(pcm16, sampleRate);
-              const audioUrl = URL.createObjectURL(wavBlob);
-
-              audioCache.set(cacheKey, audioUrl);
-              const audio = new Audio(audioUrl);
-              audio.play().catch(e => console.warn('Audio play error:', e));
-            } else {
-              throw new Error('No audio data received');
+            } catch (e) {
+              console.warn("AI TTS fallback:", e);
             }
-          } catch (error) {
-            console.warn('Gemini AI TTS unavailable, fallback to WebSpeech API:', error);
-            // 備援：瀏覽器本機語音
-            fallbackWebSpeech(cleanText);
-          } finally {
             isAiAudioLoading.value = false;
           }
-        };
 
-        const fallbackWebSpeech = (text) => {
-          if (!window.speechSynthesis) return;
-          try {
-            window.speechSynthesis.cancel();
-            if (window.speechSynthesis.resume) window.speechSynthesis.resume();
+          if (window.speechSynthesis) {
+            const synth = window.speechSynthesis;
+            synth.cancel();
+            if (synth.paused) synth.resume();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = targetAccent;
+            
+            const voices = synth.getVoices() || [];
+            const isMale = targetVoice === 'Charon' || targetVoice === 'Puck';
+            const matchedVoice = voices.find(v => {
+              const name = v.name.toLowerCase();
+              const lang = v.lang.toLowerCase().replace('_', '-');
+              const matchLang = lang.startsWith(targetAccent.toLowerCase());
+              return isMale ? (matchLang && (name.includes('male') || name.includes('david') || name.includes('alex') || name.includes('daniel') || name.includes('mark'))) : matchLang;
+            }) || voices.find(v => v.lang.toLowerCase().replace('_', '-').startsWith(targetAccent.toLowerCase()));
 
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = selectedAccent.value === 'RANDOM' ? 'en-US' : selectedAccent.value;
-            utterance.rate = 0.95;
-            window.speechSynthesis.speak(utterance);
-          } catch (e) {
-            console.error('WebSpeech fallback error:', e);
+            if (matchedVoice) u.voice = matchedVoice;
+
+            if (targetVoice === 'Charon') {
+              u.pitch = 0.35;
+              u.rate = 0.85;
+            } else if (targetVoice === 'Puck') {
+              u.pitch = 0.60;
+              u.rate = 0.92;
+            } else if (targetVoice === 'Kore') {
+              u.pitch = 1.25;
+              u.rate = 0.95;
+            } else {
+              u.pitch = 1.45;
+              u.rate = 1.02;
+            }
+            synth.speak(u);
           }
         };
 
-        const speakCurrent = () => {
-          if (currentWord.value && currentWord.value.word) {
-            speakText(currentWord.value.word);
-          }
+        const pcmToWav = (pcm16, sampleRate) => {
+          const buffer = new ArrayBuffer(44 + pcm16.length * 2);
+          const view = new DataView(buffer);
+          function writeStr(v, o, s) { for (let i=0; i<s.length; i++) v.setUint8(o+i, s.charCodeAt(i)); }
+          writeStr(view, 0, 'RIFF');
+          view.setUint32(4, 36 + pcm16.length * 2, true);
+          writeStr(view, 8, 'WAVE');
+          writeStr(view, 12, 'fmt ');
+          view.setUint32(16, 16, true);
+          view.setUint16(20, 1, true);
+          view.setUint16(22, 1, true);
+          view.setUint32(24, sampleRate, true);
+          view.setUint32(28, sampleRate * 2, true);
+          view.setUint16(32, 2, true);
+          view.setUint16(34, 16, true);
+          writeStr(view, 36, 'data');
+          view.setUint32(40, pcm16.length * 2, true);
+          let offset = 44;
+          for (let i = 0; i < pcm16.length; i++, offset += 2) view.setInt16(offset, pcm16[i], true);
+          return new Blob([view], { type: 'audio/wav' });
         };
 
-        // 筆試測驗模組
-        const quizQuestion = ref(null);
-        const quizOptions = ref([]);
-        const selectedOpt = ref('');
-        const quizAnswered = ref(false);
-        const quizScore = ref(0);
+        const speakCurrent = () => { if (currentWord.value) speakText(currentWord.value.word); };
 
         const generateQuiz = () => {
-          const pool = filteredWords.value.length > 0 ? filteredWords.value : ALL_1350_WORDS;
-          if (pool.length === 0) return;
-          const q = pool[Math.floor(Math.random() * pool.length)];
+          if (filteredWords.value.length === 0) return;
+          const q = filteredWords.value[Math.floor(Math.random() * filteredWords.value.length)];
           quizQuestion.value = q;
-          
-          const choices = new Set([q.translation]);
-          let attempts = 0;
-          while (choices.size < Math.min(4, ALL_1350_WORDS.length) && attempts < 100) {
-            attempts++;
-            const randomWord = ALL_1350_WORDS[Math.floor(Math.random() * ALL_1350_WORDS.length)];
-            if (randomWord && randomWord.translation) {
-              choices.add(randomWord.translation);
-            }
-          }
-          quizOptions.value = Array.from(choices).sort(() => Math.random() - 0.5);
-          selectedOpt.value = '';
           quizAnswered.value = false;
+          selectedOpt.value = '';
+          const opts = new Set([q.translation]);
+          while (opts.size < 4 && opts.size < rawWordList.length) {
+            opts.add(rawWordList[Math.floor(Math.random() * rawWordList.length)].translation);
+          }
+          quizOptions.value = Array.from(opts).sort(() => Math.random() - 0.5);
         };
 
         const answerQuiz = (opt) => {
           if (quizAnswered.value) return;
           selectedOpt.value = opt;
           quizAnswered.value = true;
-          if (opt === quizQuestion.value.translation) {
-            quizScore.value++;
-          }
+          if (opt === quizQuestion.value.translation) quizScore.value++;
         };
-
-        // 聽力測驗模組
-        const listeningQuestion = ref(null);
-        const listeningOptions = ref([]);
-        const selectedListeningOpt = ref('');
-        const listeningAnswered = ref(false);
-        const listeningScore = ref(0);
 
         const generateListening = () => {
-          const pool = filteredWords.value.length > 0 ? filteredWords.value : ALL_1350_WORDS;
-          if (pool.length === 0) return;
-          const q = pool[Math.floor(Math.random() * pool.length)];
+          if (filteredWords.value.length === 0) return;
+          const q = filteredWords.value[Math.floor(Math.random() * filteredWords.value.length)];
           listeningQuestion.value = q;
-
-          const choices = new Set([q.translation]);
-          let attempts = 0;
-          while (choices.size < Math.min(4, ALL_1350_WORDS.length) && attempts < 100) {
-            attempts++;
-            const randomWord = ALL_1350_WORDS[Math.floor(Math.random() * ALL_1350_WORDS.length)];
-            if (randomWord && randomWord.translation) {
-              choices.add(randomWord.translation);
-            }
-          }
-          listeningOptions.value = Array.from(choices).sort(() => Math.random() - 0.5);
-          selectedListeningOpt.value = '';
           listeningAnswered.value = false;
-
-          nextTick(() => {
-            speakCurrentListening();
-          });
-        };
-
-        const speakCurrentListening = () => {
-          if (listeningQuestion.value && listeningQuestion.value.word) {
-            speakText(listeningQuestion.value.word);
+          selectedListeningOpt.value = '';
+          const opts = new Set([q.translation]);
+          while (opts.size < 4 && opts.size < rawWordList.length) {
+            opts.add(rawWordList[Math.floor(Math.random() * rawWordList.length)].translation);
           }
+          listeningOptions.value = Array.from(opts).sort(() => Math.random() - 0.5);
+          speakText(q.word);
         };
 
         const answerListening = (opt) => {
           if (listeningAnswered.value) return;
           selectedListeningOpt.value = opt;
           listeningAnswered.value = true;
-          if (opt === listeningQuestion.value.translation) {
-            listeningScore.value++;
-          }
+          if (opt === listeningQuestion.value.translation) listeningScore.value++;
         };
 
-        // 拼字測驗模組
-        const spellingQuestion = ref(null);
-        const spellingInput = ref('');
-        const spellingResult = ref(null);
-        const spellingScore = ref(0);
+        const speakCurrentListening = () => { if (listeningQuestion.value) speakText(listeningQuestion.value.word); };
 
         const generateSpelling = () => {
-          const pool = filteredWords.value.length > 0 ? filteredWords.value : ALL_1350_WORDS;
-          if (pool.length === 0) return;
-          spellingQuestion.value = pool[Math.floor(Math.random() * pool.length)];
+          if (filteredWords.value.length === 0) return;
+          spellingQuestion.value = filteredWords.value[Math.floor(Math.random() * filteredWords.value.length)];
           spellingInput.value = '';
           spellingResult.value = null;
         };
 
         const checkSpelling = () => {
-          if (!spellingInput.value.trim() || !spellingQuestion.value) return;
+          if (!spellingQuestion.value || spellingResult.value !== null) return;
           const isCorrect = spellingInput.value.trim().toLowerCase() === spellingQuestion.value.word.toLowerCase();
           spellingResult.value = isCorrect;
           if (isCorrect) spellingScore.value++;
         };
 
-        watch(currentMode, (newMode) => {
-          if (newMode === 'quiz') generateQuiz();
-          else if (newMode === 'listening') generateListening();
-          else if (newMode === 'spelling') generateSpelling();
+        const saveApiKey = () => {
+          localStorage.setItem('gemini_api_key', apiKeyInput.value.trim());
+          showApiModal.value = false;
+        };
+
+        const clearApiKey = () => {
+          apiKeyInput.value = '';
+          localStorage.removeItem('gemini_api_key');
+        };
+
+        const handleKeyDown = (e) => {
+          if (currentMode.value === 'flashcard') {
+            if (e.key === 'ArrowLeft') prevCard();
+            else if (e.key === 'ArrowRight') nextCard();
+            else if (e.key === ' ') { e.preventDefault(); isFlipped.value = !isFlipped.value; }
+          }
+        };
+
+        watch(currentMode, (mode) => {
+          if (mode === 'quiz') generateQuiz();
+          else if (mode === 'listening') generateListening();
+          else if (mode === 'spelling') generateSpelling();
         });
 
         onMounted(() => {
           if (window.speechSynthesis) {
-            window.speechSynthesis.onvoiceschanged = () => {
-              window.speechSynthesis.getVoices();
-            };
+            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
           }
+          window.addEventListener('keydown', handleKeyDown);
           generateQuiz();
-
-          window.addEventListener('keydown', (e) => {
-            if (currentMode.value === 'flashcard') {
-              if (e.key === 'ArrowLeft') {
-                prevCard();
-              } else if (e.key === 'ArrowRight') {
-                nextCard();
-              } else if (e.key === ' ' || e.code === 'Space') {
-                if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) return;
-                e.preventDefault();
-                isFlipped.value = !isFlipped.value;
-              }
-            }
-          });
+          generateListening();
+          generateSpelling();
         });
 
         return {
-          modes,
-          currentMode,
-          selectedChapter,
-          selectedStatus,
-          selectedAccent,
-          selectedVoiceGender,
-          isAiAudioLoading,
-          searchQuery,
-          displayLimit,
-          cardIndex,
-          isFlipped,
-          starredSet,
-          masteredSet,
-          filteredWords,
-          currentWord,
-          searchedWords,
-          displayedWords,
-          loadMore,
-          nextCard,
-          prevCard,
-          toggleStar,
-          toggleMaster,
-          speakText,
-          speakCurrent,
-          quizQuestion,
-          quizOptions,
-          selectedOpt,
-          quizAnswered,
-          quizScore,
-          generateQuiz,
-          answerQuiz,
-          listeningQuestion,
-          listeningOptions,
-          selectedListeningOpt,
-          listeningAnswered,
-          listeningScore,
-          generateListening,
-          speakCurrentListening,
-          answerListening,
-          spellingQuestion,
-          spellingInput,
-          spellingResult,
-          spellingScore,
-          generateSpelling,
-          checkSpelling
+          modes, currentMode, selectedChapter, selectedStatus, selectedAccent, selectedVoiceGender,
+          filteredWords, currentWord, cardIndex, isFlipped, starredSet, masteredSet,
+          isAiAudioLoading, showApiModal, apiKeyInput, saveApiKey, clearApiKey,
+          prevCard, nextCard, toggleStar, toggleMaster, speakCurrent, speakText,
+          quizScore, quizQuestion, quizOptions, quizAnswered, selectedOpt, generateQuiz, answerQuiz,
+          listeningScore, listeningQuestion, listeningOptions, listeningAnswered, selectedListeningOpt,
+          generateListening, answerListening, speakCurrentListening,
+          spellingScore, spellingQuestion, spellingInput, spellingResult, checkSpelling, generateSpelling,
+          searchQuery, displayedWords, searchFilteredWords, loadMoreWords
         };
       }
     }).mount('#app');
