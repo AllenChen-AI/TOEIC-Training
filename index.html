@@ -33,7 +33,7 @@
         <div>
           <h1 class="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
             TOEIC 1350 特訓台
-            <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 font-medium">v7.8 完美真實1350版</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 font-medium">v7.5 正式版</span>
           </h1>
           <p class="text-xs text-slate-400 hidden sm:block">【單字耳機 WordPods】多益高頻單字雙語同步聽力特訓台</p>
         </div>
@@ -214,10 +214,7 @@
       <div v-else-if="currentMode === 'quiz'" class="w-full max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-5">
         <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
           <span class="font-bold text-indigo-400">4選1 筆試測驗 (得分: {{ quizScore }})</span>
-          <button @click="generateQuiz" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-bold shadow-md active-scale flex items-center gap-1.5">
-            <span>{{ quizAnswered ? '下一題 (Next)' : '跳過 (Skip)' }}</span>
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
+          <span class="text-slate-500">請從下方選擇正確中文</span>
         </div>
 
         <div v-if="quizQuestion" class="space-y-4">
@@ -245,7 +242,7 @@
               <span v-if="quizAnswered" :class="[selectedOpt === quizQuestion.translation ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold']">
                 {{ selectedOpt === quizQuestion.translation ? '🎉 回答正確！' : '❌ 答錯了！答案是：' + quizQuestion.translation }}
               </span>
-              <span v-else class="text-slate-500">請點擊選項回答</span>
+              <span v-else class="text-slate-500">請點擊上方選項回答</span>
             </div>
             <button @click="generateQuiz" 
                     :class="[quizAnswered ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-lg shadow-indigo-600/30 ring-2 ring-indigo-400/50' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700']"
@@ -261,10 +258,7 @@
       <div v-else-if="currentMode === 'listening'" class="w-full max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-5">
         <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
           <span class="font-bold text-indigo-400">聽力辨義 4選1 (得分: {{ listeningScore }})</span>
-          <button @click="generateListening" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-bold shadow-md active-scale flex items-center gap-1.5">
-            <span>{{ listeningAnswered ? '下一題 (Next)' : '跳過 (Skip)' }}</span>
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
+          <span class="text-slate-500">聽發音選擇正確中文</span>
         </div>
 
         <div v-if="listeningQuestion" class="space-y-4">
@@ -316,10 +310,7 @@
       <div v-else-if="currentMode === 'spelling'" class="w-full max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-5">
         <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-slate-800">
           <span class="font-bold text-indigo-400">拼字挑戰 (得分: {{ spellingScore }})</span>
-          <button @click="generateSpelling" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white text-xs font-bold shadow-md active-scale flex items-center gap-1.5">
-            <span>{{ spellingResult !== null ? '下一題 (Next)' : '跳過 (Skip)' }}</span>
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
+          <span class="text-slate-500">輸入正確英文單字</span>
         </div>
 
         <div v-if="spellingQuestion" class="space-y-4">
@@ -415,7 +406,7 @@
         </div>
 
         <p class="text-xs text-slate-300 leading-relaxed">
-          貼上您的 Google Gemini API Key 即可全平台解鎖 **Google 2.5 Flash 頂級 AI 擬真自然發音**：
+          貼上您的 Google Gemini API Key 即可解鎖 **Google 2.5 Flash 頂級 AI 擬真自然發音**：
         </p>
 
         <input v-model="apiKeyInput" type="password" placeholder="貼上 API Key (AIzaSy...)"
@@ -431,7 +422,6 @@
   </div>
 
   <script>
-    // 透過多組商業多益真實單字與例句矩陣，組合成乾淨、無任何後綴數字的 1350 完整單字庫
     const coreVocabulary = [
       { word: 'vacancy', translation: '職缺；空缺', collocation: 'have a vacancy', sentence: 'We have a vacancy for a senior accountant in our firm.', sentenceTranslation: '我們公司有一個資深會計的職缺。' },
       { word: 'applicant', translation: '申請人；應徵者', collocation: 'qualified applicant', sentence: 'Each applicant must submit a detailed resume.', sentenceTranslation: '每位應徵者都必須提交詳細的履歷表。' },
@@ -451,16 +441,16 @@
     ];
 
     const contextModifiers = [
-      { prefix: 'global', transPrefix: '全球的' },
-      { prefix: 'corporate', transPrefix: '企業的' },
-      { prefix: 'strategic', transPrefix: '策略性' },
-      { prefix: 'prime', transPrefix: '核心的' },
-      { prefix: 'advanced', transPrefix: '進階的' },
-      { prefix: 'certified', transPrefix: '認證的' },
-      { prefix: 'regional', transPrefix: '區域的' },
-      { prefix: 'official', transPrefix: '官方的' },
-      { prefix: 'executive', transPrefix: '高階的' },
-      { prefix: 'commercial', transPrefix: '商業的' }
+      { prefix: 'global ', transPrefix: '全球的' },
+      { prefix: 'corporate ', transPrefix: '企業的' },
+      { prefix: 'strategic ', transPrefix: '策略性' },
+      { prefix: 'prime ', transPrefix: '核心的' },
+      { prefix: 'advanced ', transPrefix: '進階的' },
+      { prefix: 'certified ', transPrefix: '認證的' },
+      { prefix: 'regional ', transPrefix: '區域的' },
+      { prefix: 'official ', transPrefix: '官方的' },
+      { prefix: 'executive ', transPrefix: '高階的' },
+      { prefix: 'commercial ', transPrefix: '商業的' }
     ];
 
     const rawWordList = [];
@@ -478,7 +468,7 @@
         else if (rawWordList.length >= 700) assignedChapter = 'CH3';
         else if (rawWordList.length >= 400) assignedChapter = 'CH2';
 
-        const generatedWord = rawWordList.length < coreVocabulary.length ? base.word : (mod.prefix + '_' + base.word);
+        const generatedWord = rawWordList.length < coreVocabulary.length ? base.word : (mod.prefix + base.word);
         const generatedTrans = rawWordList.length < coreVocabulary.length ? base.translation : (mod.transPrefix + base.translation);
 
         rawWordList.push({
